@@ -1,0 +1,23 @@
+<% content_for :subnav_buttons do %>
+    <%= link_to edit_template_path(@template), :title => "Edit Role", :class => "btn btn-primary" do %><i class="icon-edit icon-white"></i> edit<% end %>
+    <%= link_to @template, method: :delete, data: { confirm: 'Are you sure?' }, :title => "Destroy Role", :class => "btn btn-danger" do %><i class="icon-remove-sign icon-white"></i> destroy<% end %>
+<% end %>
+
+<table class="table table-condensed table-bordered fields-horizontal">
+  <tr>
+    <th>Name</th>
+    <td><%= @template.name %></td>
+  </tr>
+  <tr>
+    <th>File</th>
+    <td><%= @template.file %></td>
+  </tr>
+  <tr>
+    <th>Enabled</th>
+    <td><%= @template.enabled %></td>
+  </tr>
+  <tr>
+    <th>Created</th>
+    <td><%= @template.created_at %></td>
+  </tr>
+</table>

@@ -1,0 +1,16 @@
+<%= simple_form_for(@record, :html => {:class => "form-horizontal"}) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :type, :collection => Record.get_type_values %>
+    <%= f.input :ttl %>
+    <%= f.input :name %>
+    <%= f.input :values, as: :text, disabled: true do %>
+        <%= @record.values.join("\n") %>
+    <% end %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

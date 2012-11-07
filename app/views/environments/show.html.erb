@@ -1,0 +1,48 @@
+<% content_for :subnav_buttons do %>
+    <a href="#" class="btn btn-primary" title="Add New Server to this Environment"><i class="icon-plus-sign icon-white"></i>
+      server</a>
+    <%= link_to edit_environment_path(@environment), :title => "Edi Environment", :class => "btn btn-primary" do %><i class="icon-edit icon-white"></i> edit
+    <% end %>
+    <%= link_to @environment, method: :delete, data: { confirm: 'Are you sure?' }, :title => "Destroy Environment", :class => "btn btn-danger" do %><i class="icon-remove-sign icon-white"></i> destroy
+    <% end %>
+<% end %>
+
+<table class="table table-condensed table-bordered fields-horizontal">
+  <tr>
+    <th>Name</th>
+    <td><%= @environment.name %></td>
+  </tr>
+  <tr>
+    <th>Protected</th>
+    <td><%= @environment.protected %></td>
+  </tr>
+  <tr>
+    <th>Created</th>
+    <td><%= @environment.created_at %></td>
+  </tr>
+</table>
+
+<table class="table table-condensed table-bordered">
+  <tr>
+    <th>Computes</th>
+  </tr>
+  <% @environment.computes.sort_by(&:rig_name).each do |compute| %>
+      <tr>
+        <td><%= link_to compute.rig_name, compute %></td>
+      </tr>
+  <% end %>
+</table>
+
+<table class="table table-condensed table-bordered">
+  <tr>
+    <th>Balancers</th>
+  </tr>
+  <% @environment.balancers.each do |balancer| %>
+      <tr>
+        <td><%= link_to balancer.name, balancer %></td>
+      </tr>
+  <% end %>
+</table>
+
+<script type="text/javascript">
+</script>

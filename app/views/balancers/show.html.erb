@@ -1,0 +1,54 @@
+<% content_for :subnav_buttons do %>
+    <%= link_to edit_balancer_path(@balancer), :title => "Edit Balancer", :class => "btn btn-primary" do %>
+        <i class="icon-edit icon-white"></i> edit
+    <% end %>
+    <%= link_to @balancer, method: :delete, data: { confirm: 'Are you sure?' }, :title => "Destroy Balancer", :class => "btn btn-danger" do %>
+        <i class="icon-remove-sign icon-white"></i> destroy
+    <% end %>
+<% end %>
+
+<table class="table table-condensed table-bordered fields-horizontal">
+  <tr>
+    <th>Name</th>
+    <td><%= @balancer.name %></td>
+  </tr>
+  <tr>
+    <th>Primary</th>
+    <td><%= @balancer.primary %></td>
+  </tr>
+
+  <tr> <th>Synced At</th> <td><%= @balancer.synced_at %></td> </tr>
+</table>
+
+<table class="table table-condensed table-bordered fields-vertical">
+  <tr>
+    <th>From</th>
+    <th>To</th>
+    <th>Cert</th>
+  </tr>
+  <% @balancer.listeners.each do |listener| %>
+      <tr>
+        <td><%= listener.from %></td>
+        <td><%= listener.to %></td>
+        <td><a href="#" title="<%= listener.cert %>"><i class="icon-question-sign"></i></a></td>
+      </tr>
+  <% end %>
+</table>
+
+<table class="table table-condensed table-bordered fields-vertical">
+  <th>Computes</th>
+  <% @balancer.computes.sort_by(&:rig_name).each do |compute| %>
+      <tr>
+        <td><%= link_to compute.rig_name, compute %></td>
+      </tr>
+  <% end %>
+</table>
+
+<table class="table table-condensed table-bordered fields-vertical">
+  <th>Records</th>
+  <% @balancer.records.sort_by(&:name).each do |record| %>
+      <tr>
+        <td><%= link_to record.name, record %></td>
+      </tr>
+  <% end %>
+</table>

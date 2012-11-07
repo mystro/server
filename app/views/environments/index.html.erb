@@ -1,0 +1,80 @@
+<% content_for :subnav_buttons do %>
+    <a id="create_environment" href="#" class="btn btn-primary">create</a>
+<% end %>
+
+<table class="table table-condensed table-striped tablesorter {sortlist: [[0,0]]}">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Computes</th>
+    <th>Balancers</th>
+    <th>Protected</th>
+    <th class="links {sorter: false}"></th>
+  </tr>
+  </thead>
+  <tbody>
+<% @environments.each do |environment| %>
+  <tr>
+    <td><%= link_to environment.name, environment_path(environment) %></td>
+    <td><%= environment.computes.count %>/<%= environment.computes.select{|e| e.synced_at}.count %></td>
+    <td><%= environment.balancers.count %>/<%= environment.balancers.select{|e| e.synced_at}.count %></td>
+    <td><%= environment.protected %></td>
+    <td class="links">
+      <%= link_to "#", :title => "Refresh", :class => "btn btn-mini environment_refresh", "data-id" => environment.id do %>
+          <i class="icon-refresh"></i><% end %>
+      <%= render "common/links", :obj => environment, :edit => edit_environment_path(environment) %>
+    </td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+
+<div id="new_environment_dialog" style="display: none;">
+  <% @env = Environment.new %>
+  <%= simple_form_for(@env, :html => { :class => "form-horizontal environment_form" }) do |f| %>
+      <%= f.error_notification %>
+
+      <div class="form-inputs">
+        <%= f.input :name %>
+        <%= f.input :template, :collection => @templates %>
+        <%= f.input :protected, :as => :boolean %>
+      </div>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#create_environment").on("click", function () {
+            bootbox.dialog($("#new_environment_dialog").html(), [
+                {
+                    "Cancel":function () {
+                        console.log("cancel");
+                    }
+                },
+                {
+                    "Create":function () {
+                        console.log("create");
+                        var f = $(".environment_form:last"); // because bootbox makes a clone
+                        data = f.serialize();
+                        console.log("data");
+                        console.log(f.serializeArray());
+                        bootbox.modal("please wait", "creating");
+                        console.log("post");
+                        $.post("/environments.json", data, function () {
+                            console.log("success");
+                            bootbox.hideAll();
+                        });
+                    }
+                }
+            ], {header:"Create Compute"})
+        });
+
+        $(".environment_refresh").on("click", function(){
+            var id = $(this).attr("data-id");
+            console.log("environment "+id+" sending refresh");
+            $.post("/environments/"+id, {_method: "PUT"}, function(){
+                console.log("refresh sent");
+            });
+        });
+    });
+</script>

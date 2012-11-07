@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>From:</b>
+  <%= @listener.from %>
+</p>
+
+<p>
+  <b>To:</b>
+  <%= @listener.to %>
+</p>
+
+<p>
+  <b>Cert:</b>
+  <%= @listener.cert %>
+</p>
+
+
+<%= link_to 'Edit', edit_listener_path(@listener) %> |
+<%= link_to 'Back', listeners_path %>

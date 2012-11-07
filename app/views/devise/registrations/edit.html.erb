@@ -1,13 +1,38 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
-<%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put, :class => 'form-vertical' }) do |f| %>
-  <%= f.error_notification %>
-  <%= f.input :name, :autofocus => true %>
-  <%= f.input :email, :required => true %>
-  <%= f.input :password, :autocomplete => "off", :hint => "leave it blank if you don't want to change it", :required => false %>
-  <%= f.input :password_confirmation, :required => false %>
-  <%= f.input :current_password, :hint => "we need your current password to confirm your changes", :required => true %>
-  <%= f.button :submit, 'Update', :class => 'btn-primary' %>
+
+
+<%= simple_form_for(@user, :url => registration_path(resource_name), :html => { :method => :put, :class => 'form-horizontal' }) do |f| %>
+    <%= f.error_notification %>
+
+    <div class="container">
+      <div class="form-inputs span-4">
+        <%= f.input :name, :disabled => true %>
+        <%= f.input :email %>
+        <%= f.input :current_password %>
+        <%= f.input :password, :hint => "only if you want to change it" %>
+        <%= f.input :password_confirmation %>
+        <%= f.input :time_zone, :priority => /US/ %>
+      </div>
+
+      <!--
+      <div class="span-4">
+        <h3>Providers (<%#= link_to "new", new_provider_path %>)</h3>
+        <div>
+          <%# @user.providers.each do |provider| %>
+              <div>
+                <%#= link_to edit_provider_path(provider) do %>
+                    <%#= t("mongoid.symbolizes.provider.cloud.#{provider.cloud}", :default => provider.cloud) %>
+                <%# end %>
+              </div>
+          <%# end %>
+        </div>
+      </div>
+      -->
+    </div>
+
+    <div class="form-actions">
+      <%= f.button :submit %>
+    </div>
 <% end %>
-<h3>Cancel my account</h3>
-<p>Unhappy? <%= link_to "Cancel my account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete %>.</p>
-<%= link_to "Back", :back %>
+
+<pre><%= Rig.account.to_yaml %></pre>
+<pre><%= Rig.config.to_yaml %></pre>

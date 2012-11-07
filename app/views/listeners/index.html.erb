@@ -1,0 +1,27 @@
+<h1>Listing listeners</h1>
+
+<table>
+  <tr>
+    <th>From</th>
+    <th>To</th>
+    <th>Cert</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @listeners.each do |listener| %>
+  <tr>
+    <td><%= listener.from %></td>
+    <td><%= listener.to %></td>
+    <td><%= listener.cert %></td>
+    <td><%= link_to 'Show', listener %></td>
+    <td><%= link_to 'Edit', edit_listener_path(listener) %></td>
+    <td><%= link_to 'Destroy', listener, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Listener', new_listener_path %>

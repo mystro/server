@@ -1,0 +1,26 @@
+<% content_for :subnav_buttons do %>
+    <%= link_to edit_role_path(@role), :title => "Edit Role", :class => "btn btn-primary" do %><i class="icon-edit icon-white"></i> edit<% end %>
+    <%= link_to @role, method: :delete, data: { confirm: 'Are you sure?' }, :title => "Destroy Role", :class => "btn btn-danger" do %><i class="icon-remove-sign icon-white"></i> destroy<% end %>
+<% end %>
+
+<table class="table table-condensed table-bordered fields-horizontal">
+  <tr>
+    <th>Name</th>
+    <td><%= @role.name %></td>
+  </tr>
+  <tr>
+    <th>Created</th>
+    <td><%#= @role.created_at %></td>
+  </tr>
+</table>
+
+<table class="table table-condensed table-bordered">
+  <tr>
+    <th>Computes</th>
+  </tr>
+  <% @role.computes.sort_by(&:rig_name).each do |compute| %>
+      <tr>
+        <td><%= link_to compute.rig_name, compute %></td>
+      </tr>
+  <% end %>
+</table>

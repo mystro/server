@@ -1,0 +1,39 @@
+<% content_for :subnav_buttons do %>
+    <%= link_to edit_compute_path(@compute), :title => "Edit Compute", :class => "btn btn-primary" do %>
+        <i class="icon-edit icon-white"></i> edit
+    <% end %>
+    <%= link_to @compute, method: :delete, data: { confirm: 'Are you sure?' }, :title => "Destroy Compute", :class => "btn btn-danger" do %>
+        <i class="icon-remove-sign icon-white"></i> destroy
+    <% end %>
+<% end %>
+
+<table class="table table-condensed table-bordered fields-horizontal">
+  <tr>
+    <th>Name</th>
+    <td><%= @compute.name %><%= @compute.num > 0 ? @compute.num : "" %></td>
+  </tr>
+  <tr>
+    <th>Roles</th>
+    <td>
+      <%= @compute.roles.map {|role| link_to role.name, role}.join(", ").html_safe %>
+    </td>
+  </tr>
+  <tr>
+    <th>Environment</th>
+    <td><%= @compute.environment ? link_to(@compute.environment.name, @compute.environment) : "" %></td>
+  </tr>
+  <tr>
+    <th>Balancer</th>
+    <td><%= @compute.balancer ? link_to(@compute.balancer.name, @compute.balancer) : "" %></td>
+  </tr>
+  <tr> <th>Synced At</th> <td><%= @compute.synced_at %></td> </tr>
+</table>
+
+<table class="table table-condensed table-bordered">
+  <th>Records</th>
+  <% @compute.records.sort_by(&:name).each do |record| %>
+      <tr>
+        <td><%= link_to record.name, record %></td>
+      </tr>
+  <% end %>
+</table>

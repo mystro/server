@@ -1,0 +1,27 @@
+<table class="table table-bordered table-condensed table-hover">
+  <tr>
+    <th>Cloud</th>
+    <th>Type</th>
+    <th>Key</th>
+    <th>Secret</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @providers.each do |provider| %>
+  <tr>
+    <td><%= provider.cloud %></td>
+    <td><%= provider.type %></td>
+    <td><%= provider.key %></td>
+    <td><%= provider.secret %></td>
+    <td><%= link_to 'Show', provider %></td>
+    <td><%= link_to 'Edit', edit_provider_path(provider) %></td>
+    <td><%= link_to 'Destroy', provider, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Provider', new_provider_path %>

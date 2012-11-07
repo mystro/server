@@ -1,3 +1,53 @@
 // Place all the styles related to the home controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+//body {
+//  padding-top: 50px;
+//}
+
+.table {
+  th.links, td.links {
+    width: 100px;
+    text-align: right;
+  }
+}
+
+.subnav {
+  height: 40px;
+
+  .nav {
+    margin-bottom: 5px;
+  }
+
+  //ul {
+  //  li {
+  //    float: left;
+  //    line-height: 20px;
+  //    line-position: outside;
+  //    display: list-item;
+  //    width: 88px;
+  //    height: 40px;
+  //    a {
+  //      padding: 10px 15px 10px;
+  //      overflow: visible;
+  //    }
+  //  }
+  //}
+}
+
+table.fields-horizontal {
+  th {
+    width: 20%;
+  }
+}
+
+table.fields-vertical {
+  width: 300px;
+  float: left;
+  margin-right: 10px;
+}
+
+textarea.text {
+  height: 150px;
+}

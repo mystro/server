@@ -1,0 +1,4 @@
+RigWorker:
+  cron: "*/15 * * * *"
+ChefWorker:
+  cron: "*/15 * * * *"

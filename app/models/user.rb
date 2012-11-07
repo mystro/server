@@ -1,7 +1,10 @@
 class User
   include Mongoid::Document
-  rolify
   include Mongoid::Timestamps
+
+  has_many :providers
+
+  field :time_zone, type: String
 
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
@@ -15,7 +18,7 @@ class User
 
   validates_presence_of :email
   validates_presence_of :encrypted_password
-  
+
   ## Recoverable
   field :reset_password_token,   :type => String
   field :reset_password_sent_at, :type => Time
@@ -47,5 +50,6 @@ class User
   index({ email: 1 }, { unique: true, background: true })
   field :name, :type => String
   validates_presence_of :name
-  attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :created_at, :updated_at
+  attr_accessible :name, :email, :password, :password_confirmation,
+                  :remember_me, :created_at, :updated_at, :account_id, :time_zone
 end

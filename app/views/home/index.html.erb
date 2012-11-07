@@ -1,2 +1,25 @@
-<h1>Home#index</h1>
-<p>Find me in app/views/home/index.html.erb</p>
+
+<table class="table table-condensed table-striped tablesorter">
+  <thead>
+  <tr>
+    <td>id</td>
+    <td>name</td>
+    <td>env</td>
+    <td>roles</td>
+    <td>ip</td>
+    <td>state</td>
+  </tr>
+  </thead>
+  <tbody>
+  <% @computes.each do |compute| %>
+      <tr>
+        <td><%= compute.id %></td>
+        <td><%= compute.tags['Name'] %></td>
+        <td><%= compute.tags['Environment'] %></td>
+        <td><%= compute.tags['Roles'] %></td>
+        <td><%= compute.public_ip_address.to_s %></td>
+        <td><%= compute.state.to_s.downcase %></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>

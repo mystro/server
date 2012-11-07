@@ -1,35 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= content_for?(:title) ? yield(:title) : "Mystro Server" %></title>
-    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Mystro Server" %>">
-    <%= stylesheet_link_tag "application", :media => "all" %>
-    <%= javascript_include_tag "application" %>
-    <%= csrf_meta_tags %>
-    <%= yield(:head) %>
-  </head>
-  <body class="<%= controller_name %> <%= action_name %>">
-    <header class="navbar navbar-fixed-top">
-      <nav class="navbar-inner">
-        <div class="container">
-          <%= render 'layouts/navigation' %>
-        </div>
-      </nav>
-    </header>
-    <div id="main" role="main">
-      <div class="container">
-        <div class="content">
-           <div class="row">
-            <div class="span12">
-              <%= render 'layouts/messages' %>
-              <%= yield %>
-            </div>
-          </div>
-          <footer>
-          </footer>
-        </div>
-      </div> <!--! end of .container -->
-    </div> <!--! end of #main -->
-  </body>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= content_for?(:title) ? yield(:title) : "Mystro" %></title>
+  <meta name="description" content=""/>
+  <meta name="author" content=""/>
+  <%= stylesheet_link_tag "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+  <%= yield(:head) %>
+</head>
+<body>
+<header class="navbar navbar-fixed-top">
+  <nav class="navbar-inner">
+    <div class="container">
+      <%= render 'layouts/navigation' %>
+    </div>
+  </nav>
+</header>
+<div class="subnav">
+  <div class="container">
+    <ul class="nav nav-pills pull-left">
+      <%= yield :subnav_pills if content_for?(:subnav_pills) %>
+    </ul>
+    <div class="buttons pull-right">
+      <%= yield :subnav_buttons if content_for?(:subnav_buttons) %>
+    </div>
+  </div>
+</div>
+<div id="main" role="main">
+  <div class="container">
+    <%= render 'layouts/messages' %>
+    <%= yield %>
+    <footer>
+    </footer>
+  </div>
+</div>
+<!--! end of #main -->
+</body>
 </html>

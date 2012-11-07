@@ -1,0 +1,17 @@
+<% content_for :subnav_buttons do %>
+    <%= link_to edit_record_path(@record), :title => "Edit Record", :class => "btn btn-primary" do %><i class="icon-edit icon-white"></i> edit<% end %>
+    <%= link_to @record, method: :delete, data: { confirm: 'Are you sure?' }, :title => "Destroy Record", :class => "btn btn-danger" do %><i class="icon-remove-sign icon-white"></i> destroy<% end %>
+<% end %>
+
+<table class="table table-condensed table-bordered fields-horizontal">
+  <tr> <th>Name</th> <td><%= @record.name %></td> </tr>
+  <tr> <th>Type</th> <td><%= @record.type %></td> </tr>
+  <tr> <th>TTL</th> <td><%= @record.ttl %></td> </tr>
+  <tr> <th>Values</th> <td><%= (@record.values||[]).join(",") %></td> </tr>
+  <tr><th>Nameable</th><td>
+    <% if @nameable %>
+        <%= link_to "(#{@nameable.class}) #{@nameable.respond_to?(:rig_name) ? @nameable.rig_name : @nameable.name}", @nameable %>
+    <% end %>
+  </td></tr>
+  <tr> <th>Synced At</th> <td><%= @record.synced_at %></td> </tr>
+</table>

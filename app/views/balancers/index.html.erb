@@ -1,0 +1,23 @@
+
+<table class="table table-condensed table-striped tablesorter {sortlist: [[0,0]]}">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Remote ID</th>
+    <th>Environment</th>
+    <th class="links {sorter: false}"></th>
+  </tr>
+  </thead>
+  <tbody>
+<% @balancers.each do |balancer| %>
+  <tr>
+    <td><%= link_to balancer.name, balancer_path(balancer) %></td>
+    <td><%= balancer.rid %></td>
+    <td><%= balancer.environment ? link_to(balancer.environment.name, environment_path(balancer.environment)) : "" %></td>
+    <td class="links">
+      <%= render "common/links", :obj => balancer, :edit => edit_balancer_path(balancer) %>
+    </td>
+  </tr>
+<% end %>
+  </tbody>
+</table>

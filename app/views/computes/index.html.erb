@@ -1,0 +1,77 @@
+<% content_for :subnav_buttons do %>
+    <a id="create_compute" class="btn btn-primary" title="Create New Compute">create</a>
+<% end %>
+
+<table class="table table-condensed table-striped tablesorter {sortlist: [[1,0],[0,0]]}">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Environment</th>
+    <th>Balancer</th>
+    <th class="links {sorter: false}"></th>
+  </tr>
+  </thead>
+  <tbody>
+
+  <% @computes.each do |compute| %>
+      <tr>
+        <td><%= link_to "#{compute.name}#{compute.num > 0 ? compute.num : ""}", compute_path(compute) %></td>
+        <td><%= compute.environment ? link_to(compute.environment.name, environment_path(compute.environment)) : "" %></td>
+        <td><%= compute.balancer ? link_to(compute.balancer.name, balancer_path(compute.balancer)) : "" %></td>
+        <td class="links">
+          <%= render "common/links", :obj => compute, :edit => edit_compute_path(compute) %>
+        </td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<div id="new_compute_dialog" style="display: none;">
+  <% @compute = Compute.new %>
+  <%= simple_form_for(@compute, :html => { :class => "compute_form form-horizontal" }) do |f| %>
+      <div>
+        <%= f.error_notification %>
+
+        <div class="form-inputs">
+          <%= f.input :name %>
+          <%= f.input :environment, :collection => @environments %>
+          <%= f.association :roles, :collection => @roles %>
+          <%#= f.input :roles, :input_html => { :value => (@compute.roles||[]).join(",") } %>
+          <%= f.input :region %>
+          <%= f.input :flavor %>
+          <%= f.input :image %>
+          <%= f.input :groups, :input_html => { :value => (@compute.groups||[]).join(",") } %>
+          <%= f.input :keypair %>
+        </div>
+      </div>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#create_compute").on("click", function () {
+            bootbox.dialog($("#new_compute_dialog").html(), [
+                {
+                    "Cancel":function () {
+                        console.log("cancel");
+                    }
+                },
+                {
+                    "Create":function () {
+                        console.log("create");
+                        var f = $(".compute_form:last"); // because bootbox makes a clone
+                        data = f.serialize();
+                        console.log("data");
+                        console.log(f.serializeArray());
+                        bootbox.modal("please wait", "creating");
+                        console.log("post");
+                        $.post("/computes.json", data, function () {
+                            console.log("success");
+                            bootbox.hideAll();
+                        });
+                    }
+                }
+            ], {header:"Create Compute"})
+        });
+    });
+</script>

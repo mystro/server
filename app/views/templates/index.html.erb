@@ -1,0 +1,24 @@
+<table class="table table-condensed table-striped tablesorter {sortlist: [[0,0]]}">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>File</th>
+    <th>Enabled</th>
+    <th class="links {sorter: false}"></th>
+  </tr>
+  </thead>
+  <tbody>
+<% @templates.each do |template| %>
+  <tr>
+    <td><%= template.name %></td>
+    <td><%= template.file %></td>
+    <td><%= template.enabled %></td>
+    <td class="links"><%= render "common/links", :obj => template, :edit => edit_template_path(template) %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+
+<br />
+
+<%= link_to 'New Template', new_template_path %>
