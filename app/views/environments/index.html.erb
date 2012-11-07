@@ -14,12 +14,12 @@
   </thead>
   <tbody>
 <% @environments.each do |environment| %>
-  <tr>
+  <tr class="<%= "warn" if environment.age > 30.minutes %>">
     <td><%= link_to environment.name, environment_path(environment) %></td>
     <td><%= environment.computes.count %>/<%= environment.computes.select{|e| e.synced_at}.count %></td>
     <td><%= environment.balancers.count %>/<%= environment.balancers.select{|e| e.synced_at}.count %></td>
     <td><%= environment.protected %></td>
-    <td class="links">
+    <td>
       <%= link_to "#", :title => "Refresh", :class => "btn btn-mini environment_refresh", "data-id" => environment.id do %>
           <i class="icon-refresh"></i><% end %>
       <%= render "common/links", :obj => environment, :edit => edit_environment_path(environment) %>
@@ -29,7 +29,7 @@
   </tbody>
 </table>
 
-<div id="new_environment_dialog" style="display: none;">
+<script id="new_environment_dialog" type="text/template">
   <% @env = Environment.new %>
   <%= simple_form_for(@env, :html => { :class => "form-horizontal environment_form" }) do |f| %>
       <%= f.error_notification %>
@@ -40,7 +40,7 @@
         <%= f.input :protected, :as => :boolean %>
       </div>
   <% end %>
-</div>
+</script>
 
 <script type="text/javascript">
     $(function () {
@@ -66,7 +66,7 @@
                         });
                     }
                 }
-            ], {header:"Create Compute"})
+            ], {header:"Create Environment"})
         });
 
         $(".environment_refresh").on("click", function(){

@@ -14,7 +14,10 @@ class EnvironmentsController < ApplicationController
   # GET /environments/1
   # GET /environments/1.json
   def show
-    @environment = Environment.find(params[:id])
+    # use where(:id => ?) instead of find, because it throws an exception
+    @environment = Environment.where(:id => params[:id]).first ||
+        Environment.where(:name => params[:id]).first ||
+        raise_404
 
     respond_to do |format|
       format.html # show.html.erb
@@ -76,8 +79,12 @@ class EnvironmentsController < ApplicationController
   # DELETE /environments/1
   # DELETE /environments/1.json
   def destroy
-    @environment = Environment.find(params[:id])
-    #@environment.destroy
+    @environment = Environment.where(:id => params[:id]).first ||
+        Environment.where(:name => params[:id]).first ||
+        raise_404
+
+    raise "cannot destroy protected environment" if @environment.protected
+
     @environment.deleting = true
     @environment.save
     @environment.enqueue(:destroy)

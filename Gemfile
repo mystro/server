@@ -66,5 +66,6 @@ group :development do
   gem 'capistrano-webserver'
   #gem 'capistrano-unicorn'
   gem "awesome_print"
+  gem "cape"
 end
 gem 'whenever'

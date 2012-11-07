@@ -3,3 +3,12 @@
 
 en:
   hello: "Hello world"
+  mongoid:
+    symbolizes:
+      provider:
+        cloud:
+          AWS: Amazon Web Services
+      record:
+        type:
+          CNAME: (CNAME) Canonical Name
+          A: (A) Address Record

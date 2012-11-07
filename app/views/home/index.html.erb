@@ -6,7 +6,10 @@
     <td>name</td>
     <td>env</td>
     <td>roles</td>
+    <td>protected?</td>
     <td>ip</td>
+    <td>az</td>
+    <td>flavor</td>
     <td>state</td>
   </tr>
   </thead>
@@ -17,7 +20,10 @@
         <td><%= compute.tags['Name'] %></td>
         <td><%= compute.tags['Environment'] %></td>
         <td><%= compute.tags['Roles'] %></td>
+        <td><%= compute.tags['Protected'] %></td>
         <td><%= compute.public_ip_address.to_s %></td>
+        <td><%= compute.availability_zone %></td>
+        <td><%= compute.flavor_id.to_s %></td>
         <td><%= compute.state.to_s.downcase %></td>
       </tr>
   <% end %>

@@ -1,4 +1,4 @@
 RigWorker:
-  cron: "*/15 * * * *"
+  cron: "*/10 * * * *"
 ChefWorker:
   cron: "*/15 * * * *"

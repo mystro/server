@@ -26,26 +26,36 @@
   </tbody>
 </table>
 
-<div id="new_compute_dialog" style="display: none;">
+<script id="new_compute_dialog" type="text/template">
   <% @compute = Compute.new %>
   <%= simple_form_for(@compute, :html => { :class => "compute_form form-horizontal" }) do |f| %>
       <div>
-        <%= f.error_notification %>
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#tab1" data-toggle="tab">Main</a></li>
+          <li><a href="#tab2" data-toggle="tab">Advanced</a></li>
+        </ul>
 
-        <div class="form-inputs">
-          <%= f.input :name %>
-          <%= f.input :environment, :collection => @environments %>
-          <%= f.association :roles, :collection => @roles %>
-          <%#= f.input :roles, :input_html => { :value => (@compute.roles||[]).join(",") } %>
-          <%= f.input :region %>
-          <%= f.input :flavor %>
-          <%= f.input :image %>
-          <%= f.input :groups, :input_html => { :value => (@compute.groups||[]).join(",") } %>
-          <%= f.input :keypair %>
+        <div class="tab-content">
+          <div class="tab-pane fade in active" id="tab1">
+            <div class="form-inputs">
+              <%= f.input :name %>
+              <%= f.input :environment, :collection => @environments %>
+              <%= f.association :roles, :collection => @roles, :as => :check_boxes %>
+              <%#= f.input :roles, :input_html => { :value => (@compute.roles||[]).join(",") } %>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="tab2">
+            <%= f.input :region %>
+            <%= f.input :flavor %>
+            <%= f.input :image %>
+            <%= f.input :groups, :input_html => { :value => (@compute.groups||[]).join(",") } %>
+            <%= f.input :keypair %>
+          </div>
         </div>
       </div>
+
   <% end %>
-</div>
+</script>
 
 <script type="text/javascript">
     $(function () {
