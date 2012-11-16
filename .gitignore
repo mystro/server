@@ -11,7 +11,8 @@
 #----------------------------------------------------------------------------
 
 # mystro configurations
-config/rig
+.mystro
+config/mystro
 config/chef
 
 # bundler state

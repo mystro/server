@@ -11,6 +11,18 @@ gem "devise", ">= 2.1.2"
 gem "foreman"
 gem "json", "1.6.1" # specified to solve depedency conflict with chef
 
+# mystro
+#gem "mystro-common"
+gem "mystro-common", :path => "~/catz/mystro/common"
+#gem "mystro-client"
+gem "mystro-client", :path => "~/catz/mystro/client"
+#gem "mystro-plugin-chef"
+#gem "mystro-plugin-chef", :path => "~/catz/mystro/mystro-plugin-chef"
+#gem "mystro-plugin-scout"
+#gem "mystro-plugin-scout", :path => "~/catz/mystro/mystro-plugin-scout"
+#gem "mystro-plugin-mongo"
+#gem "mystro-plugin-mongo", :path => "~/catz/mystro/mystro-plugin-mongo"
+
 # jobs
 gem "resque"
 gem 'resque-scheduler', :require => 'resque_scheduler'
@@ -31,11 +43,9 @@ gem "simple_form", ">= 2.0.4"
 gem "highline"
 gem "yell"
 
-gem "rig", :require => false
-#gem "rig", :path => "/Users/Shawn/catz/rig", :require => false
-gem "chef", "~> 10.16.0"
-gem "scout_api"
-gem "mongo"
+#gem "chef", "~> 10.16.0"
+#gem "scout_api"
+#gem "mongo"
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
@@ -69,3 +79,4 @@ group :development do
   gem "cape"
 end
 gem 'whenever'
+gem 'awesome_print'

@@ -6,7 +6,7 @@ set :ssh_options, { :forward_agent => true }
 
 set :scm, :git
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
-set :repository,  "git@github.com:shawncatz/rig-server.git"
+set :repository,  "git@github.com:shawncatz/mystro-server.git"
 
 set :deploy_to, "/srv/apps/#{application}"
 set :deploy_via, :remote_cache

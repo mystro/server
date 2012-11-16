@@ -4,7 +4,7 @@ class RigWorker < BaseWorker
   class << self
     def perform
       logger.info "#{self.name} running perform"
-      rigsrvs = Rig::Model::Instance.running
+      rigsrvs = Mystro::Model::Instance.running
       if rigsrvs.count > 0
         rigsrvs.each do |rigsrv|
           env                 = Environment.create_from_fog(rigsrv.tags['Environment'])
@@ -14,7 +14,7 @@ class RigWorker < BaseWorker
         end
       end
 
-      rigelbs = Rig::Model::Balancer.all
+      rigelbs = Mystro::Model::Balancer.all
       if rigelbs.count > 0
         rigelbs.each do |rigelb|
           balancer = Balancer.create_from_fog(rigelb)
@@ -26,7 +26,7 @@ class RigWorker < BaseWorker
         end
       end
 
-      rigzones = Rig::Model::Dns.all
+      rigzones = Mystro::Model::Dns.all
       if rigzones.count > 0
         rigzones.each do |rigzone|
           zone = Zone.create_from_fog(rigzone)

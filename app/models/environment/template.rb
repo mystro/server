@@ -12,6 +12,6 @@ class Template
   index({ name: 1 }, { unique: true})
 
   def load
-    Rig::Template.load(name)
+    Mystro::Template.load(name)
   end
 end

@@ -16,11 +16,11 @@ class Compute
   field :environment_id, type: String
   field :balancer_id, type: String
   #[:name, :environment, :roles, :image, :flavor, :keypair, :groups, :region]
-  field :image, type: String, default: Rig.account[:image].is_a?(Hash) ? Rig.account[:image].first.last : Rig.account[:image]
-  field :flavor, type: String, default: Rig.account[:flavor]
-  field :keypair, type: String, default: Rig.account[:keypair]
-  field :groups, type: Array, default: Rig.account[:groups]
-  field :region, type: String, default: Rig.account[:region]
+  field :image, type: String, default: Mystro.account[:image].is_a?(Hash) ? Mystro.account[:image].first.last : Mystro.account[:image]
+  field :flavor, type: String, default: Mystro.account[:flavor]
+  field :keypair, type: String, default: Mystro.account[:keypair]
+  field :groups, type: Array, default: Mystro.account[:groups]
+  field :region, type: String, default: Mystro.account[:region]
 
   field :state, type: String
   field :public_dns, type: String
@@ -33,7 +33,7 @@ class Compute
   end
 
   def rig_name
-    "#{name}#{num > 0 ? num : ""}.#{environment ? "#{environment.name}.#{Rig.get_config(:dns_subdomain)}" : ""}"
+    "#{name}#{num > 0 ? num : ""}.#{environment ? "#{environment.name}.#{Mystro.get_config(:dns_subdomain)}" : ""}"
   end
 
   def rig_env
@@ -55,7 +55,7 @@ class Compute
         key_name: keypair,
         groups: groups,
         region: region,
-        user_data: Rig::Model::Userdata.create(rig_name, roles.map(&:name), rig_env, :chef => Rig.config[:chef])
+        user_data: Mystro::Model::Userdata.create(rig_name, roles.map(&:name), rig_env, :chef => Mystro.config[:chef])
     }
   end
 

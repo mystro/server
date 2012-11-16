@@ -3,7 +3,7 @@ class ChefWorker < BaseWorker
 
   class << self
     def perform
-      list = Rig::Plugin::Chef.role_list
+      list = Mystro::Plugin::Chef.role_list
       logger.info "#{self.name} found #{list.count} roles"
       list.each do |e|
         name = e["name"]

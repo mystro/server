@@ -80,7 +80,7 @@ class EnvironmentWorker < BaseWorker
         end
       end
 
-      Rig::Plugin.run "environment:create", e
+      Mystro::Plugin.run "environment:create", e
     end
 
     def perform_destroy(options)
@@ -95,7 +95,7 @@ class EnvironmentWorker < BaseWorker
         b.enqueue(:destroy)
       end
 
-      Rig::Plugin.run "environment:destroy", e
+      Mystro::Plugin.run "environment:destroy", e
       e.destroy
     end
 
