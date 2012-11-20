@@ -37,9 +37,9 @@
 
 <table class="table table-condensed table-bordered fields-vertical">
   <th>Computes</th>
-  <% @balancer.computes.sort_by(&:rig_name).each do |compute| %>
+  <% @balancer.computes.sort_by(&:short).each do |compute| %>
       <tr>
-        <td><%= link_to compute.rig_name, compute %></td>
+        <td><%= link_to compute.short, compute %></td>
       </tr>
   <% end %>
 </table>

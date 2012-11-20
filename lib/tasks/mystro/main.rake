@@ -60,5 +60,30 @@ namespace :mystro do
       r = Record.create(name: "app1.blarg.env.inqlabs.com", values: ["127.0.0.1"])
       r.enqueue(:create)
     end
+    task :create_compute => :environment do
+      Mystro.config.workers = false
+      # {"name"=>"test1", "environment"=>"50aa84d128a702a854000006", "role_ids"=>["50a6b63528a7027810000019", ""],
+      #"region"=>"us-east-1", "flavor"=>"m1.small", "image"=>"ami-3c994355", "groups"=>"app-server,db-inqcloud-dev",
+      #"keypair"=>"inqcloud-dev"}
+      puts "destroying previous test1.ops computes"
+      e = Environment.where(name: "ops").first
+      list = Compute.where(name: "test", num: "1", environment: e)
+      list.each do |c|
+        puts ".. destroy compute:#{c.id}"
+        c.destroy
+      end
+
+      c = Compute.create(name: "test", num: 1, environment: e, role_ids: [],
+                         region: Mystro.account.compute.region,
+                         flavor: Mystro.account.compute.flavor,
+                         image: Mystro.account.compute.image,
+                         groups: Mystro.account.compute.groups,
+                         keypair: Mystro.account.compute.keypair)
+      puts "queueing create action"
+      c.enqueue(:create)
+      10.times {|i| print "."; sleep 1}; puts
+      puts "queueing destroy action"
+      c.enqueue(:destroy)
+    end
   end
 end

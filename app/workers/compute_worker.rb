@@ -3,71 +3,54 @@ class ComputeWorker < BaseWorker
 
   class << self
     def perform_create(options)
-      id = options["id"]
+      id      = options["id"]
       compute = Compute.find(id)
+      raise "could not find compute #{id}" unless compute
 
-      unless compute
-        logger.warn "could not find compute #{id}"
-        return
-      end
-
-      o = compute.rig_options
-      t = compute.rig_tags
-
-      r = Mystro::Model::Instance.create(o, t)
-      rid = r.id
-      compute.rid = r.id
+      r               = Mystro.compute.create(compute)
+      rid             = r.id
+      compute.rid     = r.id
       compute.managed = true
       compute.save
 
-      #waiting = true
-      #while waiting do
-      #  sleep 3
-      #  r = Mystro::Model::Instance.find(rid)
-      #  waiting = false if r.dns_name
-      #end
-
+      logger.info "compute:#{id}#create waiting for dns"
       wait do
-        r = Mystro::Model::Instance.find(rid)
+        r = Mystro.compute.find(rid)
         r.dns_name.nil?
       end
 
       compute.reload
 
-      z = Mystro.account[:dns_zone]
+      z    = Mystro.account.dns.zone
       zone = Zone.where(:domain => z).first
 
-      if zone
-        record = compute.records.find_or_create_by(:zone => zone, :name => "#{t['Name']}.#{zone.domain}")
-        record.update_attributes(
-            :type => "CNAME",
-            :ttl => 300,
-            :values => [r.dns_name]
-        )
-        record.enqueue(:create)
-      else
-        logger.error "zone '#{z}' not found, could not create dns record"
-      end
+      raise "zone '#{z}' not found, could not create dns record" unless zone
 
+      logger.info "compute:#{id}#create queueing record"
+      record = compute.records.find_or_create_by(:zone => zone, :name => "#{compute.long}")
+      record.update_attributes(
+          :type   => "CNAME",
+          :ttl    => 300,
+          :values => [r.dns_name]
+      )
+      record.enqueue(:create)
+
+      logger.info "compute:#{id}#create save"
       compute.synced_at = Time.now
       compute.save
     end
 
     def perform_destroy(options)
-      id = options["id"]
+      id      = options["id"]
       compute = Compute.unscoped.find(id)
+      raise "could not find compute #{id}" unless compute
 
-      unless compute
-        logger.warn "could not find compute #{id}"
-        return
-      end
+      logger.info "compute:#{id}#destroy fog destroy"
+      Mystro.compute.destroy(compute)
+      logger.info "compute:#{id}#destroy queue record destroy"
+      compute.records.each { |r| r.enqueue(:destroy) }
 
-      rid = compute.rid
-      list = Mystro::Model::Instance.find(rid)
-      Mystro::Model::Instance.destroy(list)
-      compute.records.each {|r| r.enqueue(:destroy) }
-
-      logger.info "  compute destroy"
+      logger.info "compute:#{id}#destroy compute destroy"
       compute.destroy
     end
   end

@@ -30,9 +30,9 @@
   <tr>
     <th>Computes</th>
   </tr>
-  <% @environment.computes.sort_by(&:rig_name).each do |compute| %>
+  <% @environment.computes.sort_by(&:short).each do |compute| %>
       <tr>
-        <td><%= link_to compute.rig_name, compute %></td>
+        <td><%= link_to compute.short, compute %></td>
       </tr>
   <% end %>
 </table>

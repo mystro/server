@@ -16,11 +16,11 @@ class Compute
   field :environment_id, type: String
   field :balancer_id, type: String
   #[:name, :environment, :roles, :image, :flavor, :keypair, :groups, :region]
-  field :image, type: String, default: Mystro.account[:image].is_a?(Hash) ? Mystro.account[:image].first.last : Mystro.account[:image]
-  field :flavor, type: String, default: Mystro.account[:flavor]
-  field :keypair, type: String, default: Mystro.account[:keypair]
-  field :groups, type: Array, default: Mystro.account[:groups]
-  field :region, type: String, default: Mystro.account[:region]
+  field :image, type: String, default: Mystro.account.compute.image
+  field :flavor, type: String, default: Mystro.account.compute.flavor
+  field :keypair, type: String, default: Mystro.account.compute.keypair
+  field :groups, type: Array, default: Mystro.account.compute.groups
+  field :region, type: String, default: Mystro.account.compute.region
 
   field :state, type: String
   field :public_dns, type: String
@@ -32,30 +32,34 @@ class Compute
     (roles||[]).map {|r| r.name}.join(",")
   end
 
-  def rig_name
+  def long
+    "#{short}.#{Mystro.account.dns.zone}"
+  end
+
+  def short
     "#{name}#{num > 0 ? num : ""}.#{environment ? "#{environment.name}.#{Mystro.account.dns.subdomain}" : ""}"
   end
 
-  def rig_env
+  def envname
     environment ? environment.name : "unknown"
   end
 
-  def rig_tags
+  def fog_tags
     {
-        'Name' => rig_name,
-        'Environment' => rig_env,
+        'Name' => short,
+        'Environment' => envname,
         'Roles' => roles_string
     }
   end
 
-  def rig_options
+  def fog_options
     {
         image_id: image,
         flavor_id: flavor,
         key_name: keypair,
         groups: groups,
         region: region,
-        user_data: Mystro::Model::Userdata.create(rig_name, roles.map(&:name), rig_env, :chef => Mystro.config[:chef])
+        user_data: Mystro::Userdata.create(short, roles.map(&:name), envname, package: Mystro.account.compute.userdata)
     }
   end
 

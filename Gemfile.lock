@@ -9,6 +9,7 @@ PATH
   specs:
     mystro-common (0.1.0)
       activesupport
+      erubis
       fog
       hashie
       ipaddress
