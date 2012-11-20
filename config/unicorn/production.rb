@@ -4,7 +4,7 @@
 # ------------------------------------------------------------------------------
 
 # Set your full path to application.
-app      = "rigserver"
+app      = "mystro"
 app_path = "/srv/apps/#{app}/current"
 
 # Set unicorn options

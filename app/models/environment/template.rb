@@ -12,6 +12,6 @@ class Template
   index({ name: 1 }, { unique: true})
 
   def load
-    Mystro::Template.load(name)
+    Mystro::DSL::Template.load(name)
   end
 end

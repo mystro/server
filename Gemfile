@@ -10,6 +10,7 @@ gem "devise", ">= 2.1.2"
 
 gem "foreman"
 gem "json", "1.6.1" # specified to solve depedency conflict with chef
+gem "ipaddress"
 
 # mystro
 #gem "mystro-common"
@@ -43,9 +44,9 @@ gem "simple_form", ">= 2.0.4"
 gem "highline"
 gem "yell"
 
-#gem "chef", "~> 10.16.0"
-#gem "scout_api"
-#gem "mongo"
+gem "chef", "~> 10.16.0"
+gem "scout_api"
+gem "mongo"
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'

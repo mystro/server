@@ -7,7 +7,7 @@ class RecordWorker < BaseWorker
       record = Record.find(id)
       raise "could not find record #{id}" unless record
 
-      Mystro::Model::Dns.create(record.name, record.values.first, :ttl => record.ttl)
+      Mystro.dns.create(record)
       record.rid = record.name
       record.synced_at = Time.now
       record.save
@@ -18,7 +18,7 @@ class RecordWorker < BaseWorker
       record = Record.unscoped.find(id)
       raise "could not find record #{id}" unless record
 
-      Mystro::Model::Dns.destroy(record.name)
+      Mystro.dns.destroy(record)
       record.destroy
     end
   end

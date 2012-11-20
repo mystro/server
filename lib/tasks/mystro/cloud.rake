@@ -1,6 +1,6 @@
 namespace :mystro do
   def cloud_pull
-    RigWorker.perform
+    MystroWorker.perform
   rescue => e
     puts "error: #{e.message} at #{e.backtrace.first}"
   end

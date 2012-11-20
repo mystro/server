@@ -13,6 +13,10 @@
     <td><%= @environment.name %></td>
   </tr>
   <tr>
+    <th>Template</th>
+    <td><%= link_to @environment.template.name, @environment.template if @environment.template %></td>
+  </tr>
+  <tr>
     <th>Protected</th>
     <td><%= @environment.protected %></td>
   </tr>

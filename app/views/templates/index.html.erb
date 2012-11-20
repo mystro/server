@@ -10,7 +10,7 @@
   <tbody>
 <% @templates.each do |template| %>
   <tr>
-    <td><%= template.name %></td>
+    <td><%= link_to template.name, template %></td>
     <td><%= template.file %></td>
     <td><%= template.enabled %></td>
     <td class="links"><%= render "common/links", :obj => template, :edit => edit_template_path(template) %></td>

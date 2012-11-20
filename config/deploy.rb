@@ -33,7 +33,7 @@ set :keep_releases, 3
 # if you want to clean up old releases on each deploy uncomment this:
 after "deploy:restart", "deploy:cleanup"
 after "deploy:restart", "foreman:restart"
-after "deploy:restart", "rigserver:files"
+after "deploy:restart", "mystro:files"
 
 # uncomment below to map specified rake tasks to cap tasks
 require 'cape'
@@ -43,7 +43,7 @@ Cape.remote_rake_executable = '/usr/bin/env bundle exec rake'
 
 Cape do |cape|
   # Create Capistrano recipes for all Rake tasks.
-  tasks = %w{rigserver:reset rigserver:setup rigserver:cloud:update rigserver:chef:roles}
+  tasks = %w{mystro:reset mystro:setup mystro:cloud:update mystro:chef:roles}
   tasks.each do |task|
     cape.mirror_rake_tasks task, :roles => :app do |env|
       env['RAILS_ENV'] = rails_env
@@ -51,10 +51,10 @@ Cape do |cape|
   end
 end
 
-namespace :rigserver do
+namespace :mystro do
   task :files do
     rake = fetch(:rake, "rake")
-    task = "rigserver:files:load"
+    task = "mystro:files:load"
     run "cd #{current_path} && #{rake} #{task} RAILS_ENV=#{rails_env}"
   end
 end

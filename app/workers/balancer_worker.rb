@@ -28,7 +28,7 @@ class BalancerWorker < BaseWorker
         zone = Zone.where(:domain => z).first
         if zone
           e = b.environment
-          r = b.records.find_or_create_by(:zone => zone, :name => "#{e.name}.#{Mystro.get_config(:dns_subdomain)}.#{zone.domain}")
+          r = b.records.find_or_create_by(:zone => zone, :name => "#{e.name}.#{Mystro.account.dns.subdomain}.#{zone.domain}")
           r.update_attributes(
               :type => "CNAME",
               :ttl => 30,

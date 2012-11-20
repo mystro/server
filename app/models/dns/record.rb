@@ -33,6 +33,16 @@ class Record
     nil
   end
 
+  def fog_options
+    if ::IPAddress.valid?(values.first)
+      #A record
+      {:name => name, :value => values.first, :type => 'A', :ttl => ttl || 86400}
+    else
+      #CNAME record
+      {:name => name, :value => values.first, :type => 'CNAME', :ttl => ttl || 300}
+    end
+  end
+
   class << self
     def create_from_fog(zone, obj)
       n                = obj.name.gsub(/\.$/, "")

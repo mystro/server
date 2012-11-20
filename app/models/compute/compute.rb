@@ -33,7 +33,7 @@ class Compute
   end
 
   def rig_name
-    "#{name}#{num > 0 ? num : ""}.#{environment ? "#{environment.name}.#{Mystro.get_config(:dns_subdomain)}" : ""}"
+    "#{name}#{num > 0 ? num : ""}.#{environment ? "#{environment.name}.#{Mystro.account.dns.subdomain}" : ""}"
   end
 
   def rig_env

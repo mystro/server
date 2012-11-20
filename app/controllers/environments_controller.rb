@@ -79,7 +79,7 @@ class EnvironmentsController < ApplicationController
   # DELETE /environments/1
   # DELETE /environments/1.json
   def destroy
-    @environment = Environment.where(:id => params[:id]).first ||
+    @environment = Environment.unscoped.where(:id => params[:id]).first ||
         Environment.where(:name => params[:id]).first ||
         raise_404
 

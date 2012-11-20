@@ -2,7 +2,7 @@ namespace :mystro do
   desc "reset data (this will throw away database)"
   task :reset => :environment do
     Rake::Task["db:drop"].invoke
-    Rake::Task["rigserver:setup"].invoke
+    Rake::Task["mystro:setup"].invoke
   end
 
   desc "first time setup for Mystro Server"
@@ -18,8 +18,8 @@ namespace :mystro do
     # create database and set up indexes
     Rake::Task["db:mongoid:create_indexes"].invoke
 
-    Rake::Task["rigserver:files:load"].invoke
-    Rake::Task["rigserver:chef:roles"].invoke
+    Rake::Task["mystro:files:load"].invoke
+    Rake::Task["mystro:chef:roles"].invoke
 
     # create admin user
     create_user unless User.all.count > 0
@@ -41,15 +41,24 @@ namespace :mystro do
   end
 
   namespace :test do
-    task :dump => :environment do
+    task :config => :environment do
       puts "DIR: #{Mystro.directory}"
-      ap Mystro.account
-      ap Mystro.compute.all
+      puts Mystro.account.to_hash.to_yaml
     end
     task :create_environment => :environment do
       e = Environment.where(:name => "blarg").first
+      unless e
+        t = Template.where(:name => "duo").first
+        e = Environment.create(name: "blarg", template: t, protected: false)
+      end
       e.enqueue(:create)
-      puts "environment: #{e.id}"
+      puts "created: #{e.id}"
+      puts "url: http://localhost:3000/environments/#{e.id}"
+      puts "url: http://localhost:3000/environments/#{e.name}"
+    end
+    task :create_dns => :environment do
+      r = Record.create(name: "app1.blarg.env.inqlabs.com", values: ["127.0.0.1"])
+      r.enqueue(:create)
     end
   end
 end

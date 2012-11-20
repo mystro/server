@@ -35,5 +35,7 @@
     </div>
 <% end %>
 
-<pre><%= Mystro.account.to_yaml %></pre>
-<pre><%= Mystro.config.to_yaml %></pre>
+<b>config</b>
+<pre><%= Mystro.config.to_hash.to_yaml %></pre>
+<b>account</b>
+<pre><%= Mystro.account.to_hash.to_yaml %></pre>
