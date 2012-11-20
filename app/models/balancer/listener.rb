@@ -8,11 +8,21 @@ class Listener
   field :to, type: String
   field :cert, type: String
 
-  def rig_options
+  def fog_options
+    (from_proto, from_port) = from.split(':')
+    (to_proto, to_port)     = to.split(':')
+    sslcert                 = cert || nil
+    policies                = [] # TODO: figure how we want to track these
     {
-        :from => from,
-        :to => to,
-        :cert => cert,
+        'Listener'    => {
+            "Protocol" => from_proto,
+            "LoadBalancerPort" => from_port,
+            "InstanceProtocol" => to_proto,
+            "InstancePort" => to_port,
+            "SSLCertificateId" => sslcert,
+            "PolicyNames" => policies
+        },
+        'PolicyNames' => policies
     }
   end
 

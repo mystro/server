@@ -19,8 +19,31 @@ class Balancer
     rid
   end
 
-  def add_compute(iid)
-    computes << Compute.remote(iid)
+  def short
+    rid
+  end
+
+  def add_compute(rid)
+    computes << Compute.remote(rid)
+  end
+
+  def envname
+    environment ? environment.name : "unknown"
+  end
+
+  def fog_options
+    {
+        id: rid,
+        "ListenerDescriptions" => listeners.map {|l| l.fog_options},
+        availability_zones: zones
+    }
+  end
+
+  def zones
+    computes.collect do |e|
+      s = Mystro.compute.find(e.rid)
+      s ? s.availability_zone : nil
+    end.compact.uniq
   end
 
   class << self
