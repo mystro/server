@@ -85,5 +85,22 @@ namespace :mystro do
       puts "queueing destroy action"
       c.enqueue(:destroy)
     end
+    task :update_balancers => :environment do
+      oldid = "arn:aws:iam::169133138302:server-certificate/inqlabs.com"
+      fog = Mystro.balancer.fog
+      puts "fog: #{fog}"
+      balancers = Mystro.balancer.all
+      balancers.each do |b|
+        listeners = b.listeners
+        listeners.each do |l|
+          #puts "#{l.inspect}"
+          #puts "#{l.ssl_id}"
+          if l.ssl_id == oldid && l.lb_port == 443
+            puts "#{l.lb_port} #{l.ssl_id}"
+            b.set_listener_ssl_certificate(443, "arn:aws:iam::169133138302:server-certificate/2013inqlabs.com")
+          end
+        end
+      end
+    end
   end
 end
