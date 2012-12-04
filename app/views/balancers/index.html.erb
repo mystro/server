@@ -10,7 +10,7 @@
   </thead>
   <tbody>
 <% @balancers.each do |balancer| %>
-  <tr>
+  <tr class="<%= "deleting" if balancer.deleting %>">
     <td><%= link_to balancer.name, balancer_path(balancer) %></td>
     <td><%= balancer.rid %></td>
     <td><%= balancer.environment ? link_to(balancer.environment.name, environment_path(balancer.environment)) : "" %></td>

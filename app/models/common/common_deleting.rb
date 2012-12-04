@@ -3,7 +3,7 @@ module CommonDeleting
 
   included do
     field :deleting, type: Boolean, default: false
-    default_scope where(deleting: false)
+    #default_scope where(deleting: false)
 
     extend ClassMethods
   end

@@ -14,7 +14,7 @@
   </thead>
   <tbody>
 <% @environments.each do |environment| %>
-  <tr class="<%= "warn" if environment.age > 30.minutes %>">
+  <tr class="<%= "warn" if environment.age > 30.minutes %> deleting <%= "deleting" if environment.deleting %>">
     <td><%= link_to environment.name, environment_path(environment) %></td>
     <td><%= environment.computes.count %>/<%= environment.computes.select{|e| e.synced_at}.count %></td>
     <td><%= environment.balancers.count %>/<%= environment.balancers.select{|e| e.synced_at}.count %></td>

@@ -11,6 +11,15 @@
     width: 100px;
     text-align: right;
   }
+
+
+  tr.deleting {
+    border-left: 3px solid red;
+  }
+
+  tr {
+    border-left: 3px solid inherit;
+  }
 }
 
 .subnav {
