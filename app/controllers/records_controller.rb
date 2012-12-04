@@ -2,7 +2,7 @@ class RecordsController < ApplicationController
   # GET /records
   # GET /records.json
   def index
-    @records = Record.all
+    @records = Record.where(account_id: mystro_account_id).all
 
     respond_to do |format|
       format.html # index.html.erb
@@ -26,6 +26,7 @@ class RecordsController < ApplicationController
   # GET /records/new.json
   def new
     @record = Record.new
+    @record.account = mystro_account_id
 
     respond_to do |format|
       format.html # new.html.erb
@@ -42,9 +43,11 @@ class RecordsController < ApplicationController
   # POST /records.json
   def create
     @record = Record.new(params[:record])
+    @record.account = mystro_account_id
 
     respond_to do |format|
       if @record.save
+        @record.enqueue(:create)
         format.html { redirect_to @record, notice: 'Record was successfully created.' }
         format.json { render json: @record, status: :created, location: @record }
       else
@@ -54,26 +57,27 @@ class RecordsController < ApplicationController
     end
   end
 
-  # PUT /records/1
-  # PUT /records/1.json
-  def update
-    @record = Record.find(params[:id])
-
-    respond_to do |format|
-      if @record.update_attributes(params[:record])
-        format.html { redirect_to @record, notice: 'Record was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @record.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+  ## PUT /records/1
+  ## PUT /records/1.json
+  #def update
+  #  @record = Record.find(params[:id])
+  #
+  #  respond_to do |format|
+  #    if @record.update_attributes(params[:record])
+  #      format.html { redirect_to @record, notice: 'Record was successfully updated.' }
+  #      format.json { head :no_content }
+  #    else
+  #      format.html { render action: "edit" }
+  #      format.json { render json: @record.errors, status: :unprocessable_entity }
+  #    end
+  #  end
+  #end
 
   # DELETE /records/1
   # DELETE /records/1.json
   def destroy
     @record = Record.find(params[:id])
+    @record.account ||= mystro_account_id
     @record.deleting = true
     @record.save
     @record.enqueue(:destroy)

@@ -2,7 +2,7 @@ class EnvironmentsController < ApplicationController
   # GET /environments
   # GET /environments.json
   def index
-    @environments = Environment.all
+    @environments = Environment.where(account_id: mystro_account_id).all
     @templates = Template.all
 
     respond_to do |format|
@@ -45,6 +45,7 @@ class EnvironmentsController < ApplicationController
   # POST /environments.json
   def create
     @environment = Environment.new(params[:environment])
+    @environment.account = mystro_account_id
     saved = @environment.save
 
     respond_to do |format|
@@ -63,6 +64,7 @@ class EnvironmentsController < ApplicationController
   # PUT /environments/1.json
   def update
     @environment = Environment.find(params[:id])
+    @environment.account ||= mystro_account_id
     @environment.enqueue(:create)
 
     respond_to do |format|
@@ -85,6 +87,7 @@ class EnvironmentsController < ApplicationController
 
     raise "cannot destroy protected environment" if @environment.protected
 
+    @environment.account ||= mystro_account_id
     @environment.deleting = true
     @environment.save
     @environment.enqueue(:destroy)

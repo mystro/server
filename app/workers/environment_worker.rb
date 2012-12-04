@@ -2,10 +2,7 @@ class EnvironmentWorker < BaseWorker
   @queue = :default
 
   class << self
-    def perform_create(options)
-      id = options["id"]
-      e  = Environment.find(id)
-      raise "could not find environment #{id}" unless e
+    def perform_create(e, mystro)
       t = e.template
       raise "could not find template" unless t
       d = e.template.data || e.template.load
@@ -23,6 +20,7 @@ class EnvironmentWorker < BaseWorker
             :sticky_arg => x["sticky_arg"],
             :managed => true,
         )
+        b.account = Account.mystro(mystro)
         b.save
 
         x["listeners"].each do |xl|
@@ -62,6 +60,7 @@ class EnvironmentWorker < BaseWorker
               raise "balancer #{s["balancer"]} does not exist"
             end
           end
+          c.account = Account.mystro(mystro)
           c.save
         end
       end
@@ -83,11 +82,7 @@ class EnvironmentWorker < BaseWorker
       Mystro::Plugin.run "environment:create", e
     end
 
-    def perform_destroy(options)
-      id = options["id"]
-      e = Environment.unscoped.find(id)
-      raise "could not find environment #{id}" unless e
-
+    def perform_destroy(e, mystro)
       e.computes.each do |c|
         c.enqueue(:destroy)
       end

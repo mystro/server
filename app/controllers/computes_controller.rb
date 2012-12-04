@@ -2,7 +2,7 @@ class ComputesController < ApplicationController
   # GET /computes
   # GET /computes.json
   def index
-    @computes = Compute.all
+    @computes = Compute.where(account_id: mystro_account_id).all
     # for form
     @environments = Environment.all
     @roles = Role.external.all.sort(name: 1)
@@ -49,6 +49,7 @@ class ComputesController < ApplicationController
     @compute = Compute.new(params[:compute])
     @compute.roles = roles =~ /,/ ? roles.split(",") : [roles].compact
     @compute.groups = groups =~ /,/ ? groups.split(",") : [groups].compact
+    @compute.account = mystro_account_id
 
     saved = @compute.save
 
@@ -64,26 +65,27 @@ class ComputesController < ApplicationController
     end
   end
 
-  # PUT /computes/1
-  # PUT /computes/1.json
-  def update
-    @compute = Compute.find(params[:id])
-
-    respond_to do |format|
-      if @compute.update_attributes(params[:compute])
-        format.html { redirect_to @compute, notice: 'Compute was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @compute.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+  ## PUT /computes/1
+  ## PUT /computes/1.json
+  #def update
+  #  @compute = Compute.find(params[:id])
+  #
+  #  respond_to do |format|
+  #    if @compute.update_attributes(params[:compute])
+  #      format.html { redirect_to @compute, notice: 'Compute was successfully updated.' }
+  #      format.json { head :no_content }
+  #    else
+  #      format.html { render action: "edit" }
+  #      format.json { render json: @compute.errors, status: :unprocessable_entity }
+  #    end
+  #  end
+  #end
 
   # DELETE /computes/1
   # DELETE /computes/1.json
   def destroy
     @compute = Compute.find(params[:id])
+    @compute.account ||= mystro_account_id
     @compute.deleting = true
     @compute.save
     @compute.enqueue(:destroy)
