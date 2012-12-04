@@ -73,7 +73,7 @@ class BalancersController < ApplicationController
   # DELETE /balancers/1
   # DELETE /balancers/1.json
   def destroy
-    @balancer = Balancer.find(params[:id])
+    @balancer = Balancer.unscoped.find(params[:id])
     @balancer.account ||= mystro_account_id
     @balancer.deleting = true
     @balancer.save

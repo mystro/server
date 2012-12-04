@@ -84,7 +84,7 @@ class ComputesController < ApplicationController
   # DELETE /computes/1
   # DELETE /computes/1.json
   def destroy
-    @compute = Compute.find(params[:id])
+    @compute = Compute.unscoped.find(params[:id])
     @compute.account ||= mystro_account_id
     @compute.deleting = true
     @compute.save

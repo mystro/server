@@ -76,7 +76,7 @@ class RecordsController < ApplicationController
   # DELETE /records/1
   # DELETE /records/1.json
   def destroy
-    @record = Record.find(params[:id])
+    @record = Record.unscoped.find(params[:id])
     @record.account ||= mystro_account_id
     @record.deleting = true
     @record.save
