@@ -23,6 +23,10 @@
     <td><%= @compute.environment ? link_to(@compute.environment.name, @compute.environment) : "" %></td>
   </tr>
   <tr>
+    <th>Account</th>
+    <td><%= @compute.account ? link_to(@compute.account.name, @compute.account) : "" %></td>
+  </tr>
+  <tr>
     <th>Balancer</th>
     <td><%= @compute.balancer ? link_to(@compute.balancer.name, @compute.balancer) : "" %></td>
   </tr>

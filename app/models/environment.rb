@@ -8,6 +8,7 @@ class Environment
   has_many :computes
   has_many :balancers
   belongs_to :template, index: true
+  belongs_to :account, index: true
 
   field :name, type: String
   field :protected, type: Boolean

@@ -8,6 +8,7 @@ class Compute
 
   belongs_to :environment, index: true
   belongs_to :balancer, index: true
+  belongs_to :account, index: true
   has_many :records, as: :nameable
   has_and_belongs_to_many :roles
 

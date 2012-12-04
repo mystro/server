@@ -1,6 +1,11 @@
 MystroServer::Application.routes.draw do
+
   mount Resque::Server.new, :at => "/admin/resque"
   resource :resque
+
+  resources :accounts do
+    post "select", :on => :member
+  end
 
   resources :balancers
   resources :listeners

@@ -1,12 +1,12 @@
 $(function(){
-    $(".tablesorter").tablesorter({
-        cancelSelection: true
-    });
+    $(".tablesorter:has(tbody tr)").tablesorter();
+
     $(".btn").tooltip();
+
     $(".tooltip").tooltip();
 
-
     $(".delete_me").on("click", function(e){
+        e.preventDefault();
         var id = $(this).attr("data-id");
         var tp = $(this).attr("data-type");
         var tr = $(this).parent("td").parent("tr");
@@ -23,7 +23,19 @@ $(function(){
                 }
             });
         }
-        e.preventDefault();
     });
+
+    $(".account_select").on("click", function(e){
+        e.preventDefault();
+        var a = $(this).attr("data-account");
+        if (console) {
+            console.log("select account: "+a);
+        }
+        $.post("/accounts/"+a+"/select", {}, function(d) {
+            console.log(d);
+            window.location.href = "/"
+        });
+    });
+
 });
 

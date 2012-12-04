@@ -48,6 +48,8 @@ class User
   field :authentication_token, :type => String
   before_save :ensure_authentication_token
 
+  field :account, :type => String
+
   # run 'rake db:mongoid:create_indexes' to create indexes
   index({ email: 1 }, { unique: true, background: true })
   field :name, :type => String

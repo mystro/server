@@ -9,6 +9,7 @@ class Record
 
   belongs_to :zone, index: true
   belongs_to :nameable, polymorphic: true
+  belongs_to :account, index: true
 
   field :name, type: String
   symbolize :type, in: [:CNAME, :A], scopes: true, default: :CNAME

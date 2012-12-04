@@ -7,6 +7,7 @@ class Balancer
   include CommonDeleting
 
   belongs_to :environment, index: true
+  belongs_to :account, index: true
   embeds_many :listeners
   has_many :computes
   has_many :records, as: :nameable
