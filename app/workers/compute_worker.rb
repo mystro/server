@@ -17,21 +17,23 @@ class ComputeWorker < BaseWorker
 
       compute.reload
 
-      z    = mystro.data.dns.zone
-      zone = Zone.where(:domain => z).first
+      if mystro.data.dns
+        z    = mystro.data.dns.zone
+        zone = Zone.where(:domain => z).first
 
-      raise "zone '#{z}' not found, could not create dns record" unless zone
+        raise "zone '#{z}' not found, could not create dns record" unless zone
 
-      logger.info "compute:#{compute.id}#create queueing record"
-      record = compute.records.find_or_create_by(:zone => zone, :name => "#{compute.long}")
-      record.update_attributes(
-          :type   => "CNAME",
-          :ttl    => 300,
-          :values => [r.dns_name]
-      )
-      record.account = Account.mystro(mystro)
-      record.save
-      record.enqueue(:create)
+        logger.info "compute:#{compute.id}#create queueing record"
+        record = compute.records.find_or_create_by(:zone => zone, :name => "#{compute.long}")
+        record.update_attributes(
+            :type   => "CNAME",
+            :ttl    => 300,
+            :values => [r.dns_name]
+        )
+        record.account = Account.mystro(mystro)
+        record.save
+        record.enqueue(:create)
+      end
 
       logger.info "compute:#{compute.id}#create save"
       compute.synced_at = Time.now
@@ -43,7 +45,7 @@ class ComputeWorker < BaseWorker
       mystro.compute.destroy(compute)
       logger.info "compute:#{compute.id}#destroy queue record destroy"
       compute.records.each { |r| r.enqueue(:destroy) }
-
+    ensure
       logger.info "compute:#{compute.id}#destroy compute destroy"
       compute.destroy
     end

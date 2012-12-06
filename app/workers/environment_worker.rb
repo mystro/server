@@ -90,6 +90,7 @@ class EnvironmentWorker < BaseWorker
         b.enqueue(:destroy)
       end
 
+    ensure
       Mystro::Plugin.run "environment:destroy", e
       e.destroy
     end

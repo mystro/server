@@ -14,12 +14,19 @@ class Account
 
   index({ name: 1 }, { unique: true })
 
+  scope :named, ->(name){ where(name: name) }
+
   class << self
     def mystro(a)
       if a.is_a?(Mystro::Account)
         where(name: a.name).first
       end
     end
+  end
+
+  def mystro
+    a = Mystro::Account.list[name]
+    a.data if a
   end
 
   def load

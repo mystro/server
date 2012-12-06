@@ -2,6 +2,7 @@ class Environment
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  include CommonAccount
   include CommonWorker
   include CommonDeleting
 
@@ -13,7 +14,7 @@ class Environment
   field :name, type: String
   field :protected, type: Boolean
 
-  index({ name: 1 }, { unique: true})
+  index({ name: 1, account: 1 }, { unique: true})
 
   def get_next_number(name)
     (computes.where(:name => name).max(:num).to_i || 0) + 1

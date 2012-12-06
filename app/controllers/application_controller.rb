@@ -8,6 +8,14 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def filters(model, options={})
+    q = model.scoped
+    if options[:account_id]
+      q = q.where(account: options[:account_id])
+    end
+    q
+  end
+
   def set_locale
     I18n.locale = params[:locale] || I18n.default_locale
   end
@@ -17,7 +25,7 @@ class ApplicationController < ActionController::Base
   end
 
   def mystro_selected
-    @mystro_selected ||= ( current_user ? current_user.account : nil ) || Mystro::Account.selected
+    ( current_user ? current_user.account : nil ) || Mystro::Account.selected
   end
 
   def mystro_account

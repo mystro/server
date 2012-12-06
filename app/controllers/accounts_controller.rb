@@ -57,15 +57,20 @@ class AccountsController < ApplicationController
   # POST /accounts/1/select
   def select
     id = params[:id]
-    @account = Account.where(:id => id).first ||
-        Account.where(:name => id).first ||
-        raise_404
-
-    return render :json => {error: "no account with id: #{id}"}, :status => :bad_request unless @account
+    name = nil
+    if id == "everything"
+      name = "everything"
+    else
+      @account = Account.where(:id => id).first ||
+          Account.where(:name => id).first ||
+          raise_404
+      return render :json => {error: "no account with id: #{id}"}, :status => :bad_request unless @account
+      name = @account.name
+    end
 
     #session[:mystro_selected] = @account.name
-    current_user.account = @account.name
+    current_user.account = name
     current_user.save
-    render :json => {selected: @account.name}, :status => :ok
+    render :json => {selected: name}, :status => :ok
   end
 end

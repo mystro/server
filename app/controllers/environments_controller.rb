@@ -2,7 +2,7 @@ class EnvironmentsController < ApplicationController
   # GET /environments
   # GET /environments.json
   def index
-    @environments = Environment.where(account_id: mystro_account_id).all
+    @environments = filters(Environment, {account_id: mystro_account_id}).all
     @templates = Template.all
 
     respond_to do |format|
@@ -64,11 +64,11 @@ class EnvironmentsController < ApplicationController
   # PUT /environments/1.json
   def update
     @environment = Environment.find(params[:id])
-    @environment.account ||= mystro_account_id
-    @environment.enqueue(:create)
+    @environment.account_id ||= mystro_account_id
 
     respond_to do |format|
       if @environment.update_attributes(params[:environment])
+        @environment.enqueue(:create)
         format.html { redirect_to @environment, notice: 'Environment was successfully updated.' }
         format.json { head :no_content }
       else

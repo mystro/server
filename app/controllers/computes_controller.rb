@@ -2,7 +2,7 @@ class ComputesController < ApplicationController
   # GET /computes
   # GET /computes.json
   def index
-    @computes = Compute.where(account_id: mystro_account_id).all
+    @computes = filters(Compute, {account_id: mystro_account_id}) #Compute.where(account_id: mystro_account_id).all
     # for form
     @environments = Environment.all
     @roles = Role.external.all.sort(name: 1)
@@ -65,21 +65,21 @@ class ComputesController < ApplicationController
     end
   end
 
-  ## PUT /computes/1
-  ## PUT /computes/1.json
-  #def update
-  #  @compute = Compute.find(params[:id])
-  #
-  #  respond_to do |format|
-  #    if @compute.update_attributes(params[:compute])
-  #      format.html { redirect_to @compute, notice: 'Compute was successfully updated.' }
-  #      format.json { head :no_content }
-  #    else
-  #      format.html { render action: "edit" }
-  #      format.json { render json: @compute.errors, status: :unprocessable_entity }
-  #    end
-  #  end
-  #end
+  # PUT /computes/1
+  # PUT /computes/1.json
+  def update
+    @compute = Compute.find(params[:id])
+
+    respond_to do |format|
+      if @compute.update_attributes(params[:compute])
+        format.html { redirect_to @compute, notice: 'Compute was successfully updated.' }
+        format.json { head :no_content }
+      else
+        format.html { render action: "edit" }
+        format.json { render json: @compute.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
   # DELETE /computes/1
   # DELETE /computes/1.json

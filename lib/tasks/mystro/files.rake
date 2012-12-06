@@ -10,7 +10,7 @@ namespace :mystro do
       files = Dir["config/mystro/accounts/*"]
       files.each do |file|
         name = File.basename(file).gsub(/\.yml/, "")
-        a = Account.create(:name => name, :file => file)
+        a = Account.find_or_create_by(:name => name, :file => file)
         d = a.load
         a.data = d
         a.save
@@ -22,7 +22,7 @@ namespace :mystro do
       files = Dir["config/mystro/templates/*"]
       files.each do |file|
         name = File.basename(file).gsub(/\.rb/, "")
-        t = Template.create(:name => name, :file => file)
+        t = Template.find_or_create_by(:name => name, :file => file)
         d = JSON.parse(t.load.to_json)
         t.data = d
         t.save

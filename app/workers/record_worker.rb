@@ -11,6 +11,7 @@ class RecordWorker < BaseWorker
 
     def perform_destroy(record, mystro)
       mystro.dns.destroy(record)
+    ensure
       record.destroy
     end
   end

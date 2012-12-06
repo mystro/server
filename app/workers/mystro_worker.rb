@@ -15,7 +15,7 @@ class MystroWorker < BaseWorker
               e = Environment.create_from_fog(compute.tags['Environment'])
               c = Compute.create_from_fog(compute)
 
-              if !c.account && c.long =~ /#{data.dns.subdomain}.#{data.dns.zone}/
+              if !c.account && data.dns && c.long =~ /#{data.dns.subdomain}.#{data.dns.zone}/
                 puts ".. .. assigning #{c.short} to account: #{account.name}"
                 e.account = account unless e.account
                 c.account = account

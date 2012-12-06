@@ -2,7 +2,7 @@ class RecordsController < ApplicationController
   # GET /records
   # GET /records.json
   def index
-    @records = Record.where(account_id: mystro_account_id).all
+    @records = filters(Record, {account_id: mystro_account_id}).all
 
     respond_to do |format|
       format.html # index.html.erb

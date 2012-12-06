@@ -2,6 +2,7 @@ class Balancer
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  include CommonAccount
   include CommonRemote
   include CommonWorker
   include CommonDeleting

@@ -2,7 +2,7 @@ class BalancersController < ApplicationController
   # GET /balancers
   # GET /balancers.json
   def index
-    @balancers = Balancer.where(account_id: mystro_account_id).all
+    @balancers = filters(Balancer, {account_id: mystro_account_id}).all
 
     respond_to do |format|
       format.html # index.html.erb

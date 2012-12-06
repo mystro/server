@@ -3,6 +3,7 @@ class Record
   include Mongoid::Timestamps
   include Mongoid::Symbolize
 
+  include CommonAccount
   include CommonRemote
   include CommonWorker
   include CommonDeleting

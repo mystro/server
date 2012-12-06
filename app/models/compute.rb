@@ -2,6 +2,7 @@ class Compute
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  include CommonAccount
   include CommonRemote
   include CommonWorker
   include CommonDeleting
@@ -34,11 +35,11 @@ class Compute
   end
 
   def long
-    "#{short}.#{Mystro.account.dns.zone}"
+    "#{short}.#{account.mystro.dns.zone}"
   end
 
   def short
-    "#{name}#{num > 0 ? num : ""}.#{environment ? "#{environment.name}.#{Mystro.account.dns.subdomain}" : ""}"
+    "#{name}#{num > 0 ? num : ""}.#{environment ? "#{environment.name}.#{account.mystro.dns.subdomain}" : ""}"
   end
 
   def envname

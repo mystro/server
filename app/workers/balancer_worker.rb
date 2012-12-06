@@ -36,12 +36,12 @@ class BalancerWorker < BaseWorker
       b.rid       = balancer.id
       b.synced_at = Time.now
       b.save
-      logger.info "  #{id} balancer created"
     end
 
     def perform_destroy(b, mystro)
       mystro.balancer.destroy(b) if b.synced_at && b.rid
       b.records.each { |r| r.enqueue(:destroy) }
+    ensure
       b.destroy
     end
   end
