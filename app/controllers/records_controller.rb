@@ -57,21 +57,21 @@ class RecordsController < ApplicationController
     end
   end
 
-  ## PUT /records/1
-  ## PUT /records/1.json
-  #def update
-  #  @record = Record.find(params[:id])
-  #
-  #  respond_to do |format|
-  #    if @record.update_attributes(params[:record])
-  #      format.html { redirect_to @record, notice: 'Record was successfully updated.' }
-  #      format.json { head :no_content }
-  #    else
-  #      format.html { render action: "edit" }
-  #      format.json { render json: @record.errors, status: :unprocessable_entity }
-  #    end
-  #  end
-  #end
+  # PUT /records/1
+  # PUT /records/1.json
+  def update
+    @record = Record.find(params[:id])
+
+    respond_to do |format|
+      if @record.update_attributes(params[:record])
+        format.html { redirect_to @record, notice: 'Record was successfully updated.' }
+        format.json { head :no_content }
+      else
+        format.html { render action: "edit" }
+        format.json { render json: @record.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
   # DELETE /records/1
   # DELETE /records/1.json

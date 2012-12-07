@@ -35,11 +35,11 @@ class Compute
   end
 
   def long
-    "#{short}.#{account.mystro.dns.zone}"
+    "#{short}.#{account ? account.mystro.dns.zone : ""}"
   end
 
   def short
-    "#{name}#{num > 0 ? num : ""}.#{environment ? "#{environment.name}.#{account.mystro.dns.subdomain}" : ""}"
+    "#{name}#{num > 0 ? num : ""}#{environment ? ".#{environment.name}" : ""}"
   end
 
   def envname

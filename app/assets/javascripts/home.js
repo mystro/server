@@ -19,7 +19,8 @@ $(function(){
             $.post(u, d, function(){
                 console.log("returned");
                 if (tr) {
-                    $(tr).fadeOut(500, function(){ $(this).remove();})
+//                    $(tr).fadeOut(500, function(){ $(this).remove();})
+                    $(tr).addClass("deleting");
                 }
             });
         }
@@ -33,7 +34,7 @@ $(function(){
         }
         $.post("/accounts/"+a+"/select", {}, function(d) {
             console.log(d);
-            window.location.href = "/"
+            window.location.reload();
         });
     });
 

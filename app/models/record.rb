@@ -18,11 +18,11 @@ class Record
   field :values, type: Array
 
   def long
-    values.first
+    name
   end
 
   def short
-    values.first.gsub(/\.#{zone.domain}$/, "")
+    name.gsub(/\.#{zone.domain}$/, "")
   end
 
   def parts

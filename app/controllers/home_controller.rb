@@ -5,5 +5,7 @@ class HomeController < ApplicationController
   rescue => e
     logger.error "ERROR: #{e.message}"
     e.backtrace.each {|b| logger.error b}
+    flash.now[:error] = "problem with getting computes: #{e.message}"
+    @computes = []
   end
 end
