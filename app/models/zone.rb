@@ -8,6 +8,10 @@ class Zone
 
   field :domain, type: String
 
+  def name
+    domain
+  end
+
   class << self
     def create_from_fog(obj)
       zone           = Zone.remote(obj.id) || Zone.create(:rid => obj.id)

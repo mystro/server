@@ -39,6 +39,8 @@ gem "symbolize", :require => "symbolize/mongoid"
 gem 'jquery-rails'
 gem "bootstrap-sass", ">= 2.1.0.0"
 gem "simple_form", ">= 2.0.4"
+gem 'client_side_validations'
+gem 'client_side_validations-simple_form'
 
 # misc
 gem "highline"

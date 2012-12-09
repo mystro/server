@@ -28,7 +28,7 @@
         <td><%= record.type %></td>
         <td><%= record.ttl %></td>
         <td><%= link_to record.name, record %></td>
-        <td><%= record.values.count ? record.values.join(",") : "" %></td>
+        <td><%= record.values && record.values.count ? record.values.join(",") : "" %></td>
         <td class="links">
           <%= render "common/links", :obj => record, :edit => edit_record_path(record) %>
         </td>
@@ -36,3 +36,56 @@
   <% end %>
   </tbody>
 </table>
+
+<script id="new_record_dialog" type="text/template">
+  <% @account = Account.named(current_user.account).first %>
+  <% if @account %>
+  <% @zone = Zone.where(domain: @account.mystro.dns.zone).first %>
+  <% @record = Record.new(account: @account, zone: @zone) %>
+  <%= simple_form_for(@record, :validate => true, :html => { :class => "form-horizontal record_form" }) do |f| %>
+      <%= f.error_notification %>
+
+      <div class="form-inputs">
+        <%= f.input :name, :wrapper => :append do %>
+            <%= f.input_field :name, :class => "input-small" %><span class="add-on">.<%= @zone.domain %></span>
+        <% end %>
+        <%= f.input :type, :collection => Record.get_type_values %>
+        <%= f.input :ttl %>
+        <%= f.input :values, :hint => "comma-separated" %>
+      </div>
+  <% end %>
+  <% else %>
+    must select an account
+  <% end %>
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $("#create_record").on("click", function () {
+            bootbox.dialog($("#new_record_dialog").html(), [
+                {
+                    "Cancel":function () {
+                        console.log("cancel");
+                    }
+                },
+                {
+                    "Create":function () {
+                        console.log("create");
+                        var f = $(".record_form:last"); // because bootbox makes a clone
+                        var n = $("#record[name]");
+                        n.val(n.val()+"."+"<%= @zone ? @zone.domain : "" %>");
+                        data = f.serialize();
+                        console.log("data");
+                        console.log(data);
+                        bootbox.modal("please wait", "creating");
+                        console.log("post");
+                        $.post("/records.json", data, function () {
+                            console.log("success");
+                            bootbox.hideAll();
+                        });
+                    }
+                }
+            ], {header:"Create Record"})
+        });
+    });
+</script>

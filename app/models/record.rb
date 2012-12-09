@@ -14,8 +14,12 @@ class Record
 
   field :name, type: String
   symbolize :type, in: [:CNAME, :A], scopes: true, default: :CNAME
-  field :ttl, type: Integer
+  field :ttl, type: Integer, default: 300
   field :values, type: Array
+
+  validates_presence_of :name
+  validates_presence_of :values
+  validates_numericality_of :ttl, only_integer: true, greater_than: 0
 
   def long
     name

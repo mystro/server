@@ -42,12 +42,16 @@ class RecordsController < ApplicationController
   # POST /records
   # POST /records.json
   def create
-    @record = Record.new(params[:record])
+    data = params[:record]
+    data[:name] += ".#{mystro_account.data.dns.zone}"
+    data[:values] = data[:values].split(",")
+    logger.info "data: #{data}"
+    @record = Record.new(data)
     @record.account = mystro_account_id
 
     respond_to do |format|
       if @record.save
-        @record.enqueue(:create)
+        #@record.enqueue(:create)
         format.html { redirect_to @record, notice: 'Record was successfully created.' }
         format.json { render json: @record, status: :created, location: @record }
       else

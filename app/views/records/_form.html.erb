@@ -7,7 +7,7 @@
     <%= f.input :ttl %>
     <%= f.input :name %>
     <%= f.input :values, as: :text, disabled: true do %>
-        <%= @record.values.join("\n") %>
+        <%= (@record.values||[]).join("\n") %>
     <% end %>
   </div>
 
