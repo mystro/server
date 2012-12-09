@@ -25,5 +25,12 @@ namespace :mystro do
       puts ".. creating user"
       create_user
     end
+    task :admin => :environment do
+      name = "Admin"
+      email = "admin@localhost"
+      pass = "t0wn3end"
+      puts "creating user admin: #{email} / #{pass}"
+      User.create(name: name, email: email, password: pass, password_confirmation: pass)
+    end
   end
 end

@@ -8,21 +8,18 @@ class MystroWorker < BaseWorker
         puts ".. account: #{account.name}"
         data   = Hashie::Mash.new(account.data)
         mystro = Mystro::Account.list[account.name]
+
+        next unless mystro && data
+
         if mystro.compute
           computes = mystro.compute.running
           if computes.count > 0
             computes.each do |compute|
-              e = Environment.create_from_fog(compute.tags['Environment'])
+              t = compute.tags
+              e = Environment.create_from_fog(t)
               c = Compute.create_from_fog(compute)
 
-              if !c.account && data.dns && c.long =~ /#{data.dns.subdomain}.#{data.dns.zone}/
-                puts ".. .. assigning #{c.short} to account: #{account.name}"
-                e.account = account unless e.account
-                c.account = account
-              end
-
-              e.save
-
+              c.account = e.account if e.account && c.account != e.account
               c.environment = e
               c.save
             end
@@ -35,7 +32,6 @@ class MystroWorker < BaseWorker
             balancers.each do |balancer|
               b = Balancer.create_from_fog(balancer)
               if b.environment && b.environment.account && b.account != b.environment.account
-                puts ".. .. assigning balancer #{b.short} to account: #{b.environment.account.name}"
                 b.account = b.environment.account
               end
               b.save

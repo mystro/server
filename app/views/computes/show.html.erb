@@ -31,7 +31,14 @@
     <td><%= @compute.balancer ? link_to(@compute.balancer.name, @compute.balancer) : "" %></td>
   </tr>
   <tr> <th>Synced At</th> <td><%= @compute.synced_at %></td> </tr>
+</table>
+<table class="table table-condensed table-bordered fields-horizontal">
   <tr> <th>Remote ID</th> <td><%= @compute.rid %></td> </tr>
+  <tr> <th>State</th> <td><%= @compute.state %></td> </tr>
+  <tr> <th>Public DNS</th> <td><%= @compute.public_dns %></td> </tr>
+  <tr> <th>Public IP</th> <td><%= @compute.public_ip %></td> </tr>
+  <tr> <th>Private DNS</th> <td><%= @compute.private_dns %></td> </tr>
+  <tr> <th>Private IP</th> <td><%= @compute.private_ip %></td> </tr>
 </table>
 
 <table class="table table-condensed table-bordered">

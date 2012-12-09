@@ -31,7 +31,7 @@ class Compute
   field :private_ip, type: String
 
   def roles_string
-    (roles||[]).map {|r| r.name}.join(",")
+    (roles||[]).map { |r| r.name }.join(",")
   end
 
   def long
@@ -48,19 +48,20 @@ class Compute
 
   def fog_tags
     {
-        'Name' => short,
+        'Name'        => short,
         'Environment' => envname,
-        'Roles' => roles_string
+        'Roles'       => roles_string,
+        'Account'     => account ? account.name : ""
     }
   end
 
   def fog_options
     {
-        image_id: image,
+        image_id:  image,
         flavor_id: flavor,
-        key_name: keypair,
-        groups: groups,
-        region: region,
+        key_name:  keypair,
+        groups:    groups,
+        region:    region,
         user_data: Mystro::Userdata.create(short, roles.map(&:name), envname, package: Mystro.account.compute.userdata)
     }
   end
@@ -68,15 +69,15 @@ class Compute
   class << self
     def create_from_fog(obj)
       compute = Compute.where(:rid => obj.id).first || Compute.create(:rid => obj.id)
-      name = obj.tags['Name']||""
-      num = nil
+      name    = obj.tags['Name']||""
+      num     = nil
       (name, _, _) = name.split(".") if name =~ /\./
       name.match(/^(\w+)(\d+)$/) do |m|
         name = m[1]
-        num = m[2]
+        num  = m[2]
       end
-      compute.name        = name
-      compute.num         = num if num
+      compute.name = name
+      compute.num = num if num
       compute.state       = obj.state.to_s.downcase
       compute.public_dns  = obj.dns_name
       compute.public_ip   = obj.public_ip_address
@@ -95,23 +96,30 @@ class Compute
     end
 
     def find_by_record(record)
+      list = [record.long, record.values].flatten
+      list.each do |val|
+        if ::IPAddress.valid?(val)
+          puts "compute.find_by_record: #{val}"
+          o = Compute.where(:public_ip => val).first
+          return o if o
+        else
+          puts "compute.find_by_record: #{val}"
+          o = Compute.where(:public_dns => val).first
+          return o if o
+        end
+      end
+
       parts = record.parts
       if parts
+        #puts "compute.find_by_record: #{record.short} => #{parts}"
         e = Environment.where(:name => parts[2]).first
         if e
           c = e.computes.where(:name => parts[0], :num => parts[1]).first
           return c if c
+
+          c = e.computes.where(:name => parts[0]).first
+          return c if c
         end
-      end
-
-      if record.long =~ /^[\d\.]+$/
-        c = Compute.where(:public_ip => record.long).first
-        return c if c
-      end
-
-      if record.long
-        c = Compute.where(:public_dns => record.long).first
-        return c if c
       end
     end
   end

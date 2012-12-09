@@ -26,7 +26,7 @@ class Record
   end
 
   def parts
-    short.match(/^([^\d]+)(\d+)*\.(\w+)\./) do
+    short.match(/^([^\d]+)(\d+)*\.(\w+)\.*/) do
       r = $1
       n = $2
       e = $3
@@ -58,7 +58,20 @@ class Record
 
     def find_by_record(record)
       r = Record.where(:name => record.long).first
-      r ? r.nameable : nil
+      return r.nameable if r && r.nameable
+
+      r = Record.any_in(values: record.long).first
+      return r.nameable if r && r.nameable
+
+      record.values.each do |val|
+        r = Record.where(name: val).first
+        return r.nameable if r && r.nameable
+
+        r = Record.any_in(values: val).first
+        return r.nameable if r && r.nameable
+      end
+
+      nil
     end
   end
 end

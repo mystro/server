@@ -22,7 +22,7 @@ class BalancerWorker < BaseWorker
         raise "could not find zone '#{z}' could not create dns record" unless zone
 
         e = b.environment
-        r = b.records.find_or_create_by(:zone => zone, :name => "#{e.name}.#{mystro.data.dns.subdomain}.#{zone.domain}")
+        r = b.records.find_or_create_by(:zone => zone, :name => "#{e.name}.#{zone.domain}")
         r.update_attributes(
             :type   => "CNAME",
             :ttl    => 30,

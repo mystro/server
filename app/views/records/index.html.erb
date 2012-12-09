@@ -24,7 +24,7 @@
   </thead>
   <tbody>
   <% @records.each do |record| %>
-      <tr class="<%= "error" unless record.nameable %> <%= "deleting" if record.deleting %>">
+      <tr class="<%= "warning" unless record.nameable || record.account %> <%= "deleting" if record.deleting %>">
         <td><%= record.type %></td>
         <td><%= record.ttl %></td>
         <td><%= link_to record.name, record %></td>

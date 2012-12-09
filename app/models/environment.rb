@@ -33,10 +33,25 @@ class Environment
   end
 
   class << self
-    def create_from_fog(name)
+    def create_from_fog(tags)
       # since environments don't actually exist in the cloud, except as meta data,
       # this is here for convenience
-      Environment.where(:name => name).first || Environment.create(:name => name)
+      if tags.is_a?(String)
+        name = tags
+        account = "unknown"
+      else
+        name = tags["Environment"]
+        account = tags["Account"] || "unknown"
+      end
+      a = Account.named(account).first
+      e = Environment.where(name: name, account: a).first ||
+          Environment.where(:name => name).first ||
+          Environment.create(name: name, account: account)
+      unless e.account
+        e.account = a
+        e.save
+      end
+      e
     end
   end
 end

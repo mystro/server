@@ -21,11 +21,13 @@ namespace :mystro do
     Rake::Task["mystro:files:load"].invoke
     Rake::Task["mystro:chef:roles"].invoke
 
+    Rake::Task["mystro:account:unknown"].invoke
+
     # create admin user
     create_user unless User.all.count > 0
 
     # load cloud resources
-    cloud_pull unless Compute.all.count > 0
+    Rake::Task["mystro:cloud:update"].invoke unless Compute.all.count > 0
   end
 
   namespace :chef do
@@ -66,41 +68,24 @@ namespace :mystro do
       #"region"=>"us-east-1", "flavor"=>"m1.small", "image"=>"ami-3c994355", "groups"=>"app-server,db-inqcloud-dev",
       #"keypair"=>"inqcloud-dev"}
       puts "destroying previous test1.ops computes"
-      e = Environment.where(name: "ops").first
+      e    = Environment.where(name: "ops").first
       list = Compute.where(name: "test", num: "1", environment: e)
       list.each do |c|
         puts ".. destroy compute:#{c.id}"
         c.destroy
       end
 
-      c = Compute.create(name: "test", num: 1, environment: e, role_ids: [],
-                         region: Mystro.account.compute.region,
-                         flavor: Mystro.account.compute.flavor,
-                         image: Mystro.account.compute.image,
-                         groups: Mystro.account.compute.groups,
+      c = Compute.create(name:    "test", num: 1, environment: e, role_ids: [],
+                         region:  Mystro.account.compute.region,
+                         flavor:  Mystro.account.compute.flavor,
+                         image:   Mystro.account.compute.image,
+                         groups:  Mystro.account.compute.groups,
                          keypair: Mystro.account.compute.keypair)
       puts "queueing create action"
       c.enqueue(:create)
-      10.times {|i| print "."; sleep 1}; puts
+      10.times { |i| print "."; sleep 1 }; puts
       puts "queueing destroy action"
       c.enqueue(:destroy)
-    end
-    task :update_balancers => :environment do
-      oldid = "arn:aws:iam::169133138302:server-certificate/inqlabs.com"
-      fog = Mystro.balancer.fog
-      puts "fog: #{fog}"
-      balancers = Mystro.balancer.all
-      balancers.each do |b|
-        listeners = b.listeners
-        listeners.each do |l|
-          #puts "#{l.inspect}"
-          #puts "#{l.ssl_id}"
-          if l.ssl_id == oldid && l.lb_port == 443
-            puts "#{l.lb_port} #{l.ssl_id}"
-            b.set_listener_ssl_certificate(443, "arn:aws:iam::169133138302:server-certificate/2013inqlabs.com")
-          end
-        end
-      end
     end
   end
 end

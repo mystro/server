@@ -17,6 +17,8 @@ class Balancer
   field :environment_id, type: String
   field :primary, type: Boolean
 
+  field :public_dns, type: String
+
   def name
     rid
   end
@@ -55,6 +57,7 @@ class Balancer
       (e, r)               = obj.id.split(/\-/)
       balancer.environment = Environment.create_from_fog(e)
       balancer.synced_at   = Time.now
+      balancer.public_dns  = obj.dns_name
 
       balancer.listeners = []
       obj.listeners.each do |l|
@@ -66,11 +69,20 @@ class Balancer
     end
 
     def find_by_record(record)
-      long = record.long
-      long.match(/^(\w+)-(\w+)-\d+\./) do
-        b = Balancer.where(:rid => "#{$1}-#{$2}").first
-        return b if b
+      if ::IPAddress.valid?(record.long)
+        return
+      else
+        record.values.each do |val|
+          o = Balancer.where(:public_dns => val).first
+          return o if o
+        end
       end
+
+      #long = record.long
+      #long.match(/^(\w+)-(\w+)-\d+\./) do
+      #  b = Balancer.where(:rid => "#{$1}-#{$2}").first
+      #  return b if b
+      #end
       #parts = record.parts
       #if parts
       #  e = Environment.where(:name => parts[2]).first
@@ -82,6 +94,8 @@ class Balancer
       #  c = Compute.where(:public_dns => record.long).first
       #  return c if c
       #end
+
+      nil
     end
   end
 end
