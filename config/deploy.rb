@@ -35,6 +35,7 @@ after "deploy:update_code", "mystro:config"
 after "deploy:restart", "deploy:cleanup"
 after "deploy:restart", "foreman:restart"
 after "deploy:restart", "mystro:files"
+after "deploy:setup", "mystro:setup"
 
 # uncomment below to map specified rake tasks to cap tasks
 require 'cape'
@@ -59,9 +60,18 @@ namespace :mystro do
     run "cd #{current_path} && #{rake} #{task} RAILS_ENV=#{rails_env}"
   end
 
+  task :setup do
+    run("mkdir -p #{shared_path}/config")
+  end
+
   desc "push mystro configuration"
   task :config do
-    top.upload("#{Rails.root}/config/mystro", "#{shared_path}/config")
+    require "rails"
+    dir = "config/mystro"
+    file = "mystro-config-#{$$}-#{Time.now.to_i}.tgz"
+    system("cd #{dir} && tar cfz /tmp/#{file} *")
+    upload("/tmp/#{file}", "#{shared_path}/config/#{file}")
+    run("cd #{shared_path}/config && tar xfz #{file}")
     run("ln -sf #{shared_path}/config #{current_path}/config/mystro")
   end
 end
