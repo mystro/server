@@ -51,7 +51,7 @@ class RecordsController < ApplicationController
 
     respond_to do |format|
       if @record.save
-        #@record.enqueue(:create)
+        @record.enqueue(:create)
         format.html { redirect_to @record, notice: 'Record was successfully created.' }
         format.json { render json: @record, status: :created, location: @record }
       else
@@ -68,6 +68,7 @@ class RecordsController < ApplicationController
 
     respond_to do |format|
       if @record.update_attributes(params[:record])
+        @record.enqueue(:update)
         format.html { redirect_to @record, notice: 'Record was successfully updated.' }
         format.json { head :no_content }
       else

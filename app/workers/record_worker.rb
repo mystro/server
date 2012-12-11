@@ -9,6 +9,12 @@ class RecordWorker < BaseWorker
       record.save
     end
 
+    def perform_update(record, mystro)
+      return perform_create(record, mystro) unless record.synced_at
+
+      #r = mystro.dns.find(record.rid)
+    end
+
     def perform_destroy(record, mystro)
       mystro.dns.destroy(record)
     ensure
