@@ -34,8 +34,7 @@ set :keep_releases, 3
 after "deploy:restart", "deploy:cleanup"
 after "deploy:restart", "foreman:restart"
 
-after "deploy:update_code", "mystro:config:push"
-after "deploy:create_symlink", "mystro:config:symlink"
+after "deploy:update_code", "mystro:config:update"
 after "deploy:restart", "mystro:files"
 after "deploy:setup", "mystro:setup"
 
@@ -66,6 +65,28 @@ namespace :mystro do
     run("mkdir -p #{shared_path}/config")
   end
 
+  namespace :chef do
+    task :update do
+      mystro.chef.push
+      mystro.chef.symlink
+    end
+
+    desc "push mystro configuration"
+    task :push do
+      require "rails"
+      dir = "config/chef"
+      file = "chef-config-#{$$}-#{Time.now.to_i}.tgz"
+      system("cd #{dir} && tar cfz /tmp/#{file} *")
+      upload("/tmp/#{file}", "#{shared_path}/config/#{file}")
+      run("cd #{shared_path}/config && tar xfz #{file}")
+    end
+
+    desc "symlink mystro configuration"
+    task :symlink do
+      run("if [ -e '#{release_path}' ]; then ln -sf #{shared_path}/config #{release_path}/config/chef; else ln -sf #{shared_path}/config #{current_path}/config/chef; fi")
+    end
+  end
+
   namespace :config do
     task :update do
       mystro.config.push
@@ -84,7 +105,7 @@ namespace :mystro do
 
     desc "symlink mystro configuration"
     task :symlink do
-      run("ln -sf #{shared_path}/config #{current_path}/config/mystro")
+      run("if [ -e '#{release_path}' ]; then ln -sf #{shared_path}/config #{release_path}/config/mystro; else ln -sf #{shared_path}/config #{current_path}/config/mystro; fi")
     end
   end
 end
