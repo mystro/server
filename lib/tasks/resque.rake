@@ -8,6 +8,7 @@ task "resque:setup" => :environment do
 
   # you probably already have this somewhere
   Resque.redis = 'localhost:6379'
+  Resque.redis.namespace = "resque:Mystro"
 
   # If you want to be able to dynamically change the schedule,
   # uncomment this line.  A dynamic schedule can be updated via the
