@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
-require "rails" rescue nil
 
 # server
 gem 'rails', '3.2.8'
@@ -14,7 +13,7 @@ gem "json", "1.6.1" # specified to solve depedency conflict with chef
 gem "ipaddress"
 
 # mystro
-if Rails && Rails.env.development?
+if ENV["MYSTRO_DEV"]
   gem "mystro-common", :path => "../common"
   #gem "mystro-client", :path => "~/catz/mystro/client"
   #gem "mystro-plugin-chef", :path => "~/catz/mystro/mystro-plugin-chef"
