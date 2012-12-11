@@ -29,3 +29,4 @@ unless Rails.application.config.cache_classes
 end
 
 Resque::Server.use Authentication
+Resque.redis.namespace = "resque:Mystro"
