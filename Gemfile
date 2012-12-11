@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+require "rails"
 
 # server
 gem 'rails', '3.2.8'
@@ -13,16 +14,20 @@ gem "json", "1.6.1" # specified to solve depedency conflict with chef
 gem "ipaddress"
 
 # mystro
-#gem "mystro-common"
-gem "mystro-common", :path => "~/catz/mystro/common"
-#gem "mystro-client"
-gem "mystro-client", :path => "~/catz/mystro/client"
-#gem "mystro-plugin-chef"
-#gem "mystro-plugin-chef", :path => "~/catz/mystro/mystro-plugin-chef"
-#gem "mystro-plugin-scout"
-#gem "mystro-plugin-scout", :path => "~/catz/mystro/mystro-plugin-scout"
-#gem "mystro-plugin-mongo"
-#gem "mystro-plugin-mongo", :path => "~/catz/mystro/mystro-plugin-mongo"
+if Rails.env.development?
+  gem "mystro-common", :path => "../common"
+  #gem "mystro-client", :path => "~/catz/mystro/client"
+  #gem "mystro-plugin-chef", :path => "~/catz/mystro/mystro-plugin-chef"
+  #gem "mystro-plugin-scout", :path => "~/catz/mystro/mystro-plugin-scout"
+  #gem "mystro-plugin-mongo", :path => "~/catz/mystro/mystro-plugin-mongo"
+else
+  #gem "mystro-common"
+  gem "mystro-common", :git => "git@github.com:mystro/common.git"
+  #gem "mystro-client"
+  #gem "mystro-plugin-chef"
+  #gem "mystro-plugin-scout"
+  #gem "mystro-plugin-mongo"
+end
 
 # jobs
 gem "resque"
@@ -51,7 +56,7 @@ gem "scout_api"
 gem "mongo"
 
 group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
+  gem 'sass-rails', '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
   #gem "therubyracer", ">= 0.10.2", :platform => :ruby

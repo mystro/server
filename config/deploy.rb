@@ -6,7 +6,7 @@ set :ssh_options, { :forward_agent => true }
 
 set :scm, :git
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
-set :repository,  "git@github.com:shawncatz/mystro-server.git"
+set :repository,  "git@github.com:mystro/server.git"
 
 set :deploy_to, "/srv/apps/#{application}"
 set :deploy_via, :remote_cache
@@ -31,6 +31,7 @@ set :use_sudo, false
 set :keep_releases, 3
 
 # if you want to clean up old releases on each deploy uncomment this:
+after "deploy:update_code", "mystro:config"
 after "deploy:restart", "deploy:cleanup"
 after "deploy:restart", "foreman:restart"
 after "deploy:restart", "mystro:files"
@@ -56,6 +57,12 @@ namespace :mystro do
     rake = fetch(:rake, "rake")
     task = "mystro:files:load"
     run "cd #{current_path} && #{rake} #{task} RAILS_ENV=#{rails_env}"
+  end
+
+  desc "push mystro configuration"
+  task :config do
+    top.upload("#{Rails.root}/config/mystro", "#{shared_path}/config")
+    run("ln -sf #{shared_path}/config #{current_path}/config/mystro")
   end
 end
 

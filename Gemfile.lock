@@ -1,10 +1,4 @@
 PATH
-  remote: ~/catz/mystro/client
-  specs:
-    mystro-client (0.0.1)
-      httparty
-
-PATH
   remote: ~/catz/mystro/common
   specs:
     mystro-common (0.1.0)
@@ -363,7 +357,6 @@ DEPENDENCIES
   mongo
   mongoid (>= 3.0.9)
   mongoid-rspec (>= 1.4.6)
-  mystro-client!
   mystro-common!
   quiet_assets (>= 1.0.1)
   rails (= 3.2.8)
