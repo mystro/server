@@ -12,12 +12,11 @@ set :deploy_to, "/srv/apps/#{application}"
 set :deploy_via, :remote_cache
 
 require 'capistrano/ext/multistage'
-
-#set :whenever_command, "bundle exec whenever"
-#require 'whenever/capistrano'
-
 require 'bundler/capistrano'
 set :bundle_flags,    "--quiet"
+
+set :whenever_command, "bundle exec whenever"
+require 'whenever/capistrano'
 
 require 'webserver/apache'
 set :webserver_dir, "/srv/sites"
@@ -32,11 +31,13 @@ set :use_sudo, false
 set :keep_releases, 3
 
 # if you want to clean up old releases on each deploy uncomment this:
-#after "deploy:update_code", "mystro:config"
 after "deploy:restart", "deploy:cleanup"
 after "deploy:restart", "foreman:restart"
-#after "deploy:restart", "mystro:files"
-#after "deploy:setup", "mystro:setup"
+
+after "deploy:update_code", "mystro:config:push"
+after "deploy:create_symlink", "mystro:config:symlink"
+after "deploy:restart", "mystro:files"
+after "deploy:setup", "mystro:setup"
 
 # uncomment below to map specified rake tasks to cap tasks
 require 'cape'
@@ -54,28 +55,39 @@ Cape do |cape|
   end
 end
 
-#namespace :mystro do
-#  task :files do
-#    rake = fetch(:rake, "rake")
-#    task = "mystro:files:load"
-#    run "cd #{current_path} && #{rake} #{task} RAILS_ENV=#{rails_env}"
-#  end
-#
-#  task :setup do
-#    run("mkdir -p #{shared_path}/config")
-#  end
-#
-#  desc "push mystro configuration"
-#  task :update_config do
-#    require "rails"
-#    dir = "config/mystro"
-#    file = "mystro-config-#{$$}-#{Time.now.to_i}.tgz"
-#    system("cd #{dir} && tar cfz /tmp/#{file} *")
-#    upload("/tmp/#{file}", "#{shared_path}/config/#{file}")
-#    run("cd #{shared_path}/config && tar xfz #{file}")
-#    run("ln -sf #{shared_path}/config #{current_path}/config/mystro")
-#  end
-#end
+namespace :mystro do
+  task :files do
+    rake = fetch(:rake, "rake")
+    task = "mystro:files:load"
+    run "cd #{current_path} && #{rake} #{task} RAILS_ENV=#{rails_env}"
+  end
+
+  task :setup do
+    run("mkdir -p #{shared_path}/config")
+  end
+
+  namespace :config do
+    task :update do
+      mystro.config.push
+      mystro.config.symlink
+    end
+
+    desc "push mystro configuration"
+    task :push do
+      require "rails"
+      dir = "config/mystro"
+      file = "mystro-config-#{$$}-#{Time.now.to_i}.tgz"
+      system("cd #{dir} && tar cfz /tmp/#{file} *")
+      upload("/tmp/#{file}", "#{shared_path}/config/#{file}")
+      run("cd #{shared_path}/config && tar xfz #{file}")
+    end
+
+    desc "symlink mystro configuration"
+    task :symlink do
+      run("ln -sf #{shared_path}/config #{current_path}/config/mystro")
+    end
+  end
+end
 
 namespace :foreman do
   desc "Start the application services"
