@@ -1,4 +1,4 @@
-RigWorker:
+MystroWorker:
   cron: "*/10 * * * *"
 ChefWorker:
   cron: "*/15 * * * *"
