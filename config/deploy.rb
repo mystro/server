@@ -35,6 +35,7 @@ after "deploy:restart", "deploy:cleanup"
 after "deploy:restart", "foreman:restart"
 
 after "deploy:update_code", "mystro:config:update"
+after "deploy:update_code", "mystro:chef:update"
 after "deploy:restart", "mystro:files"
 after "deploy:setup", "mystro:setup"
 
@@ -63,6 +64,14 @@ namespace :mystro do
 
   task :setup do
     run("mkdir -p #{shared_path}/config")
+  end
+
+  desc "update mystro and chef configuration and reload accounts and templates"
+  task :push do
+    mystro.config.update
+    mystro.chef.update
+    foreman.restart
+    mystro.files
   end
 
   namespace :chef do
