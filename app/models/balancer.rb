@@ -27,6 +27,10 @@ class Balancer
     rid
   end
 
+  def display
+    rid
+  end
+
   def add_compute(rid)
     computes << Compute.remote(rid)
   end

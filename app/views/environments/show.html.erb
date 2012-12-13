@@ -36,7 +36,7 @@
   </tr>
   <% @environment.computes.sort_by(&:short).each do |compute| %>
       <tr>
-        <td><%= link_to compute.short, compute %></td>
+        <td><%= link_to compute.display, compute %></td>
       </tr>
   <% end %>
 </table>

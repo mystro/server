@@ -39,16 +39,29 @@ class Compute
   end
 
   def short
-    "#{name}#{num > 0 ? num : ""}#{environment ? ".#{environment.name}" : ""}"
+    "#{name}#{number}.#{envname}"
+  end
+
+  def display
+    a = subdomain
+    "#{short}#{a ? ".#{a}" : ""}"
+  end
+
+  def number
+    num > 0 ? num : ""
   end
 
   def envname
-    environment ? environment.name : "unknown"
+    environment ? environment.name : ""
+  end
+
+  def subdomain
+    account.mystro.dns.zone.split(".")[0] || "" rescue ""
   end
 
   def fog_tags
     {
-        'Name'        => short,
+        'Name'        => display,
         'Environment' => envname,
         'Roles'       => roles_string,
         'Account'     => account ? account.name : ""
@@ -56,13 +69,19 @@ class Compute
   end
 
   def fog_options
+    u = account.mystro.compute.userdata || "default"
+    z = account.mystro.dns.zone || Mystro.account.dns.zone || "unknown"
+    a = account.name || "unknown"
     {
         image_id:  image,
         flavor_id: flavor,
         key_name:  keypair,
         groups:    groups,
         region:    region,
-        user_data: Mystro::Userdata.create(short, roles.map(&:name), envname, package: Mystro.account.compute.userdata)
+        user_data: Mystro::Userdata.create(display, roles.map(&:name), envname,
+                                           package: u,
+                                           zone: z,
+                                           account: a)
     }
   end
 
@@ -99,11 +118,9 @@ class Compute
       list = [record.long, record.values].flatten
       list.each do |val|
         if ::IPAddress.valid?(val)
-          puts "compute.find_by_record: #{val}"
           o = Compute.where(:public_ip => val).first
           return o if o
         else
-          puts "compute.find_by_record: #{val}"
           o = Compute.where(:public_dns => val).first
           return o if o
         end

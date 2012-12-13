@@ -14,7 +14,7 @@
   <tr> <th>Values</th> <td><%= (@record.values||[]).join(",") %></td> </tr>
   <tr><th>Nameable</th><td>
     <% if @nameable %>
-        <%= link_to "(#{@nameable.class}) #{@nameable.respond_to?(:short) ? @nameable.short : @nameable.name}", @nameable %>
+        <%= link_to "(#{@nameable.class}) #{@nameable.respond_to?(:display) ? @nameable.display : @nameable.name}", @nameable %>
     <% end %>
   </td></tr>
   <tr> <th>Synced At</th> <td><%= @record.synced_at %></td> </tr>
