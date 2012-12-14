@@ -2,7 +2,7 @@ class ComputesController < ApplicationController
   # GET /computes
   # GET /computes.json
   def index
-    @computes = filters(Compute, {account_id: mystro_account_id}) #Compute.where(account_id: mystro_account_id).all
+    @computes = filters(Compute, {account_id: mystro_account_id}).includes(:environment, :balancer) #Compute.where(account_id: mystro_account_id).all
     # for form
     @environments = Environment.all
     @roles = Role.external.all.sort(name: 1)

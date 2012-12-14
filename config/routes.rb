@@ -20,7 +20,6 @@ MystroServer::Application.routes.draw do
   resources :records
 
   #resources :providers
-  #resources :accounts
 
   # DO NOT UNCOMMENT THIS FOR NOW
   # creates a redirect loop
