@@ -78,7 +78,8 @@ class Compute
         key_name:  keypair,
         groups:    groups,
         region:    region,
-        user_data: Mystro::Userdata.create(display, roles.map(&:name), envname,
+        user_data: Mystro::Userdata.create(long, roles.map(&:name), envname,
+                                           nickname: display,
                                            package: u,
                                            zone: z,
                                            account: a)
