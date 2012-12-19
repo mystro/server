@@ -35,7 +35,7 @@ class Compute
   end
 
   def long
-    "#{short}.#{account ? account.mystro.dns.zone : ""}"
+    "#{short}.#{account && account.mystro.dns.zone ? account.mystro.dns.zone : ""}"
   end
 
   def short
