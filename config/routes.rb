@@ -10,7 +10,12 @@ MystroServer::Application.routes.draw do
   resources :balancers
   resources :listeners
 
-  resources :computes
+  resources :computes do
+    collection do
+      match "search", :to => "computes#search"
+      match "search/:pattern", :to => "computes#search", :constraints => { :pattern => /[0-9A-Za-z\-\.\,]+/ }
+    end
+  end
   resources :roles
 
   resources :environments

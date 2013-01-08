@@ -95,4 +95,30 @@ class ComputesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def search
+    patterns = (params[:pattern]||"").split(",")
+    data = Compute.asc(:account_id, :environment_id).all
+    #data = list.map {|e| {id: e.id, name: e.display}}
+    patterns.each do |pattern|
+      p = Regexp.escape(pattern)
+      data = data.reject do |e|
+        logger.info "PATTERN: #{e.display} !~ /#{p}/"
+        e.display !~ /#{p}/
+      end
+    end
+    out = data.map do |e|
+      {
+          id: e.id,
+          name: e.display,
+          long: (e.long rescue nil),
+          dns: e.public_dns,
+          ip: e.public_ip,
+          environment: e.environment ? e.environment.name : nil,
+          account: e.account ? e.account.name : nil,
+          roles: e.roles_string
+      }
+    end
+    render json: out, status: :ok
+  end
 end
