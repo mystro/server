@@ -16,6 +16,14 @@ class Account
 
   scope :named, ->(name){ where(name: name) }
 
+  def to_api
+    {
+        name: name,
+        file: file,
+        enabled: enabled,
+    }
+  end
+
   class << self
     def mystro(a)
       if a.is_a?(Mystro::Account)

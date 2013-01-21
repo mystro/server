@@ -3,6 +3,22 @@ MystroServer::Application.routes.draw do
   mount Resque::Server.new, :at => "/admin/resque"
   resource :resque
 
+  namespace :api do
+    scope :defaults => { :format => 'json' } do
+      resources :accounts do
+        resources :accounts
+        resources :environments
+        resources :computes do
+          collection do
+            match "search", :to => "computes#search"
+            match "search/:pattern", :to => "computes#search", :constraints => { :pattern => /[0-9A-Za-z\-\.\,]+/ }
+          end
+        end
+        resources :templates
+      end
+    end
+  end
+
   resources :accounts do
     post "select", :on => :member
   end
@@ -10,12 +26,7 @@ MystroServer::Application.routes.draw do
   resources :balancers
   resources :listeners
 
-  resources :computes do
-    collection do
-      match "search", :to => "computes#search"
-      match "search/:pattern", :to => "computes#search", :constraints => { :pattern => /[0-9A-Za-z\-\.\,]+/ }
-    end
-  end
+  resources :computes
   resources :roles
 
   resources :environments

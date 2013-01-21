@@ -86,6 +86,20 @@ class Compute
     }
   end
 
+  def to_api
+    {
+        id: id,
+        name: display,
+        long: (long rescue nil),
+        dns: public_dns,
+        ip: public_ip,
+        environment: environment ? environment.name : nil,
+        account: account ? account.name : nil,
+        balancer: balancer ? balancer.name : nil,
+        roles: roles_string
+    }
+  end
+
   class << self
     def create_from_fog(obj)
       compute = Compute.where(:rid => obj.id).first || Compute.create(:rid => obj.id)

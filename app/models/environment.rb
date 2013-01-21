@@ -12,9 +12,12 @@ class Environment
   belongs_to :account, index: true
 
   field :name, type: String
-  field :protected, type: Boolean
+  field :protected, type: Boolean, default: false
 
   index({ name: 1, account: 1 }, { unique: true})
+
+  validates_presence_of(:name)
+  validates_presence_of(:template)
 
   def get_next_number(name)
     (computes.where(:name => name).max(:num).to_i || 0) + 1
@@ -30,6 +33,22 @@ class Environment
     j = super(:include => [:computes, :balancers])
     j[:age] = age
     j
+  end
+
+  def to_api
+    {
+        id: id,
+        age: age,
+        name: name,
+        template: template ? template.name : nil,
+        computes: computes.count,
+        balancers: balancers.count,
+        account: account ? account.name : nil,
+        deleting: deleting,
+        protected: protected,
+        created: created_at,
+        updated: updated_at,
+    }
   end
 
   class << self

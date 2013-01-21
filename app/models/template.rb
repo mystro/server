@@ -14,4 +14,12 @@ class Template
   def load
     Mystro::DSL::Template.load(name)
   end
+
+  def to_api
+    {
+        name: name,
+        file: file,
+        enabled: enabled,
+    }
+  end
 end

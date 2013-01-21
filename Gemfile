@@ -84,6 +84,7 @@ group :development do
   #gem 'capistrano-unicorn'
   gem "awesome_print"
   gem "cape"
+  gem "sextant"
 end
 gem 'whenever'
 gem 'awesome_print'

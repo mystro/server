@@ -10,9 +10,12 @@ class ApplicationController < ActionController::Base
 
   def filters(model, options={})
     q = model.scoped
-    if options[:account_id]
-      q = q.where(account: options[:account_id])
+    options.each do |k, v|
+      q = q.where(k => v)
     end
+    #if options[:account_id]
+    #  q = q.where(account: options[:account_id])
+    #end
     q
   end
 
