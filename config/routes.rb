@@ -39,10 +39,11 @@ MystroServer::Application.routes.draw do
 
   # DO NOT UNCOMMENT THIS FOR NOW
   # creates a redirect loop
-  #resources :users, :only => [:show, :index]
+  resources :users
 
   resource :profile, :only => [:edit, :show, :update]
-  devise_for :users
+  #devise_for :users
+  devise_for :users, :path => "auth", :path_names => { :sign_in => 'login', :sign_out => 'logout' }
 
   authenticated :user do
     root :to => 'home#index'

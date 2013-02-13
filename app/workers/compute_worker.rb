@@ -45,6 +45,9 @@ class ComputeWorker < BaseWorker
       mystro.compute.destroy(compute)
       logger.info "compute:#{compute.id}#destroy queue record destroy"
       compute.records.each { |r| r.enqueue(:destroy) }
+    rescue => e
+      logger.error "ERROR: #{e.message}"
+      logger.error e
     ensure
       logger.info "compute:#{compute.id}#destroy compute destroy"
       compute.destroy

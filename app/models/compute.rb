@@ -30,6 +30,21 @@ class Compute
   field :private_dns, type: String
   field :private_ip, type: String
 
+  # a bit hacky, but easiest way to make sure we get defaults from current account
+  def set_defaults(user)
+    accountname = (user ? user.account : nil) || Mystro::Account.selected
+    if accountname
+      self.account = Account.named(accountname).first
+      if account
+        self.image   = account.mystro.compute.image
+        self.flavor  = account.mystro.compute.flavor
+        self.keypair = account.mystro.compute.keypair
+        self.groups  = account.mystro.compute.groups
+        self.region  = account.mystro.compute.region
+      end
+    end
+  end
+
   def roles_string
     (roles||[]).map { |r| r.name }.join(",")
   end
@@ -80,23 +95,23 @@ class Compute
         region:    region,
         user_data: Mystro::Userdata.create(long, roles.map(&:name), envname,
                                            nickname: display,
-                                           package: u,
-                                           zone: z,
-                                           account: a)
+                                           package:  u,
+                                           zone:     z,
+                                           account:  a)
     }
   end
 
   def to_api
     {
-        id: id,
-        name: display,
-        long: (long rescue nil),
-        dns: public_dns,
-        ip: public_ip,
+        id:          id,
+        name:        display,
+        long:        (long rescue nil),
+        dns:         public_dns,
+        ip:          public_ip,
         environment: environment ? environment.name : nil,
-        account: account ? account.name : nil,
-        balancer: balancer ? balancer.name : nil,
-        roles: roles_string
+        account:     account ? account.name : nil,
+        balancer:    balancer ? balancer.name : nil,
+        roles:       roles_string
     }
   end
 

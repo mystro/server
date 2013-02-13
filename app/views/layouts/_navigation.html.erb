@@ -86,9 +86,15 @@
               <i class="icon-share "></i> Logout
           <% end %>
         </li>
-        <li class="<%= controller.controller_path == 'users' ? 'active' : '' %>">
+        <li class="<%= controller.controller_path == 'auth' ? 'active' : '' %>">
           <%= link_to edit_user_registration_path, :title => "edit profile" do %>
               <i class="icon-cog "></i> Profile
+          <% end %>
+        </li>
+        <li class="divider"></li>
+        <li class="<%= controller.controller_path == 'users' ? 'active' : '' %>">
+          <%= link_to users_path, :title => "manage users" do %>
+              <i class="icon-user "></i> Manage Users
           <% end %>
         </li>
       </ul>

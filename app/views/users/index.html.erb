@@ -1,8 +1,69 @@
-<h3>Users</h3>
-<ul class="users">
+<% content_for :subnav_buttons do %>
+    <a id="create_user" class="btn btn-primary" title="Create New User">create</a>
+<% end %>
+
+<table class="table table-condensed table-striped tablesorter {sortlist: [[1,0],[0,0]]}">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th class="links {sorter: false}"></th>
+  </tr>
+  </thead>
+  <tbody>
+
   <% @users.each do |user| %>
-    <li>
-      <%= link_to user.name, user %> signed up <%= user.created_at.to_date %>
-    </li>
+      <tr class="<%#= "deleting" if user.deleting %>">
+        <td><%= link_to user.name, user %></td>
+        <td><%= user.email %></td>
+        <td class="links">
+          <%= render "common/links", :obj => user, :edit => edit_user_path(user) %>
+        </td>
+      </tr>
   <% end %>
-</ul>
+  </tbody>
+</table>
+
+<script id="new_user_dialog" type="text/template">
+  <% @user = User.new %>
+  <%= simple_form_for(@user, :html => { :class => "user_form form-horizontal" }) do |f| %>
+      <div>
+            <div class="form-inputs">
+              <%= f.input :name %>
+              <%= f.input :email %>
+              <%= f.input :password %>
+              <%= f.input :password_confirmation %>
+            </div>
+      </div>
+
+  <% end %>
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $("#create_user").on("click", function () {
+            bootbox.dialog($("#new_user_dialog").html(), [
+                {
+                    "Cancel":function () {
+                        console.log("cancel");
+                    }
+                },
+                {
+                    "Create":function () {
+                        console.log("create");
+                        var f = $(".user_form:last"); // because bootbox makes a clone
+                        data = f.serialize();
+                        console.log("data");
+                        console.log(f.serializeArray());
+                        bootbox.modal("please wait", "creating");
+                        console.log("post");
+                        $.post("/users.json", data, function () {
+                            console.log("success");
+                            bootbox.hideAll();
+                        });
+                    }
+                }
+            ], {header:"Create Compute"})
+        });
+    });
+</script>

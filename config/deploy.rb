@@ -85,14 +85,17 @@ namespace :mystro do
       require "rails"
       dir = "config/chef"
       file = "chef-config-#{$$}-#{Time.now.to_i}.tgz"
+      remote = "#{shared_path}/config/#{file}"
       system("cd #{dir} && tar cfz /tmp/#{file} *")
       upload("/tmp/#{file}", "#{shared_path}/config/#{file}")
-      run("cd #{shared_path}/config && tar xfz #{file}")
+      run("mkdir -p #{shared_path}/#{dir}")
+      run("cd #{shared_path}/#{dir} && tar xfz #{remote} && rm #{remote}")
     end
 
     desc "symlink mystro configuration"
     task :symlink do
-      run("if [ -e '#{release_path}' ]; then ln -sf #{shared_path}/config #{release_path}/config/chef; else ln -sf #{shared_path}/config #{current_path}/config/chef; fi")
+      dir = "config/chef"
+      run("if [ -e '#{release_path}' ]; then rm #{release_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{release_path}/#{dir}; else rm #{current_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{current_path}/#{dir}; fi;")
     end
   end
 
@@ -107,14 +110,17 @@ namespace :mystro do
       require "rails"
       dir = "config/mystro"
       file = "mystro-config-#{$$}-#{Time.now.to_i}.tgz"
+      remote = "#{shared_path}/config/#{file}"
       system("cd #{dir} && tar cfz /tmp/#{file} *")
-      upload("/tmp/#{file}", "#{shared_path}/config/#{file}")
-      run("cd #{shared_path}/config && tar xfz #{file}")
+      upload("/tmp/#{file}", remote)
+      run("mkdir -p #{shared_path}/#{dir}")
+      run("cd #{shared_path}/#{dir} && tar xfz #{remote} && rm #{remote}")
     end
 
     desc "symlink mystro configuration"
     task :symlink do
-      run("if [ -e '#{release_path}' ]; then ln -sf #{shared_path}/config #{release_path}/config/mystro; else ln -sf #{shared_path}/config #{current_path}/config/mystro; fi")
+      dir = "config/mystro"
+      run("if [ -e '#{release_path}' ]; then rm #{release_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{release_path}/#{dir}; else rm #{current_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{current_path}/#{dir}; fi;")
     end
   end
 end

@@ -27,7 +27,7 @@
 </table>
 
 <script id="new_compute_dialog" type="text/template">
-  <% @compute = Compute.new %>
+  <% @compute = Compute.new; @compute.set_defaults(current_user) %>
   <%= simple_form_for(@compute, :html => { :class => "compute_form form-horizontal" }) do |f| %>
       <div>
         <ul class="nav nav-tabs">

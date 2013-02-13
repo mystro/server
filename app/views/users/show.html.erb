@@ -1,3 +1,19 @@
-<h3>User</h3>
-<p>User: <%= @user.name %></p>
-<p>Email: <%= @user.email if @user.email %></p>
+<% content_for :subnav_buttons do %>
+    <%= link_to edit_user_path(@user), :title => "Edit Compute", :class => "btn btn-primary" do %>
+        <i class="icon-edit icon-white"></i> edit
+    <% end %>
+    <%= link_to @user, method: :delete, data: { confirm: 'Are you sure?' }, :title => "Destroy Compute", :class => "btn btn-danger" do %>
+        <i class="icon-remove-sign icon-white"></i> destroy
+    <% end %>
+<% end %>
+
+<table class="table table-condensed table-bordered fields-horizontal">
+  <tr>
+    <th>Name</th>
+    <td><%= @user.name %></td>
+  </tr>
+  <tr>
+    <th>Email</th>
+    <td><%= @user.email %></td>
+  </tr>
+</table>
