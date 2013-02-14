@@ -2,8 +2,7 @@ class EnvironmentsController < ApplicationController
   # GET /environments
   # GET /environments.json
   def index
-    aid = params["account"] ? Account.named(params["account"]).first.id : mystro_account_id
-    @environments = filters(Environment, {account_id: aid}).includes(:computes, :balancers).all
+    @environments = filters(Environment, {account: current_user.account}).includes(:computes, :balancers).all
     @templates = Template.active.for_account(current_user.account).asc(:account, :name).all
 
     respond_to do |format|
