@@ -69,7 +69,7 @@ class EnvironmentsController < ApplicationController
 
     respond_to do |format|
       if @environment.update_attributes(params[:environment])
-        @environment.enqueue(:create)
+        #@environment.enqueue(:create)
         format.html { redirect_to @environment, notice: 'Environment was successfully updated.' }
         format.json { head :no_content }
       else
