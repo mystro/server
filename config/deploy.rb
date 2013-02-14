@@ -138,7 +138,7 @@ namespace :foreman do
 
   desc "Restart the application services"
   task :restart, :roles => :app do
-    run "sudo start #{application} || ( sudo restart #{application}-scheduler ; sudo restart #{application}-worker ; PID=`service mystroserver-web-1 status | awk '{print $4}'`; if [ -n \"$PID\" ]; then kill -USR2 $PID; fi )"
+    run "sudo start #{application} || sudo restart #{application}"
   end
 
   desc "Display logs for a certain process - arg example: PROCESS=web-1"
@@ -148,7 +148,7 @@ namespace :foreman do
 
   desc "Export the Procfile to upstart scripts"
   task :export, :roles => :app do
-    webs       = 1
+    webs       = 2
     workers    = 3
     schedulers = 1
 
