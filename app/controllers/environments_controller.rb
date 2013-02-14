@@ -4,7 +4,7 @@ class EnvironmentsController < ApplicationController
   def index
     aid = params["account"] ? Account.named(params["account"]).first.id : mystro_account_id
     @environments = filters(Environment, {account_id: aid}).includes(:computes, :balancers).all
-    @templates = Template.active.where(:account.in => [nil, Account.named(current_user.account).first]).asc(:account, :name).all
+    @templates = Template.active.for_account(current_user.account).asc(:account, :name).all
 
     respond_to do |format|
       format.html # index.html.erb
@@ -30,6 +30,8 @@ class EnvironmentsController < ApplicationController
   # GET /environments/new.json
   def new
     @environment = Environment.new
+    @templates = Template.active.for_account(current_user.account).asc(:account, :name).all
+    @accounts = Account.all
 
     respond_to do |format|
       format.html # new.html.erb
@@ -40,6 +42,8 @@ class EnvironmentsController < ApplicationController
   # GET /environments/1/edit
   def edit
     @environment = Environment.find(params[:id])
+    @templates = Template.active.for_account(current_user.account).asc(:account, :name).all
+    @accounts = Account.all
   end
 
   # POST /environments
@@ -66,6 +70,8 @@ class EnvironmentsController < ApplicationController
   def update
     @environment = Environment.find(params[:id])
     @environment.account_id ||= mystro_account_id
+    @templates = Template.active.for_account(current_user.account).asc(:account, :name).all
+    @accounts = Account.all
 
     respond_to do |format|
       if @environment.update_attributes(params[:environment])
