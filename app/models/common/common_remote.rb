@@ -8,6 +8,11 @@ module CommonRemote
     field :managed, type: Boolean, default: false
     field :synced_at, type: DateTime, default: nil
 
+    def old?
+      return true if (Time.now.to_i - synced_at.to_i) > 60.minutes
+      false
+    end
+
     extend ClassMethods
   end
 

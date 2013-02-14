@@ -15,8 +15,6 @@ class Compute
 
   field :name, type: String
   field :num, type: Integer, default: 0
-  field :environment_id, type: String
-  field :balancer_id, type: String
   #[:name, :environment, :roles, :image, :flavor, :keypair, :groups, :region]
   field :image, type: String, default: Mystro.account.compute.image
   field :flavor, type: String, default: Mystro.account.compute.flavor

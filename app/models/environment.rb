@@ -23,10 +23,17 @@ class Environment
     (computes.where(:name => name).max(:num).to_i || 0) + 1
   end
 
+  def old?
+    a = age
+    a < 0 || a > 60.minutes
+  end
+
   def age
-    list = computes.map(&:synced_at) + balancers.map(&:synced_at)
-    return -1 if list.include?(nil) || list.count == 0
-    Time.now - list.min
+    @age ||= begin
+      list = computes.map(&:synced_at) + balancers.map(&:synced_at)
+      return -1 if list.include?(nil) || list.count == 0
+      Time.now - list.min
+    end
   end
 
   def as_json(options={})
