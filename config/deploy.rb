@@ -138,7 +138,7 @@ namespace :foreman do
 
   desc "Restart the application services"
   task :restart, :roles => :app do
-    run "sudo start #{application} || ( sudo restart #{application}-scheduler ; sudo restart #{application}-worker ; PID=`cat /srv/apps/mystroserver/shared/pids/unicorn.pid 2>/dev/null`; if [ -n \"$PID\" ]; then echo restarting unicorn: kill USR2 $PID; kill -USR2 $PID; fi )"
+    run "sudo start #{application} || ( sudo restart #{application}-scheduler ; sudo restart #{application}-worker ; PID=`service mystroserver-web-1 status | awk '{print $4}'`; if [ -n \"$PID\" ]; then echo restarting unicorn: kill USR2 $PID; kill -USR2 $PID; fi )"
   end
 
   desc "Display logs for a certain process - arg example: PROCESS=web-1"
