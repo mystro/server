@@ -4,16 +4,19 @@
 # ------------------------------------------------------------------------------
 
 # Set your full path to application.
-app      = "mystro"
+app      = "mystroserver"
 app_path = "/srv/apps/#{app}/current"
 
 # Set unicorn options
-worker_processes 1
-preload_app true
+worker_processes 3
 timeout 60
 listen "/tmp/#{app}.unicorn.sock", :backlog => 64
 listen 6000, :tcp_nopush => true
 
+# combine Ruby 2.0.0dev or REE with "preload_app true" for memory savings
+# http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
+preload_app true
+GC.respond_to?(:copy_on_write_friendly=) and GC.copy_on_write_friendly = true
 
 # Spawn unicorn master worker for user apps (group: apps)
 #user 'deploy', 'users'
@@ -27,11 +30,6 @@ rails_env = ENV['RAILS_ENV'] || 'production'
 # Log everything to one file
 stderr_path "log/unicorn.log"
 stdout_path "log/unicorn.log"
-
-# combine Ruby 2.0.0dev or REE with "preload_app true" for memory savings
-# http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
-preload_app true
-GC.respond_to?(:copy_on_write_friendly=) and GC.copy_on_write_friendly = true
 
 # Set master PID location
 pid "#{app_path}/tmp/pids/unicorn.pid"
