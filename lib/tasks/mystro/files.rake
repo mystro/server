@@ -19,9 +19,11 @@ namespace :mystro do
     end
     task :templates => :environment do
       puts ".. loading templates..."
-      files = Dir["config/mystro/templates/*"]
+      dir = "config/mystro/templates"
+      files = Dir["#{dir}/**/*"].select {|e| File.file?(e)}.map {|e| e.gsub("#{dir}/", "")}
       files.each do |file|
         name = File.basename(file).gsub(/\.rb/, "")
+        f =
         t = Template.find_or_create_by(:name => name, :file => file)
         d = JSON.parse(t.load.to_json)
         t.data = d
