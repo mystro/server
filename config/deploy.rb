@@ -88,7 +88,7 @@ namespace :mystro do
       remote = "#{shared_path}/config/#{file}"
       system("cd #{dir} && tar cfz /tmp/#{file} *")
       upload("/tmp/#{file}", "#{shared_path}/config/#{file}")
-      run("mkdir -p #{shared_path}/#{dir}")
+      run("rm -rf #{shared_path}/#{dir}; mkdir -p #{shared_path}/#{dir}")
       run("cd #{shared_path}/#{dir} && tar xfz #{remote} && rm #{remote}")
     end
 
@@ -113,7 +113,7 @@ namespace :mystro do
       remote = "#{shared_path}/config/#{file}"
       system("cd #{dir} && tar cfz /tmp/#{file} *")
       upload("/tmp/#{file}", remote)
-      run("mkdir -p #{shared_path}/#{dir}")
+      run("rm -rf #{shared_path}/#{dir}; mkdir -p #{shared_path}/#{dir}")
       run("cd #{shared_path}/#{dir} && tar xfz #{remote} && rm #{remote}")
     end
 
