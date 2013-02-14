@@ -15,7 +15,7 @@ class Balancer
 
   #field :name, type: String # name is stored in the remote id (rid)
   field :environment_id, type: String
-  field :primary, type: Boolean
+  field :primary, type: Boolean, default: false
 
   field :public_dns, type: String
 

@@ -5,7 +5,7 @@ class Account
   field :name, type: String
   field :file, type: String
   field :data, type: Hash
-  field :enabled, type: Boolean
+  field :enabled, type: Boolean, default: false
 
   has_many :environments
   has_many :computes
