@@ -11,6 +11,7 @@ class Account
   has_many :computes
   has_many :balancers
   has_many :records
+  has_many :templates
 
   index({ name: 1 }, { unique: true })
 

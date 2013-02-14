@@ -35,7 +35,7 @@ class Compute
     accountname = (user ? user.account : nil) || Mystro::Account.selected
     if accountname
       self.account = Account.named(accountname).first
-      if account
+      if account && account.mystro
         self.image   = account.mystro.compute.image
         self.flavor  = account.mystro.compute.flavor
         self.keypair = account.mystro.compute.keypair

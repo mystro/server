@@ -1,7 +1,8 @@
-<table class="table table-condensed table-striped tablesorter {sortlist: [[0,0]]}">
+<table class="table table-condensed table-striped tablesorter {sortlist: [[1,0],[0,0]]}">
   <thead>
   <tr>
     <th>Name</th>
+    <th>Account</th>
     <th>File</th>
     <th>Enabled</th>
     <th class="links {sorter: false}"></th>
@@ -11,6 +12,7 @@
 <% @templates.each do |template| %>
   <tr>
     <td><%= link_to template.name, template %></td>
+    <td><%= template.account ? link_to(template.account.name, template.account) : "" %></td>
     <td><%= template.file %></td>
     <td><%= template.enabled %></td>
     <td class="links"><%= render "common/links", :obj => template, :edit => edit_template_path(template) %></td>

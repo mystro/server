@@ -4,7 +4,7 @@ class EnvironmentsController < ApplicationController
   def index
     aid = params["account"] ? Account.named(params["account"]).first.id : mystro_account_id
     @environments = filters(Environment, {account_id: aid}).includes(:computes, :balancers).all
-    @templates = Template.all
+    @templates = Template.active.where(:account.in => [nil, Account.named(current_user.account).first]).asc(:account, :name).all
 
     respond_to do |format|
       format.html # index.html.erb
