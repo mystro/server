@@ -2,7 +2,7 @@
    account = current_account_load
    zone = record.zone
    zones = Zone.all
-   selected_zone = record.zone.id
+   selected_zone = zone ? zone.id : nil
    selected_type = record.type
    types = Record.get_type_values
    domain = zone ? zone.domain : nil
@@ -14,7 +14,7 @@
 
           <div class="form-inputs">
             <%= f.input :name, :wrapper => :append do %>
-                <%= f.input_field :name, :class => "input-small" %><span class="add-on">.<%= domain %></span>
+                <%= f.input_field :name, :class => "input-small" %><span id="domain_text" class="add-on">.<%= domain %></span>
             <% end %>
             <%= f.input :zone, :collection => zones, selected: selected_zone %>
             <%= f.input :type, :collection => types, selected: selected_type %>
@@ -23,12 +23,18 @@
           </div>
       <% end %>
   <% else %>
-      must select an account
+      must select an account and/or zone
   <% end %>
 </script>
 
 <script type="text/javascript">
     $(function () {
+        $("#record_zone").live("change", function(){
+            var s = $("#record_zone option:selected").text();
+            console.log("record_zone change:"+s);
+            $("#domain_text").text("."+s);
+        });
+
         $("#create_record").on("click", function () {
             bootbox.dialog($("#new_record_dialog").html(), [
                 {

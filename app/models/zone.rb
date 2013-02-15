@@ -8,13 +8,14 @@ class Zone
 
   field :domain, type: String
 
-  scope :named, ->(name){ where(domain: name)}
-
   def name
     domain
   end
 
   class << self
+    def named(name)
+      where(domain: name).first
+    end
     def create_from_fog(obj)
       zone           = Zone.remote(obj.id) || Zone.create(:rid => obj.id)
       zone.domain    = obj.domain.gsub(/\.$/, "")

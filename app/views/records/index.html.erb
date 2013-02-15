@@ -39,5 +39,9 @@
   </tbody>
 </table>
 
-<% record = Record.new(account: current_account_load, zone: Zone.named(current_account_load.mystro_zone).first) %>
+<%
+   a = current_account_load
+   record = Record.new(account: a)
+   record.zone = Zone.named(a.mystro_zone) if a
+%>
 <%= render "records/dialog", record: record %>

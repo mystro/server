@@ -9,7 +9,7 @@ namespace :mystro do
     task :accounts => :environment do
       puts ".. loading accounts ..."
       Account.update_all(enabled: false)
-      files = Dir["config/mystro/userdata/*"]
+      files = Dir["config/mystro/accounts/*"]
       files.each do |file|
         name = File.basename(file).gsub(/\.yml/, "")
         a = Account.find_or_create_by(:name => name, :file => file)
@@ -26,17 +26,19 @@ namespace :mystro do
       base = "config/mystro/userdata"
       dirs = Dir["#{base}/*"].map {|e| e.gsub("#{base}/", "")}
       dirs.each do |name|
-        puts ".. create #{name}"
         userdata = Userdata.find_or_create_by(name: name)
+        puts ".. create #{name}"
 
         files = Dir["#{base}/#{name}/*"]
 
         if File.exists?("#{base}/#{name}/userdata.sh.erb")
+          puts ".. .. #{base}/#{name}/userdata.sh.erb"
           files.delete("#{base}/#{name}/userdata.sh.erb")
           userdata.script = File.read("#{base}/#{name}/userdata.sh.erb")
         end
 
         if File.exists?("#{base}/#{name}/userdata.yml")
+          puts ".. .. #{base}/#{name}/userdata.yml"
           files.delete("#{base}/#{name}/userdata.yml")
           userdata.data = YAML.load_file("#{base}/#{name}/userdata.yml")
         end
@@ -49,7 +51,8 @@ namespace :mystro do
         end
 
         userdata.enabled = true
-        userdata.save
+        userdata.save!
+        puts "USERDATA: #{userdata.inspect}"
       end
     end
     task :templates => :environment do

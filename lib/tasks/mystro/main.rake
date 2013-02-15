@@ -23,11 +23,11 @@ namespace :mystro do
 
     Rake::Task["mystro:account:unknown"].invoke
 
-    # create admin user
-    create_user unless User.all.count > 0
-
     # load cloud resources
     Rake::Task["mystro:cloud:update"].invoke unless Compute.all.count > 0
+
+    # create admin user
+    Rake::Task["mystro:user:admin"].invoke
   end
 
   namespace :chef do

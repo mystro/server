@@ -43,10 +43,14 @@ class RecordsController < ApplicationController
   # POST /records.json
   def create
     data = params[:record]
-    data[:name] += ".#{mystro_account.data.dns.zone}"
-    data[:values] = data[:values].split(",")
-    logger.info "data: #{data}"
+    values = data.delete(:values).split(",")
     @record = Record.new(data)
+    @record.values = values
+    if @record.zone
+      @record.name = @record.name + ".#{@record.zone.domain}"
+    else
+      @record.name = @record.name + ".#{mystro_account.data.dns.zone}"
+    end
     @record.account = mystro_account_id
 
     respond_to do |format|
