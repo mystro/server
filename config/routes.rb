@@ -1,5 +1,7 @@
 MystroServer::Application.routes.draw do
 
+  resources :userdata
+
   mount Resque::Server.new, :at => "/admin/resque"
   resource :resque
 

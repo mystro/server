@@ -3,12 +3,13 @@ namespace :mystro do
     desc "load mystro configuration files to database"
     task :load => :environment do
       Rake::Task["mystro:files:accounts"].invoke
+      Rake::Task["mystro:files:userdata"].invoke
       Rake::Task["mystro:files:templates"].invoke
     end
     task :accounts => :environment do
       puts ".. loading accounts ..."
       Account.update_all(enabled: false)
-      files = Dir["config/mystro/accounts/*"]
+      files = Dir["config/mystro/userdata/*"]
       files.each do |file|
         name = File.basename(file).gsub(/\.yml/, "")
         a = Account.find_or_create_by(:name => name, :file => file)
@@ -17,6 +18,38 @@ namespace :mystro do
         a.data = d
         a.save
         puts ".. create #{name} #{file}"
+      end
+    end
+    task :userdata => :environment do
+      puts ".. loading userdata packages ..."
+      Userdata.update_all(enabled: false)
+      base = "config/mystro/userdata"
+      dirs = Dir["#{base}/*"].map {|e| e.gsub("#{base}/", "")}
+      dirs.each do |name|
+        puts ".. create #{name}"
+        userdata = Userdata.find_or_create_by(name: name)
+
+        files = Dir["#{base}/#{name}/*"]
+
+        if File.exists?("#{base}/#{name}/userdata.sh.erb")
+          files.delete("#{base}/#{name}/userdata.sh.erb")
+          userdata.script = File.read("#{base}/#{name}/userdata.sh.erb")
+        end
+
+        if File.exists?("#{base}/#{name}/userdata.yml")
+          files.delete("#{base}/#{name}/userdata.yml")
+          userdata.data = YAML.load_file("#{base}/#{name}/userdata.yml")
+        end
+
+        userdata.files = []
+
+        files.each do |file|
+          puts ".. .. #{file}"
+          userdata.files << file
+        end
+
+        userdata.enabled = true
+        userdata.save
       end
     end
     task :templates => :environment do

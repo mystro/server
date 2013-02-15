@@ -1,0 +1,18 @@
+<table class="table table-condensed table-striped tablesorter {sortlist: [[1,0],[0,0]]}">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Enabled</th>
+    <th class="links {sorter: false}"></th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @userdatas.each do |userdata| %>
+      <tr>
+        <td><%= link_to userdata.name, userdata %></td>
+        <td><%= userdata.enabled %></td>
+        <td class="links"><%= render "common/links", :obj => userdata, :edit => edit_userdata_path(userdata) %></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
