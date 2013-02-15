@@ -4,8 +4,8 @@ class ComputesController < ApplicationController
   def index
     @computes = filters(Compute, {account: current_user.account}).includes(:environment, :balancer) #Compute.where(account_id: mystro_account_id).all
     # for form
-    @environments = Environment.where(:account.in => [nil, Account.named(current_user.account).first]).asc(:name).all
-    @roles = Role.external.all.sort(name: 1)
+    @environments = Environment.asc(:name).all
+    @roles = Role.external.asc(:name).all
 
     respond_to do |format|
       format.html # index.html.erb

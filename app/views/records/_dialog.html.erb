@@ -1,0 +1,59 @@
+<%
+   account = current_account_load
+   zone = record.zone
+   zones = Zone.all
+   selected_zone = record.zone.id
+   selected_type = record.type
+   types = Record.get_type_values
+   domain = zone ? zone.domain : nil
+%>
+<script id="new_record_dialog" type="text/template">
+  <% if account %>
+      <%= simple_form_for(record, :validate => true, :html => { :class => "form-horizontal record_form" }) do |f| %>
+          <%= f.error_notification %>
+
+          <div class="form-inputs">
+            <%= f.input :name, :wrapper => :append do %>
+                <%= f.input_field :name, :class => "input-small" %><span class="add-on">.<%= domain %></span>
+            <% end %>
+            <%= f.input :zone, :collection => zones, selected: selected_zone %>
+            <%= f.input :type, :collection => types, selected: selected_type %>
+            <%= f.input :ttl %>
+            <%= f.input :values, :hint => "comma-separated" %>
+          </div>
+      <% end %>
+  <% else %>
+      must select an account
+  <% end %>
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $("#create_record").on("click", function () {
+            bootbox.dialog($("#new_record_dialog").html(), [
+                {
+                    "Cancel":function () {
+                        console.log("cancel");
+                    }
+                },
+                {
+                    "Create":function () {
+                        console.log("create");
+                        var f = $(".record_form:last"); // because bootbox makes a clone
+                        var n = $("#record[name]");
+                        n.val(n.val()+"."+"<%= domain || "" %>");
+                        data = f.serialize();
+                        console.log("data");
+                        console.log(data);
+                        bootbox.modal("please wait", "creating");
+                        console.log("post");
+                        $.post("/records.json", data, function () {
+                            console.log("success");
+                            bootbox.hideAll();
+                        });
+                    }
+                }
+            ], {header:"Create Record"})
+        });
+    });
+</script>

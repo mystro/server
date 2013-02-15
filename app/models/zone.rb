@@ -8,6 +8,8 @@ class Zone
 
   field :domain, type: String
 
+  scope :named, ->(name){ where(domain: name)}
+
   def name
     domain
   end

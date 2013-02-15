@@ -38,6 +38,10 @@ class Account
     a.data if a
   end
 
+  def mystro_zone
+    mystro.dns.zone || nil rescue nil
+  end
+
   def load
     #puts "account#load #{name} #{file}"
     #puts "#{Mystro::Account.list.inspect}"

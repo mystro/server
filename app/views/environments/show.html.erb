@@ -1,5 +1,5 @@
 <% content_for :subnav_buttons do %>
-    <a href="#" class="btn btn-primary" title="Add New Server to this Environment"><i class="icon-plus-sign icon-white"></i>
+    <a href="#" id="create_compute" class="btn btn-primary" title="Add New Server to this Environment"><i class="icon-plus-sign icon-white"></i>
       server</a>
     <%= link_to edit_environment_path(@environment), :title => "Edi Environment", :class => "btn btn-primary" do %><i class="icon-edit icon-white"></i> edit
     <% end %>
@@ -54,3 +54,6 @@
 
 <script type="text/javascript">
 </script>
+
+<% compute = Compute.new; compute.set_defaults(current_user); compute.environment = @environment %>
+<%= render "computes/dialog", compute: compute %>

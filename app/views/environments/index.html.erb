@@ -29,46 +29,11 @@
   </tbody>
 </table>
 
-<script id="new_environment_dialog" type="text/template">
-  <% @env = Environment.new %>
-  <%= simple_form_for(@env, :html => { :class => "form-horizontal environment_form" }) do |f| %>
-      <%= f.error_notification %>
-
-      <div class="form-inputs">
-        <%= f.input :name %>
-        <%= f.input :template, :collection => @templates, :label_method => :to_str %>
-        <%= f.input :protected, :as => :boolean %>
-      </div>
-  <% end %>
-</script>
+<% env = Environment.new %>
+<%= render "environments/dialog", env: env %>
 
 <script type="text/javascript">
     $(function () {
-        $("#create_environment").on("click", function () {
-            bootbox.dialog($("#new_environment_dialog").html(), [
-                {
-                    "Cancel":function () {
-                        console.log("cancel");
-                    }
-                },
-                {
-                    "Create":function () {
-                        console.log("create");
-                        var f = $(".environment_form:last"); // because bootbox makes a clone
-                        data = f.serialize();
-                        console.log("data");
-                        console.log(f.serializeArray());
-                        bootbox.modal("please wait", "creating");
-                        console.log("post");
-                        $.post("/environments.json", data, function () {
-                            console.log("success");
-                            bootbox.hideAll();
-                        });
-                    }
-                }
-            ], {header:"Create Environment"})
-        });
-
         $(".environment_refresh").on("click", function(){
             var id = $(this).attr("data-id");
             console.log("environment "+id+" sending refresh");

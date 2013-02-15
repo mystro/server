@@ -16,6 +16,8 @@ class Environment
 
   index({ name: 1, account: 1 }, { unique: true})
 
+  scope :for_account, ->(account){ where(:account.in => [nil, Account.named(account).first]) }
+
   validates_presence_of(:name)
   validates_presence_of(:template)
 

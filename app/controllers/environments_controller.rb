@@ -3,7 +3,7 @@ class EnvironmentsController < ApplicationController
   # GET /environments.json
   def index
     @environments = filters(Environment, {account: current_user.account}).includes(:computes, :balancers).all
-    @templates = Template.active.for_account(current_user.account).asc(:account, :name).all
+    @templates =
 
     respond_to do |format|
       format.html # index.html.erb
