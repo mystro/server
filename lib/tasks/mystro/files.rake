@@ -9,7 +9,7 @@ namespace :mystro do
     task :accounts => :environment do
       puts ".. loading accounts ..."
       Account.update_all(enabled: false)
-      files = Dir["config/mystro/userdata/*"]
+      files = Dir["config/mystro/accounts/*"]
       files.each do |file|
         name = File.basename(file).gsub(/\.yml/, "")
         a = Account.find_or_create_by(:name => name, :file => file)

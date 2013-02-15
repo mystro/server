@@ -34,7 +34,7 @@ class Compute
     accountname = (user ? user.account : nil) || Mystro::Account.selected
     if accountname
       self.account = Account.named(accountname).first
-      ud = Userdata.named(account.mystro.compute.userdata).first
+      ud = Userdata.named(account.mystro.compute.userdata).first || nil rescue nil
       ud ||= Userdata.named("default").first
       if account && account.mystro
         self.image   = account.mystro.compute.image
