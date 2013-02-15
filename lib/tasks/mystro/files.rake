@@ -52,7 +52,6 @@ namespace :mystro do
 
         userdata.enabled = true
         userdata.save!
-        puts "USERDATA: #{userdata.inspect}"
       end
     end
     task :templates => :environment do

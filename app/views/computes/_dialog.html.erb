@@ -4,7 +4,7 @@
    roles = Role.external.asc(:name).all
    groups = (compute.groups||[]).join(",")
    userdata = Userdata.all
-   selected_ud = compute.userdata.id
+   selected_ud = compute.userdata ? compute.userdata.id : Userdata.named("default").id
 %>
 
 <script id="new_compute_dialog" type="text/template">

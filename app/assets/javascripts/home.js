@@ -26,6 +26,10 @@ $(function(){
         }
     });
 
+    $(".protected").on("click", function(e){
+        bootbox.alert("must remove protection first")
+    });
+
     $(".account_select").on("click", function(e){
         e.preventDefault();
         var a = $(this).attr("data-account");

@@ -8,6 +8,6 @@ module ApplicationHelper
   end
 
   def current_account_load
-    @current_account_load ||= Account.named(current_account).first
+    @current_account_load ||= Account.named(current_account)
   end
 end
