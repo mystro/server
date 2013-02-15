@@ -50,6 +50,7 @@
             <%= f.input :image %>
             <%= f.input :groups, :input_html => { :value => (@compute.groups||[]).join(",") } %>
             <%= f.input :keypair %>
+            <%= f.input :userdata, collection: Userdata.all, include_blank: false, selected: @compute.userdata.id %>
           </div>
         </div>
       </div>

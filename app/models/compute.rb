@@ -10,6 +10,7 @@ class Compute
   belongs_to :environment, index: true
   belongs_to :balancer, index: true
   belongs_to :account, index: true
+  belongs_to :userdata, index: true
   has_many :records, as: :nameable
   has_and_belongs_to_many :roles
 
@@ -33,12 +34,15 @@ class Compute
     accountname = (user ? user.account : nil) || Mystro::Account.selected
     if accountname
       self.account = Account.named(accountname).first
+      ud = Userdata.named(account.mystro.compute.userdata).first
+      ud ||= Userdata.named("default").first
       if account && account.mystro
         self.image   = account.mystro.compute.image
         self.flavor  = account.mystro.compute.flavor
         self.keypair = account.mystro.compute.keypair
         self.groups  = account.mystro.compute.groups
         self.region  = account.mystro.compute.region
+        self.userdata = ud
       end
     end
   end
