@@ -39,4 +39,4 @@
 <b>config</b>
 <pre><%= Mystro.config.to_hash.to_yaml %></pre>
 <b>account</b>
-<pre><%= m = Account.named(@user.account).first.mystro; m ? m.to_hash.to_yaml : "" %></pre>
+<pre><%= a = Account.named(@user.account); a ? a.to_yaml : "" %></pre>

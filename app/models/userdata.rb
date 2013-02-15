@@ -10,5 +10,10 @@ class Userdata
 
   index({ name: 1 }, { unique: true})
   scope :active, ->{ where(enabled: true) }
-  scope :named, ->(name){ where(name: name) }
+
+  class << self
+    def named(name)
+      where(name: name).first
+    end
+  end
 end

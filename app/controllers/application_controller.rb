@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
     if options[:account]
       a = options.delete(:account)
       unless a == "everything"
-        q = q.where(account_id: Account.named(a).first.id)
+        q = q.where(account_id: Account.named(a).id)
       end
     end
 

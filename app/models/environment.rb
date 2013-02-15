@@ -16,7 +16,7 @@ class Environment
 
   index({ name: 1, account: 1 }, { unique: true})
 
-  scope :for_account, ->(account){ where(:account.in => [nil, Account.named(account).first]) }
+  scope :for_account, ->(account){ where(:account.in => [nil, Account.named(account)]) }
 
   validates_presence_of(:name)
   validates_presence_of(:template)
@@ -71,10 +71,10 @@ class Environment
         name = tags["Environment"]
         account = tags["Account"] || "unknown"
       end
-      a = Account.named(account).first
+      a = Account.named(account)
       e = Environment.where(name: name, account: a).first ||
           Environment.where(:name => name).first ||
-          Environment.create(name: name, account: account)
+          Environment.create!(name: name, account: account, template: Template.named("empty"))
       unless e.account
         e.account = a
         e.save

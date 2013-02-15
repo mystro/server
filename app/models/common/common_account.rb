@@ -5,7 +5,7 @@ module CommonAccount
     field :deleting, type: Boolean, default: false
     #default_scope where(deleting: false)
 
-    scope :with_account, ->(name){ where(account_id: Account.named(name).first) }
+    scope :with_account, ->(name){ where(account_id: Account.named(name)) }
 
     extend ClassMethods
   end

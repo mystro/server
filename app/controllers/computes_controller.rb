@@ -3,9 +3,6 @@ class ComputesController < ApplicationController
   # GET /computes.json
   def index
     @computes = filters(Compute, {account: current_user.account}).includes(:environment, :balancer) #Compute.where(account_id: mystro_account_id).all
-    # for form
-    @environments = Environment.asc(:name).all
-    @roles = Role.external.asc(:name).all
 
     respond_to do |format|
       format.html # index.html.erb

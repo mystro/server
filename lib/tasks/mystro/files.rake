@@ -66,7 +66,7 @@ namespace :mystro do
         an = file =~ /\// ? file.split("/").first : nil
         t = Template.find_or_create_by(:name => name, :file => f)
         t.enabled = true
-        t.account = Account.named(an).first if an
+        t.account = Account.named(an) if an
         d = JSON.parse(t.load.to_json)
         t.data = d
         t.save
