@@ -8,7 +8,7 @@
 <% else %>
     <%= link_to obj,
                 data:  {
-                        type: obj.class.name.pluralize.downcase||"unknown",
+                        type: obj.class.model_name.pluralize.downcase||"unknown",
                         id:   obj.id.to_s||"nil"
                 },
                 :title => "Destroy",

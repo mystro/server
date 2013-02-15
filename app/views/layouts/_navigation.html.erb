@@ -63,9 +63,6 @@
   </form>
   -->
   <ul class="nav pull-right">
-    <li>
-      <%= link_to "Resque", "/resque" %>
-    </li>
     <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= current_user.account %> <b class="caret"></b></a>
       <ul class="dropdown-menu">
@@ -87,19 +84,29 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= current_user.name %> <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li>
-          <%= link_to destroy_user_session_path, :method => 'delete', :title => "logout" do %>
-              <i class="icon-share "></i> Logout
+          <%= link_to users_path, :title => "manage users" do %>
+              <i class="icon-user "></i> Manage Users
           <% end %>
         </li>
-        <li class="<%= controller.controller_path == 'auth' ? 'active' : '' %>">
+        <li>
+          <%= link_to "/resque" do %>
+              <span title="workers" class="badge <%= "badge-important" if Resque.workers.count == 0 %>"><%= Resque.workers.count %></span> Resque
+          <% end %>
+        </li>
+        <li>
+          <%= link_to jobs_path do %>
+              <span title="queued jobs" class="badge <%= "badge-important" if Job.errors? %>"><%= Job.count %></span> Manage Jobs
+          <% end %>
+        </li>
+        <li class="divider"></li>
+        <li>
           <%= link_to edit_user_registration_path, :title => "edit profile" do %>
               <i class="icon-cog "></i> Profile
           <% end %>
         </li>
-        <li class="divider"></li>
-        <li class="<%= controller.controller_path == 'users' ? 'active' : '' %>">
-          <%= link_to users_path, :title => "manage users" do %>
-              <i class="icon-user "></i> Manage Users
+        <li>
+          <%= link_to destroy_user_session_path, :method => 'delete', :title => "logout" do %>
+              <i class="icon-share "></i> Logout
           <% end %>
         </li>
       </ul>

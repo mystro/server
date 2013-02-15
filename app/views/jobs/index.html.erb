@@ -1,0 +1,38 @@
+<% content_for :subnav_buttons do %>
+<% end %>
+<% content_for :subnav_pills do %>
+    <%= link_to 'All', jobs_path(params: {all: 1}), class: "btn" %>
+<% end %>
+<table class="table table-condensed table-striped tablesorter">
+  <thead>
+  <tr>
+    <th style="width: 100px;">Status</th>
+    <th style="width: 100px;">Class</th>
+    <th>Message</th>
+    <th class="links"></th>
+  </tr>
+  </thead>
+  <tbody>
+<% @jobs.each do |job| %>
+  <tr class="<%= "error" if job.status == :error %>">
+    <td><%= job.status %></td>
+    <td><%= job.class.name %></td>
+    <td><%= link_to((job.message||"none"), job_path(job)) %></td>
+    <td class="links">
+      <%# unless job.accepted_at %>
+      <%= link_to job,
+                  data:  {
+                          type: job.class.model_name.pluralize.downcase||"unknown",
+                          id:   job.id.to_s||"nil"
+                  },
+                  :title => "Accept",
+                  :class => "btn btn-mini delete_me" do %>
+          <i class="icon-ok-sign"></i>
+      <% end %>
+      <%# end %>
+    </td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+

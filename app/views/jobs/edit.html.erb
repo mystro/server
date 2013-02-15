@@ -1,0 +1,9 @@
+<% content_for :subnav_buttons do %>
+    <%= link_to 'Show', @job, :class => "btn" %>
+<% end %>
+<% content_for :subnav_pills do %>
+    <%= link_to 'Back', jobs_path, :class => "btn" %>
+<% end %>
+
+<%= render 'form' %>
+

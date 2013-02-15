@@ -1,0 +1,43 @@
+<% content_for :subnav_buttons do %>
+    <%= link_to 'Edit', edit_job_path(@job), class: "btn" %>
+<% end %>
+<% content_for :subnav_pills do %>
+    <%= link_to 'Back', jobs_path, class: "btn" %>
+<% end %>
+
+<table class="table table-condensed table-bordered fields-horizontal">
+  <tr>
+    <th>ID</th>
+    <td><%= @job.id %></td>
+  </tr>
+  <tr>
+    <th>Class</th>
+    <td><%= @job.class.name %></td>
+  </tr>
+  <tr>
+    <th>Status</th>
+    <td><%= @job.status %></td>
+  </tr>
+  <tr>
+    <th>Data</th>
+    <td>
+      <% if @job.data %>
+          <pre class="pre-scrollable"><%= @job.data.to_yaml %></pre>
+      <% end %></td>
+  </tr>
+  <tr>
+    <th>Message</th>
+    <td><%= @job.message %></td>
+  </tr>
+  <tr>
+    <th>Created</th>
+    <td><%= @job.created_at %></td>
+  </tr>
+</table>
+
+<pre>
+<% @job.log.each do |l| %><%= l["severity"].to_s.upcase.first(4) %> <%= l["message"] %>
+<% end %>
+<% if @job.trace.count > 0 %><%= @job.trace.join("\n") %><% end %>
+</pre>
+
