@@ -40,7 +40,7 @@
 </table>
 
 <script id="new_record_dialog" type="text/template">
-  <% @account = Account.named(current_user.account).first %>
+  <% @account = Account.named(current_user.account) %>
   <% if @account %>
   <% @zone = Zone.where(domain: @account.mystro.dns.zone).first %>
   <% @record = Record.new(account: @account, zone: @zone) %>

@@ -13,7 +13,14 @@ class Template
   index({ file: 1 }, { unique: true})
 
   scope :active, ->{where(enabled: true)}
-  scope :for_account, ->(account){where(:account.in => [nil, Account.named(account).first])}
+  scope :for_account, ->(account){where(:account.in => [nil, Account.named(account)])}
+
+
+  class << self
+    def named(name)
+      where(name: name).first
+    end
+  end
 
   def to_str
     "#{account ? "#{account.name}/" : nil}#{name}"

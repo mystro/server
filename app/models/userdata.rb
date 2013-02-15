@@ -9,6 +9,13 @@ class Userdata
   field :enabled, type: Boolean, default: false
 
   index({ file: 1 }, { unique: true})
+  index({ name: 1 }, { unique: true})
+
   scope :active, ->{ where(enabled: true) }
-  scope :named, ->(name){ where(name: name) }
+
+  class << self
+    def named(name)
+      where(name: name).first
+    end
+  end
 end

@@ -33,9 +33,9 @@ class Compute
   def set_defaults(user)
     accountname = (user ? user.account : nil) || Mystro::Account.selected
     if accountname
-      self.account = Account.named(accountname).first
-      ud = Userdata.named(account.mystro.compute.userdata).first || nil rescue nil
-      ud ||= Userdata.named("default").first
+      self.account = Account.named(accountname)
+      ud = Userdata.named(account.mystro.compute.userdata) || nil rescue nil
+      ud ||= Userdata.named("default")
       if account && account.mystro
         self.image   = account.mystro.compute.image
         self.flavor  = account.mystro.compute.flavor

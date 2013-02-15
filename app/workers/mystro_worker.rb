@@ -21,6 +21,8 @@ class MystroWorker < BaseWorker
 
               c.account = e.account if e.account && c.account != e.account
               c.environment = e
+
+              puts "  compute: #{c.short} account:#{c.account ? c.account.name : "no"} environment:#{e ? e.name : "no"}"
               c.save
             end
           end
