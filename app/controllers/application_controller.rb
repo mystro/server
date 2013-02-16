@@ -6,7 +6,18 @@ class ApplicationController < ActionController::Base
   before_filter :set_time_zone
   #before_filter :mystro_selected
 
+  before_filter :job_errors
+  before_filter :resque_workers
+
   protected
+
+  def resque_workers
+    flash.now[:error] = "Resque workers are not running" if Resque.workers.count == 0
+  end
+
+  def job_errors
+    flash.now[:error] = "There are jobs with errors" if Job.errors?
+  end
 
   def filters(model, options={})
     q = model.scoped
