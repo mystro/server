@@ -40,7 +40,7 @@
 </table>
 
 <%
-   a = current_account_load
+   a = current_account
    record = Record.new(account: a)
    record.zone = Zone.named(a.mystro_zone) if a
 %>

@@ -1,8 +1,5 @@
 MystroServer::Application.routes.draw do
 
-  resources :userdata
-  resources :jobs
-
   mount Resque::Server.new, :at => "/admin/resque"
   resource :resque
 
@@ -37,6 +34,12 @@ MystroServer::Application.routes.draw do
 
   resources :zones
   resources :records
+
+  resources :userdata
+  resources :jobs do
+    post "refresh", on: :member
+  end
+
 
   #resources :providers
 

@@ -5,8 +5,8 @@ class JobWorker
   class << self
     def perform(options={ })
       id = options["id"]
-      logger.info "JobWorker:perform #{id}"
       job = Job.find(id)
+      logger.info "JobWorker:perform #{job.class} #{id}"
 
       begin
         job.status = :working
@@ -18,6 +18,8 @@ class JobWorker
 
         job.accept
       rescue => e
+        logger.error "error running job, attempting to save"
+        logger.error "  #{e.message} at #{e.backtrace.first}"
         job.status = :error
         job.message = e.message
         job.trace = e.backtrace

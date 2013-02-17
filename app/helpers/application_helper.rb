@@ -3,11 +3,11 @@ module ApplicationHelper
     @server_version ||= File.read("#{Rails.root}/VERSION").lines.first.chomp
   end
 
-  def current_account
-    @current_account ||= current_user.account
+  def current_account_name
+    @current_account_name ||= current_user.account
   end
 
-  def current_account_load
-    @current_account_load ||= Account.named(current_account)
+  def current_account
+    @current_account ||= Account.named(current_user.account)
   end
 end

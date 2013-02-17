@@ -16,6 +16,7 @@ class Role
   class << self
     def create_from_fog(roles)
       out   = []
+      return out unless roles
       rlist =
           case roles.class.name
             when "String"

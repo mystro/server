@@ -66,3 +66,16 @@ textarea.text {
   width: 125px;
   padding-top: 5px;
 }
+
+div.log {
+
+  td.logline {
+    font-size: 12px;
+    font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+    vertical-align: top;
+  }
+  td.logline.severity {
+      width: 50px;
+  }
+
+}

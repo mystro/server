@@ -4,7 +4,7 @@ class Job
   include Mongoid::Symbolize
 
   field :data, type: Hash
-  symbolize :status, in: [:new, :working, :waiting, :complete, :error, :cancelled], default: "new"
+  symbolize :status, in: [:new, :working, :waiting, :complete, :error, :retry, :cancelled], default: "new"
   field :message, type: String
   field :log, type: Array, default: []
   field :trace, type: Array, default: []
@@ -15,6 +15,58 @@ class Job
   def accept
     self.accepted_at = Time.now
     self.save
+  end
+
+  def retry
+    self.accepted_at = nil
+    self.status = :retry
+    self.log << "--- retry ---"
+    self.message = nil
+    self.save
+  end
+
+  # wait for objects be synced (set synced_at value)
+  def wait_for(list=nil)
+    return unless list && list.count
+    classes = list.map { |e| e.class }.uniq
+    logger.info "#{self.class.name}##{self.id} waiting for list of #{classes.join(",")}"
+    wait do
+      list.each { |e| e.reload }
+      unsynced = list.select { |e| e.synced_at.nil? }
+      unsynced.count > 0
+    end
+  end
+
+  # wait while return value from block is true
+  def wait(options = { }, &block)
+    return unless block_given?
+    o = { interval: 3, maximum: 600 }.merge(options)
+    interval = o[:interval]
+    maximum = o[:maximum]
+    count = 0
+    while yield && ((count * interval) < maximum) do
+      sleep interval
+      count += 1
+    end
+    raise "wait timeout" if ((count * interval) < maximum)
+  end
+
+  def model
+    @model ||= begin
+      if data["id"] && data["class"]
+        c = data["class"].constantize
+        c.find(data["id"])
+      end
+    end
+  end
+
+  def mystro
+    @mystro ||= begin
+      if model && model.account
+        a = model.account
+        Mystro::Account.list[a.name]
+      end
+    end
   end
 
   def pushlog(sev, msg)

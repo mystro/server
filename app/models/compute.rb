@@ -30,20 +30,17 @@ class Compute
   field :private_ip, type: String
 
   # a bit hacky, but easiest way to make sure we get defaults from current account
-  def set_defaults(user)
-    accountname = (user ? user.account : nil) || Mystro::Account.selected
-    if accountname
-      self.account = Account.named(accountname)
-      ud = Userdata.named(account.mystro.compute.userdata) || nil rescue nil
-      ud ||= Userdata.named("default")
-      if account && account.mystro
-        self.image   = account.mystro.compute.image
-        self.flavor  = account.mystro.compute.flavor
-        self.keypair = account.mystro.compute.keypair
-        self.groups  = account.mystro.compute.groups
-        self.region  = account.mystro.compute.region
-        self.userdata = ud
-      end
+  def set_defaults(account)
+    self.account = account
+    ud = Userdata.named(account.mystro.compute.userdata) || nil rescue nil
+    ud ||= Userdata.named("default")
+    if account && account.mystro
+      self.image    = account.mystro.compute.image
+      self.flavor   = account.mystro.compute.flavor
+      self.keypair  = account.mystro.compute.keypair
+      self.groups   = account.mystro.compute.groups
+      self.region   = account.mystro.compute.region
+      self.userdata = ud
     end
   end
 
@@ -143,6 +140,29 @@ class Compute
       end
 
       compute.save
+      compute
+    end
+
+    def create_from_template(environment, tserver, i=1)
+      tserver = tserver.attrs
+      userdata = Userdata.named(tserver.userdata)
+      raise "userdata #{tserver.userdata} not found, need to `rake mystro:push`?" unless userdata
+
+      o       = {
+          roles:    Role.create_from_fog(tserver.roles),
+          groups:   tserver.groups,
+          image:    tserver.image,
+          flavor:   tserver.flavor,
+          keypair:  tserver.keypair,
+          managed:  true,
+          userdata: userdata,
+      }.delete_if { |k, v| v.nil? }
+      name    = tserver.name
+      compute = environment.computes.find_or_create_by(name: name, num: i)
+      compute.set_defaults(environment.account) unless compute.synced_at
+      compute.update_attributes(o)
+      compute.save!
+
       compute
     end
 

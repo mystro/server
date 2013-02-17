@@ -1,0 +1,18 @@
+<% if log && log.count > 0 %>
+    <div class="well log">
+      <table>
+        <% log.each do |h| %>
+            <tr>
+              <td class="logline severity"><%= h["severity"].to_s.upcase %></td>
+              <td class="logline message"><%= h["message"] %></td>
+            </tr>
+        <% end %>
+        <% if trace && trace.count > 0 %>
+            <tr>
+              <td class="logline severity">TRACE</td>
+              <td class="logline message"><%= trace.join("<br>\n") %></td>
+            </tr>
+        <% end %>
+      </table>
+    </div>
+<% end %>

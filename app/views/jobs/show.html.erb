@@ -35,9 +35,5 @@
   </tr>
 </table>
 
-<pre>
-<% @job.log.each do |l| %><%= l["severity"].to_s.upcase.first(4) %> <%= l["message"] %>
-<% end %>
-<% if @job.trace.count > 0 %><%= @job.trace.join("\n") %><% end %>
-</pre>
+<%= render "common/log", log: @job.log, trace: @job.trace %>
 

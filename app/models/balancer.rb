@@ -72,6 +72,32 @@ class Balancer
       balancer
     end
 
+    def create_from_template(environment, tbalancer)
+      name     = "#{environment.name}-#{tbalancer.name}"
+      balancer = environment.balancers.find_or_create_by(name: name)
+
+      attrs    = {
+          rid:     name,
+          primary: tbalancer.primary,
+          managed: true
+      }
+      attrs.merge!({
+                       sticky:      true,
+                       sticky_type: tbalancer.sticky_type,
+                       sticky_arg:  tbalancer.sticky_arg,
+                   }) if tbalancer.sticky
+      balancer.update_attributes(attrs)
+
+      tbalancer.listeners.each do |tlistener|
+        listener = Listener.create_from_template(balancer, tlistener)
+      end
+
+      balancer.account = environment.account
+      balancer.save!
+
+      balancer
+    end
+
     def find_by_record(record)
       if ::IPAddress.valid?(record.long)
         return

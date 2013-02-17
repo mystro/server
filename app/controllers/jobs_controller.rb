@@ -17,6 +17,7 @@ class JobsController < ApplicationController
   # GET /jobs/1.json
   def show
     @job = Job.unscoped.find(params[:id])
+    @job.reload # sometimes things don't get updated (can't see trace on errors)
 
     respond_to do |format|
       format.html # show.html.erb
@@ -35,10 +36,10 @@ class JobsController < ApplicationController
     end
   end
 
-  # GET /jobs/1/edit
-  def edit
-    @job = Job.find(params[:id])
-  end
+  ## GET /jobs/1/edit
+  #def edit
+  #  @job = Job.find(params[:id])
+  #end
 
   # POST /jobs
   # POST /jobs.json
@@ -56,20 +57,30 @@ class JobsController < ApplicationController
     end
   end
 
-  # PUT /jobs/1
-  # PUT /jobs/1.json
-  def update
-    @job = Job.find(params[:id])
+  ## PUT /jobs/1
+  ## PUT /jobs/1.json
+  #def update
+  #  @job = Job.find(params[:id])
+  #
+  #  respond_to do |format|
+  #    if @job.update_attributes(params[:job])
+  #      format.html { redirect_to @job, notice: 'Job was successfully updated.' }
+  #      format.json { head :no_content }
+  #    else
+  #      format.html { render action: "edit" }
+  #      format.json { render json: @job.errors, status: :unprocessable_entity }
+  #    end
+  #  end
+  #end
 
-    respond_to do |format|
-      if @job.update_attributes(params[:job])
-        format.html { redirect_to @job, notice: 'Job was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @job.errors, status: :unprocessable_entity }
-      end
-    end
+  def refresh
+    @job = Job.find(params[:id])
+    @job.retry
+    @job.enqueue
+
+    head :no_content
+  rescue => e
+    render json: {message: e.message}
   end
 
   # DELETE /jobs/1

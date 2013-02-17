@@ -55,5 +55,5 @@
 <script type="text/javascript">
 </script>
 
-<% compute = Compute.new; compute.set_defaults(current_user); compute.environment = @environment %>
+<% compute = Compute.new; compute.set_defaults(current_account); compute.environment = @environment %>
 <%= render "computes/dialog", compute: compute %>

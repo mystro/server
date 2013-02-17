@@ -26,5 +26,5 @@
   </tbody>
 </table>
 
-<% @compute = Compute.new; @compute.set_defaults(current_user) %>
+<% @compute = Compute.new; @compute.set_defaults(current_account) %>
 <%= render "computes/dialog", compute: @compute  %>

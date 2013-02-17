@@ -36,5 +36,16 @@ class Listener
           synced_at: Time.now
       )
     end
+
+    def create_from_template(balancer, tlistener)
+      from = "#{tlistener.from_proto}:#{tlistener.from_port}"
+      listener = balancer.listeners.find_or_create_by(from: from)
+      lattrs = {
+          to: "#{tlistener.to_proto}:#{tlistener.to_port}"
+      }
+      lattrs.merge!({cert: tlistener.cert}) if tlistener.cert
+      listener.update_attributes(lattrs)
+      listener.save!
+    end
   end
 end
