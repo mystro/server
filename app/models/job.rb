@@ -48,7 +48,7 @@ class Job
       sleep interval
       count += 1
     end
-    raise "wait timeout" if ((count * interval) < maximum)
+    raise "wait timeout count=#{count} interval=#{interval} maximum=#{maximum}" if ((count * interval) < maximum)
   end
 
   def model

@@ -6,8 +6,8 @@ class ApplicationController < ActionController::Base
   before_filter :set_time_zone
   #before_filter :mystro_selected
 
-  before_filter :job_errors
-  before_filter :resque_workers
+  #before_filter :job_errors
+  #before_filter :resque_workers
 
   protected
 

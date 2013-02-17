@@ -63,6 +63,16 @@
   </form>
   -->
   <ul class="nav pull-right">
+    <li>
+      <%= link_to "/resque", title: "manage resque" do %>
+          <span title="resque workers" class="badge <%= "badge-important" if Resque.workers.count == 0 %>"><%= Resque.workers.count %></span> <i class="icon-time"></i>
+      <% end %>
+    </li>
+    <li>
+      <%= link_to jobs_path, title: "manage jobs" do %>
+          <span title="active jobs" class="badge <%= "badge-important" if Job.errors? %>"><%= Job.count %></span> <i class="icon-refresh"></i>
+      <% end %>
+    </li>
     <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= current_user.account %> <b class="caret"></b></a>
       <ul class="dropdown-menu">
@@ -86,16 +96,6 @@
         <li>
           <%= link_to users_path, :title => "manage users" do %>
               <i class="icon-user "></i> Manage Users
-          <% end %>
-        </li>
-        <li>
-          <%= link_to "/resque" do %>
-              <span title="workers" class="badge <%= "badge-important" if Resque.workers.count == 0 %>"><%= Resque.workers.count %></span> Resque
-          <% end %>
-        </li>
-        <li>
-          <%= link_to jobs_path do %>
-              <span title="queued jobs" class="badge <%= "badge-important" if Job.errors? %>"><%= Job.count %></span> Manage Jobs
           <% end %>
         </li>
         <li class="divider"></li>
