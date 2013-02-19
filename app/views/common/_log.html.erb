@@ -2,13 +2,20 @@
     <div class="well log">
       <table>
         <% log.each do |h| %>
-            <tr>
+            <%
+               c = case h["severity"]
+                        when :warn then "text-warning"
+                        when :error then "text-error"
+                        else ""
+                   end
+            %>
+            <tr class="<%= c %>">
               <td class="logline severity"><%= h["severity"].to_s.upcase %></td>
               <td class="logline message"><%= h["message"] %></td>
             </tr>
         <% end %>
         <% if trace && trace.count > 0 %>
-            <tr>
+            <tr class="text-error">
               <td class="logline severity">TRACE</td>
               <td class="logline message"><%= trace.join("<br>\n") %></td>
             </tr>

@@ -69,6 +69,34 @@ class Job
     end
   end
 
+  def enqueue
+    Resque.enqueue(JobWorker, {id: self.id.to_s})
+  end
+
+  def run
+    begin
+      self.status = :working
+      self.save!
+
+      self.work
+      self.status = :complete
+      self.save!
+
+      self.accept
+    rescue => e
+      logger.error "JOB#RUN: error running job, attempting to save"
+      logger.error "  #{e.message} at #{e.backtrace.first}"
+      self.status = :error
+      self.message = e.message
+      self.trace = e.backtrace
+      self.save!
+    end
+  end
+
+  def logger
+    @logger ||= Rails.logger
+  end
+
   def pushlog(sev, msg)
     self.log << {severity: sev, message: msg}
   end
@@ -89,9 +117,6 @@ class Job
     pushlog(:error, msg)
   end
 
-  def enqueue
-    Resque.enqueue(JobWorker, {id: self.id.to_s})
-  end
 
   def self.inherited(child)
     child.instance_eval do

@@ -4,8 +4,8 @@ class JobsController < ApplicationController
   def index
     #@jobs = Job.all
     q = Job.scoped
-    q = q.unscoped if params[:all]
-    @jobs = q.desc(:created_at).all
+    q = q.unscoped
+    @jobs = q.desc(:created_at).limit(20).all
 
     respond_to do |format|
       format.html # index.html.erb

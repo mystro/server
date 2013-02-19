@@ -7,24 +7,7 @@ class JobWorker
       id = options["id"]
       job = Job.find(id)
       logger.info "JobWorker:perform #{job.class} #{id}"
-
-      begin
-        job.status = :working
-        job.save!
-
-        job.work
-        job.status = :complete
-        job.save!
-
-        job.accept
-      rescue => e
-        logger.error "error running job, attempting to save"
-        logger.error "  #{e.message} at #{e.backtrace.first}"
-        job.status = :error
-        job.message = e.message
-        job.trace = e.backtrace
-        job.save!
-      end
+      job.run
     rescue => e
       logger.error e.message
       logger.error e
