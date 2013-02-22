@@ -23,7 +23,7 @@ class MystroWorker < BaseWorker
               if e && e.account && c.account != e.account
                 c.account = e.account
               else
-                c.account = Account.named(account)
+                c.account = account
               end
               c.environment = e
 
