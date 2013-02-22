@@ -5,7 +5,7 @@ class MystroWorker < BaseWorker
     def perform
       logger.info "#{self.name} running perform"
       Account.all.each do |account|
-        puts ".. account: #{account.name}"
+        logger.info ".. account: #{account.name}"
         data   = Hashie::Mash.new(account.data)
         mystro = Mystro::Account.list[account.name]
 
@@ -22,7 +22,7 @@ class MystroWorker < BaseWorker
               c.account = e.account if e.account && c.account != e.account
               c.environment = e
 
-              puts "  compute: #{c.short} account:#{c.account ? c.account.name : "no"} environment:#{e ? e.name : "no"}"
+              logger.info "  compute: #{c.short} account:#{c.account ? c.account.name : "no"} environment:#{e ? e.name : "no"}"
               c.save
             end
           end
@@ -57,13 +57,13 @@ class MystroWorker < BaseWorker
                 o = Compute.find_by_record(record) || Balancer.find_by_record(record) || Record.find_by_record(record) || nil
                 if o
                   if o.account && !record.account
-                    puts ".. .. assigning record #{record.name} to account: #{o.account.name}"
+                    logger.info ".. .. assigning record #{record.name} to account: #{o.account.name}"
                     record.account = o.account
                   end
                   record.nameable = o
                   record.save
                 else
-                  puts "RECORD SEARCH name:#{record.name} long:#{record.long} short:#{record.short}"
+                  logger.info "RECORD SEARCH name:#{record.name} long:#{record.long} short:#{record.short}"
                 end
               end
             end
@@ -74,8 +74,8 @@ class MystroWorker < BaseWorker
         true
       end
     rescue => e
-      puts "fail: #{e.message} at #{e.backtrace.first}"
-      puts "#{e.backtrace.join("\n")}"
+      logger.info "fail: #{e.message} at #{e.backtrace.first}"
+      logger.info "#{e.backtrace.join("\n")}"
       false
     end
   end
