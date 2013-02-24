@@ -1,3 +1,4 @@
+<% if balancers && balancers.count > 0 %>
 <table class="table table-condensed table-striped tablesorter {sortlist: [[0,0]]}">
   <thead>
   <tr>
@@ -11,3 +12,4 @@
   <%= render balancers %>
   </tbody>
 </table>
+<% end %>

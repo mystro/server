@@ -21,6 +21,10 @@ class Environment
   validates_presence_of(:name)
   validates_presence_of(:template)
 
+  def display
+    name
+  end
+
   def get_next_number(name)
     (computes.where(:name => name).max(:num).to_i || 0) + 1
   end

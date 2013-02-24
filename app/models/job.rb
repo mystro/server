@@ -62,7 +62,12 @@ class Job
     @model ||= begin
       if data["id"] && data["class"]
         c = data["class"].constantize
+        begin
         c.find(data["id"])# rescue nil #TODO: make this smarter
+        rescue Mongoid::Errors::DocumentNotFound => e
+          logger.error "document not found"
+          nil
+        end
       end
     end
   end
