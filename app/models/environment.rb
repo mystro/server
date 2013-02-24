@@ -71,6 +71,7 @@ class Environment
         name = tags["Environment"]
         account = tags["Account"] || "unknown"
       end
+      return nil unless name
       a = Account.named(account)
       e = Environment.where(name: name, account: a).first ||
           Environment.where(:name => name).first ||

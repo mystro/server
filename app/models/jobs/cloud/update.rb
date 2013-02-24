@@ -15,7 +15,11 @@ class Jobs::Cloud::Update < Job
             e = Environment.create_from_fog(t)
             c = Compute.create_from_fog(compute)
 
-            c.account = e.account if e.account && c.account != e.account
+            if e && e.account && c.account != e.account
+              c.account = e.account
+            else
+              c.account = account
+            end
             c.environment = e
 
             info "  compute: #{c.short} account:#{c.account ? c.account.name : "no"} environment:#{e ? e.name : "no"}"
