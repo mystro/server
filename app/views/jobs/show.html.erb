@@ -1,5 +1,4 @@
 <% content_for :subnav_buttons do %>
-    <%= link_to 'Edit', edit_job_path(@job), class: "btn" %>
 <% end %>
 <% content_for :subnav_pills do %>
     <%= link_to 'Back', jobs_path, class: "btn" %>
@@ -22,7 +21,11 @@
     <th>Data</th>
     <td>
       <% if @job.data %>
+          <% if @job.model %>
+          <% link_to(@job.model) %>
+          <% else %>
           <pre class="pre-scrollable"><%= @job.data.to_yaml %></pre>
+          <% end %>
       <% end %></td>
   </tr>
   <tr>

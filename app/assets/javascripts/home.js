@@ -1,4 +1,32 @@
+var interval = null;
+function updateStatus(){
+    console.log("update status");
+    $.get("/api/status", function(d){
+//        console.log("update status return");
+//        console.log(d);
+
+        var j = $("#jobs_status").first();
+//        console.log(j);
+        j.removeClass("badge-important");
+        j.text(d["jobs"]["count"]);
+        if (d["jobs"]["error"]) {
+//            console.log("jobs error true");
+            j.addClass("badge-important")
+        }
+
+        var r = $("#resque_status").first();
+//        console.log(r);
+        r.removeClass("badge-important");
+        r.text(d["resque"]["count"]);
+        if (d["resque"]["error"]) {
+//            console.log("resque error true");
+            r.addClass("badge-important")
+        }
+
+    });
+}
 $(function(){
+    interval = setInterval(updateStatus, 2000);
     $(".tablesorter:has(tbody tr)").tablesorter();
 
     $(".btn").tooltip();
@@ -26,6 +54,24 @@ $(function(){
         }
     });
 
+    $(".accept_me").on("click", function(e){
+        e.preventDefault();
+        var id = $(this).attr("data-id");
+        var tp = $(this).attr("data-type");
+        var tr = $(this).parent("td").parent("tr");
+        if (id != "nil" && tp != "unknown") {
+            var u = "/"+tp+"/"+id+"/accept.json";
+            console.log("accept_me:"+u);
+            $.post(u, {}, function(){
+                console.log("returned");
+                if (tr) {
+//                    $(tr).fadeOut(500, function(){ $(this).remove();})
+                    $(tr).addClass("deleting");
+                }
+            });
+        }
+    });
+
     $(".protected").on("click", function(e){
         bootbox.alert("must remove protection first")
     });
@@ -40,6 +86,17 @@ $(function(){
             console.log(d);
             window.location.reload();
         });
+    });
+
+    $(".create_job").on("click", function(){
+        var c = $(this).attr("klass");
+        console.log("create job");
+        $.post("/jobs", {job: {_type: c}}, function(d){
+            console.log("create job returned")
+        });
+    });
+
+    $(".update_status").on("click", function(){
     });
 
 });

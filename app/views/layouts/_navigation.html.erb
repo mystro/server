@@ -64,13 +64,18 @@
   -->
   <ul class="nav pull-right">
     <li>
+      <%= link_to "#", title: "update status", class: "update_status" do %>
+          status
+      <% end %>
+    </li>
+    <li>
       <%= link_to "/resque", title: "manage resque" do %>
-          <span title="resque workers" class="badge <%= "badge-important" if Resque.workers.count == 0 %>"><%= Resque.workers.count %></span> <i class="icon-time"></i>
+          <span id="resque_status" title="resque workers" class="badge <%= "badge-important" if Resque.workers.count == 0 %>"><%= Resque.workers.count %></span> <i class="icon-time"></i>
       <% end %>
     </li>
     <li>
       <%= link_to jobs_path, title: "manage jobs" do %>
-          <span title="active jobs" class="badge <%= "badge-important" if Job.errors? %>"><%= Job.count %></span> <i class="icon-refresh"></i>
+          <span id="jobs_status" title="active jobs" class="badge <%= "badge-important" if Job.errors? %>"><%= Job.count %></span> <i class="icon-refresh"></i>
       <% end %>
     </li>
     <li class="dropdown">
@@ -109,6 +114,14 @@
               <i class="icon-share "></i> Logout
           <% end %>
         </li>
+        <li class="divider"></li>
+        <% %w{Jobs::Cloud::Update Jobs::Chef::Roles}.each do |k| %>
+        <li>
+          <%= link_to "#", class: "create_job", klass: k do %>
+              Run <%= k %>
+          <% end %>
+        </li>
+        <% end %>
       </ul>
     </li>
   </ul>

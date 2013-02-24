@@ -40,11 +40,14 @@ class Balancer
   end
 
   def fog_options
-    {
+    o = {
         id: rid,
         "ListenerDescriptions" => listeners.map {|l| l.fog_options},
         availability_zones: zones
     }
+    #azs = zones
+    #o.merge!({}) if azs.count > 0
+    o
   end
 
   def zones

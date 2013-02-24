@@ -5,6 +5,7 @@ MystroServer::Application.routes.draw do
 
   namespace :api do
     scope :defaults => { :format => 'json' } do
+      resource :status
       resources :accounts do
         resources :accounts
         resources :environments
@@ -37,7 +38,10 @@ MystroServer::Application.routes.draw do
 
   resources :userdata
   resources :jobs do
+    post "accept", on: :member
     post "refresh", on: :member
+    get "errors", on: :collection
+    get "all", on: :collection
   end
 
 

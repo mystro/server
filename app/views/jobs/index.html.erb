@@ -1,7 +1,11 @@
 <% content_for :subnav_buttons do %>
 <% end %>
 <% content_for :subnav_pills do %>
-    <%= link_to 'All', jobs_path(params: { all: 1 }), class: "btn" %>
+    <ul class="nav nav-pills">
+      <li class="<%= "active" if request.path == jobs_path %>"><%= link_to 'Active', jobs_path, class: "pill" %></li>
+      <li class="<%= "active" if request.path == errors_jobs_path %>"><%= link_to 'Errors', errors_jobs_path, class: "pill" %></li>
+      <li class="<%= "active" if request.path == all_jobs_path %>"><%= link_to 'All', all_jobs_path, class: "pill" %></li>
+    </ul>
 <% end %>
 <table class="table table-condensed table-striped tablesorter">
   <thead>
@@ -17,10 +21,18 @@
       <tr>
         <td><span class="<%= "text-error" if job.status == :error %>"><%= job.status %></span></td>
         <td><%= job.class.name %></td>
-        <td><%= link_to((job.message||"none"), job_path(job)) %></td>
+        <td><%= link_to((job.message||"none")[0..50], job_path(job)) %></td>
         <td class="links">
-          <%= link_to "#", :title => "Refresh", :class => "btn btn-mini job_retry", "data-id" => job.id do %>
-              <i class="icon-refresh"></i>
+          <% if [:new, :working, :waiting].include?(job.status) %>
+              <%= link_to job,
+                          data:  {
+                                  type: job.class.model_name.pluralize.downcase||"unknown",
+                                  id:   job.id.to_s||"nil"
+                          },
+                          :title => "Cancel",
+                          :class => "btn btn-mini delete_me" do %>
+                  <i class="icon-remove-sign"></i>
+              <% end %>
           <% end %>
           <% unless job.accepted_at %>
               <%= link_to job,
@@ -29,9 +41,12 @@
                                   id:   job.id.to_s||"nil"
                           },
                           :title => "Accept",
-                          :class => "btn btn-mini delete_me" do %>
+                          :class => "btn btn-mini accept_me" do %>
                   <i class="icon-ok-sign"></i>
               <% end %>
+          <% end %>
+          <%= link_to "#", :title => "Refresh", :class => "btn btn-mini job_retry", "data-id" => job.id do %>
+              <i class="icon-refresh"></i>
           <% end %>
         </td>
       </tr>
@@ -40,14 +55,14 @@
 </table>
 
 <script>
-  $(function(){
-      $(".job_retry").on("click", function(){
-          var id = $(this).attr("data-id");
-          console.log("job "+id+" sending retry");
-          $.post("/jobs/"+id+"/refresh.json", {}, function(){
-              console.log("refresh sent");
-          });
-      });
-  })
+    $(function () {
+        $(".job_retry").on("click", function () {
+            var id = $(this).attr("data-id");
+            console.log("job " + id + " sending retry");
+            $.post("/jobs/" + id + "/refresh.json", {}, function () {
+                console.log("refresh sent");
+            });
+        });
+    })
 </script>
 

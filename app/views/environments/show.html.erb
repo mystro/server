@@ -30,27 +30,8 @@
   </tr>
 </table>
 
-<table class="table table-condensed table-bordered">
-  <tr>
-    <th>Computes</th>
-  </tr>
-  <% @environment.computes.sort_by(&:short).each do |compute| %>
-      <tr>
-        <td><%= link_to compute.display, compute %></td>
-      </tr>
-  <% end %>
-</table>
-
-<table class="table table-condensed table-bordered">
-  <tr>
-    <th>Balancers</th>
-  </tr>
-  <% @environment.balancers.each do |balancer| %>
-      <tr>
-        <td><%= link_to balancer.name, balancer %></td>
-      </tr>
-  <% end %>
-</table>
+<%= render "computes/list", computes: @environment.computes.sort_by(&:short)  %>
+<%= render "balancers/list", balancers: @environment.balancers %>
 
 <script type="text/javascript">
 </script>

@@ -1,4 +1,4 @@
-<% if log && log.count > 0 %>
+<% if (log && log.count > 0) || (trace && trace.count > 0) %>
     <div class="well log">
       <table>
         <% log.each do |h| %>
@@ -17,7 +17,7 @@
         <% if trace && trace.count > 0 %>
             <tr class="text-error">
               <td class="logline severity">TRACE</td>
-              <td class="logline message"><%= trace.join("<br>\n") %></td>
+              <td class="logline message"><%= trace.join("<br>\n").html_safe %></td>
             </tr>
         <% end %>
       </table>

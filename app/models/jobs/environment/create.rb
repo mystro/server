@@ -8,16 +8,23 @@ class Jobs::Environment::Create < Job
 
     balancers = {}
 
+    info "creating balancers"
     tdata.balancers.each do |tbalancer|
+      info ".. #{tbalancer.name}"
       balancer                  = Balancer.create_from_template(environment, tbalancer)
       balancers[tbalancer.name] = balancer
     end
 
+    info "creating computes"
     tdata.servers.each do |tserver|
-      1.upto(tserver.count) do |i|
+      count = tserver.count
+      tserver = tserver.attrs
+      1.upto(count) do |i|
+        info ".. #{tserver.name} #{i}"
         compute = Compute.create_from_template(environment, tserver, i)
 
         if tserver.balancer
+          info ".. .. associating balancer #{tserver.balancer}"
           if balancers[tserver.balancer]
             compute.balancer = balancers[tserver.balancer]
           else
@@ -25,22 +32,25 @@ class Jobs::Environment::Create < Job
           end
         end
 
+        info ".. .. setting account #{environment.account.name}"
         compute.account = environment.account
         compute.save!
       end
     end
 
+    info "creating compute jobs"
     environment.computes.each do |c|
-      info "compute: #{c.inspect}"
+      info ".. compute: #{c.inspect}"
       unless c.synced_at
-        info "compute enqueue: #{c.enqueue(:create)}"
+        info ".. .. compute enqueue: #{c.enqueue(:create)}"
       end
     end
 
+    info "creating balancer jobs"
     environment.balancers.each do |b|
-      info "balancer: #{b.inspect}"
+      info ".. balancer: #{b.inspect}"
       unless b.synced_at
-        info "balancer enqueue: #{b.enqueue(:create)}"
+        info ".. .. balancer enqueue: #{b.enqueue(:create)}"
       end
     end
 

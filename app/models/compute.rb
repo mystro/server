@@ -143,8 +143,8 @@ class Compute
       compute
     end
 
-    def create_from_template(environment, tserver, i=1)
-      tserver = tserver.attrs
+    def create_from_template(environment, tserver_attrs, i=1)
+      tserver = tserver_attrs
       userdata = Userdata.named(tserver.userdata)
       raise "userdata #{tserver.userdata} not found, need to `rake mystro:push`?" unless userdata
 

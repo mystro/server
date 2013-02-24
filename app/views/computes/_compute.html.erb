@@ -1,0 +1,8 @@
+<tr class="<%= "deleting" if compute.deleting %> <%= "warning" if compute.old? %>">
+  <td><%= link_to compute.display, compute_path(compute) %></td>
+  <td><%= compute.environment ? link_to(compute.environment.name, environment_path(compute.environment)) : "" %></td>
+  <td><%= compute.balancer ? link_to(compute.balancer.name, balancer_path(compute.balancer)) : "" %></td>
+  <td class="links">
+    <%= render "common/links", :obj => compute, :edit => edit_compute_path(compute) %>
+  </td>
+</tr>

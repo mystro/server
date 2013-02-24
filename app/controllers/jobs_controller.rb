@@ -5,10 +5,37 @@ class JobsController < ApplicationController
     #@jobs = Job.all
     q = Job.scoped
     q = q.unscoped
-    @jobs = q.desc(:created_at).limit(20).all
+    @jobs = q.active.desc(:created_at).all
 
     respond_to do |format|
       format.html # index.html.erb
+      format.json { render json: @jobs }
+    end
+  end
+
+  # GET /jobs/errors
+  # GET /jobs/errors.json
+  def errors
+    #@jobs = Job.all
+    q = Job.scoped
+    @jobs = q.errors.desc(:created_at).all
+
+    respond_to do |format|
+      format.html { render "index"} # index.html.erb
+      format.json { render json: @jobs }
+    end
+  end
+
+  # GET /jobs/all
+  # GET /jobs/all.json
+  def all
+    #@jobs = Job.all
+    q = Job.scoped
+    q = q.unscoped
+    @jobs = q.desc(:created_at).limit(50).all
+
+    respond_to do |format|
+      format.html { render "index"} # index.html.erb
       format.json { render json: @jobs }
     end
   end
@@ -17,7 +44,9 @@ class JobsController < ApplicationController
   # GET /jobs/1.json
   def show
     @job = Job.unscoped.find(params[:id])
-    @job.reload # sometimes things don't get updated (can't see trace on errors)
+    # sometimes things don't get updated (can't see trace on errors)
+    # if identity map is enabled
+    @job = @job.reload
 
     respond_to do |format|
       format.html # show.html.erb
@@ -44,10 +73,21 @@ class JobsController < ApplicationController
   # POST /jobs
   # POST /jobs.json
   def create
-    @job = Job.new(params[:job])
+    p = params[:job]
+    k = Job
+    if p["_type"]
+      t = p.delete("_type")
+      begin
+        k = t.constantize
+      rescue => e
+        logger.info "TYPE:#{k} failed"
+      end
+    end
+    @job = k.new(p)
 
     respond_to do |format|
       if @job.save
+        @job.enqueue
         format.html { redirect_to @job, notice: 'Job was successfully created.' }
         format.json { render json: @job, status: :created, location: @job }
       else
@@ -83,11 +123,20 @@ class JobsController < ApplicationController
     render json: {message: e.message}
   end
 
+  def accept
+    @job = Job.find(params[:id])
+    @job.accept
+
+    head :no_content
+  rescue => e
+    render json: {message: e.message}
+  end
+
   # DELETE /jobs/1
   # DELETE /jobs/1.json
   def destroy
-    @job = Job.find(params[:id])
-    @job.accept
+    @job = Job.unscoped.find(params[:id])
+    @job.cancel
 
     respond_to do |format|
       format.html { redirect_to jobs_url }

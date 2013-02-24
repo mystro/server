@@ -1,0 +1,8 @@
+<tr class="<%= "deleting" if balancer.deleting %> <%= "warning" if balancer.old? %>">
+  <td><%= link_to balancer.name, balancer_path(balancer) %></td>
+  <td><%= balancer.rid %></td>
+  <td><%= balancer.environment ? link_to(balancer.environment.name, environment_path(balancer.environment)) : "" %></td>
+  <td class="links">
+    <%= render "common/links", :obj => balancer, :edit => edit_balancer_path(balancer) %>
+  </td>
+</tr>

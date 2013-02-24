@@ -11,10 +11,17 @@ class Job
   field :accepted_at, type: DateTime
 
   default_scope where(accepted_at: nil)
+  scope :active, ->{ where(:status.in => [:new, :working, :waiting, :retry])}
+  scope :errors, ->{ where(:status.in => [:error])}
 
   def accept
     self.accepted_at = Time.now
-    self.save
+    self.save!
+  end
+
+  def cancel
+    self.status = :cancelled
+    self.save!
   end
 
   def retry
@@ -44,18 +51,18 @@ class Job
     interval = o[:interval]
     maximum = o[:maximum]
     count = 0
-    while yield && ((count * interval) < maximum) do
+    while ((count * interval) < maximum) && yield do
       sleep interval
       count += 1
     end
-    raise "wait timeout count=#{count} interval=#{interval} maximum=#{maximum}" if ((count * interval) < maximum)
+    raise "wait timeout count=#{count} interval=#{interval} maximum=#{maximum}" if ((count * interval) >= maximum)
   end
 
   def model
     @model ||= begin
       if data["id"] && data["class"]
         c = data["class"].constantize
-        c.find(data["id"])
+        c.find(data["id"])# rescue nil #TODO: make this smarter
       end
     end
   end

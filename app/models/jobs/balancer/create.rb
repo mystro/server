@@ -1,10 +1,15 @@
 class Jobs::Balancer::Create < Job
   def work
+    raise "model is not set" unless model
+
     wait_for(model.computes)
 
+    # force reload from database
+    #model = model.reload.reload_relations
+
+    info model.fog_options
+
     balancer = mystro.balancer.create(model)
-    balancer.register_instances(model.computes.collect { |e| e.rid })
-    balancer.save
 
     if model.sticky
       info "  #{model.id} setting sticky"
