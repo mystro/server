@@ -30,7 +30,9 @@ MystroServer::Application.routes.draw do
   resources :computes
   resources :roles
 
-  resources :environments
+  resources :environments do
+    post "refresh", on: :member
+  end
   resources :templates
 
   resources :zones

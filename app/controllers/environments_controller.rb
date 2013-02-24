@@ -84,6 +84,14 @@ class EnvironmentsController < ApplicationController
     end
   end
 
+  def refresh
+    @environment = Environment.find(params[:id])
+    @environment.enqueue(:create)
+    render json: {queued: true}
+  rescue => e
+    render status: :unprocessable_entity, json: {queued: false, error: e.message}
+  end
+
   # DELETE /environments/1
   # DELETE /environments/1.json
   def destroy

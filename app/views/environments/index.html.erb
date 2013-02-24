@@ -21,7 +21,8 @@
     <td><%= environment.protected %></td>
     <td>
       <%= link_to "#", :title => "Refresh", :class => "btn btn-mini environment_refresh", "data-id" => environment.id do %>
-          <i class="icon-refresh"></i><% end %>
+          <i class="icon-refresh"></i>
+      <% end %>
       <%= render "common/links", :obj => environment, :edit => edit_environment_path(environment) %>
     </td>
   </tr>
@@ -37,7 +38,7 @@
         $(".environment_refresh").on("click", function(){
             var id = $(this).attr("data-id");
             console.log("environment "+id+" sending refresh");
-            $.post("/environments/"+id+".json", {_method: "PUT"}, function(){
+            $.post("/environments/"+id+"/refresh.json", {}, function(){
                 console.log("refresh sent");
             });
         });

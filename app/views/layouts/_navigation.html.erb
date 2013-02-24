@@ -64,11 +64,6 @@
   -->
   <ul class="nav pull-right">
     <li>
-      <%= link_to "#", title: "update status", class: "update_status" do %>
-          status
-      <% end %>
-    </li>
-    <li>
       <%= link_to "/resque", title: "manage resque" do %>
           <span id="resque_status" title="resque workers" class="badge <%= "badge-important" if Resque.workers.count == 0 %>"><%= Resque.workers.count %></span> <i class="icon-time"></i>
       <% end %>

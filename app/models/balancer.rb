@@ -17,6 +17,11 @@ class Balancer
   field :environment_id, type: String
   field :primary, type: Boolean, default: false
 
+  #TODO: sticky settings are on listeners not balancers.
+  field :sticky, type: Boolean, default: false
+  field :sticky_type, type: String
+  field :sticky_arg, type: String
+
   field :public_dns, type: String
 
   def name
