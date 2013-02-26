@@ -2,33 +2,7 @@
     <a id="create_environment" href="#" class="btn btn-primary">create</a>
 <% end %>
 
-<table class="table table-condensed table-striped tablesorter {sortlist: [[0,0]]}">
-  <thead>
-  <tr>
-    <th>Name</th>
-    <th>Computes</th>
-    <th>Balancers</th>
-    <th>Protected</th>
-    <th class="links {sorter: false}"></th>
-  </tr>
-  </thead>
-  <tbody>
-<% @environments.each do |environment| %>
-  <tr class="<%= "warning" if environment.old? %> <%= "deleting" if environment.deleting %>">
-    <td><%= link_to environment.name, environment_path(environment) %></td>
-    <td><%= environment.computes.count %>/<%= environment.computes.select{|e| e.synced_at}.count %></td>
-    <td><%= environment.balancers.count %>/<%= environment.balancers.select{|e| e.synced_at}.count %></td>
-    <td><%= environment.protected %></td>
-    <td>
-      <%= link_to "#", :title => "Refresh", :class => "btn btn-mini environment_refresh", "data-id" => environment.id do %>
-          <i class="icon-refresh"></i>
-      <% end %>
-      <%= render "common/links", :obj => environment, :edit => edit_environment_path(environment) %>
-    </td>
-  </tr>
-<% end %>
-  </tbody>
-</table>
+<%= render "environments/list", environments: @environments %>
 
 <% env = Environment.new %>
 <%= render "environments/dialog", env: env %>

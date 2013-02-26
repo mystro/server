@@ -1,0 +1,12 @@
+<tr class="<%= "warning" if environment.old? %> <%= "deleting" if environment.deleting %>">
+  <td><%= link_to environment.name, environment_path(environment) %></td>
+  <td><%= environment.computes.count %>/<%= environment.computes.select { |e| e.synced_at }.count %></td>
+  <td><%= environment.balancers.count %>/<%= environment.balancers.select { |e| e.synced_at }.count %></td>
+  <td><%= environment.protected %></td>
+  <td>
+    <%= link_to "#", :title => "Refresh", :class => "btn btn-mini environment_refresh", "data-id" => environment.id do %>
+        <i class="icon-refresh"></i>
+    <% end %>
+    <%= render "common/links", :obj => environment, :edit => edit_environment_path(environment) %>
+  </td>
+</tr>

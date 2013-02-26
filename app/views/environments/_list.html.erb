@@ -1,0 +1,18 @@
+<% if environments && environments.count > 0 %>
+    <table class="table table-condensed table-striped tablesorter {sortlist: [[0,0]]}">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Computes</th>
+        <th>Balancers</th>
+        <th>Protected</th>
+        <th class="links {sorter: false}"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% environments.each do |environment| %>
+        <%= render environment %>
+      <% end %>
+      </tbody>
+    </table>
+<% end %>

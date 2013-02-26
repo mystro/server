@@ -41,11 +41,4 @@
   <tr> <th>Private IP</th> <td><%= @compute.private_ip %></td> </tr>
 </table>
 
-<table class="table table-condensed table-bordered">
-  <th>Records</th>
-  <% @compute.records.sort_by(&:name).each do |record| %>
-      <tr>
-        <td><%= link_to record.name, record %></td>
-      </tr>
-  <% end %>
-</table>
+<%= render "records/list", records: @compute.records.sort_by(&:name) %>

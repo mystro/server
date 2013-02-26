@@ -1,0 +1,8 @@
+<tr>
+  <td><%= listener.from %></td>
+  <td><%= listener.to %></td>
+  <td><a href="#" title="<%= listener.cert %>"><i class="icon-question-sign"></i></a></td>
+  <td class="links">
+    <%= render "common/links", :obj => listener, :edit => edit_listener_path(listener) %>
+  </td>
+</tr>

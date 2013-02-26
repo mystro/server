@@ -20,35 +20,6 @@
   <tr> <th>Synced At</th> <td><%= @balancer.synced_at %></td> </tr>
 </table>
 
-<table class="table table-condensed table-bordered fields-vertical">
-  <tr>
-    <th>From</th>
-    <th>To</th>
-    <th>Cert</th>
-  </tr>
-  <% @balancer.listeners.each do |listener| %>
-      <tr>
-        <td><%= listener.from %></td>
-        <td><%= listener.to %></td>
-        <td><a href="#" title="<%= listener.cert %>"><i class="icon-question-sign"></i></a></td>
-      </tr>
-  <% end %>
-</table>
-
-<table class="table table-condensed table-bordered fields-vertical">
-  <th>Computes</th>
-  <% @balancer.computes.sort_by(&:short).each do |compute| %>
-      <tr>
-        <td><%= link_to compute.display, compute %></td>
-      </tr>
-  <% end %>
-</table>
-
-<table class="table table-condensed table-bordered fields-vertical">
-  <th>Records</th>
-  <% @balancer.records.sort_by(&:name).each do |record| %>
-      <tr>
-        <td><%= link_to record.name, record %></td>
-      </tr>
-  <% end %>
-</table>
+<%= render "listeners/list", listeners: @balancer.listeners %>
+<%= render "computes/list", computes: @balancer.computes.sort_by(&:short) %>
+<%= render "records/list", records: @balancer.records.sort_by(&:name) %>
