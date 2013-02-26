@@ -60,7 +60,7 @@ class Job
 
   def model
     @model ||= begin
-      if data["id"] && data["class"]
+      if data && data["id"] && data["class"]
         c = data["class"].constantize
         begin
         c.find(data["id"])# rescue nil #TODO: make this smarter

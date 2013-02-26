@@ -13,6 +13,7 @@
     <th style="width: 100px;">Status</th>
     <th style="width: 100px;">Class</th>
     <th>Message</th>
+    <th>Created</th>
     <th class="links"></th>
   </tr>
   </thead>
@@ -22,6 +23,7 @@
         <td><span class="<%= "text-error" if job.status == :error %>"><%= job.status %></span></td>
         <td><%= job.class.name %></td>
         <td><%= link_to((job.message||"none")[0..50], job_path(job)) %></td>
+        <td><%= job.created_at %></td>
         <td class="links">
           <% if [:new, :working, :waiting].include?(job.status) %>
               <%= link_to job,
