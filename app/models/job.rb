@@ -11,7 +11,7 @@ class Job
   field :accepted_at, type: DateTime
 
   default_scope where(accepted_at: nil)
-  scope :active, ->{ where(:status.in => [:new, :working, :waiting, :retry, :error])}
+  scope :active, ->{ where(:status.in => [:new, :working, :waiting, :retry, :error], accepted_at: nil)}
   scope :errors, ->{ where(:status.in => [:error])}
 
   def accept
