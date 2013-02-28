@@ -17,11 +17,13 @@ class Jobs::Balancer::Create < Job
     balancer = mystro.balancer.create(model)
 
     if model.sticky
-      info "  #{model.id} setting sticky"
+      info "  setting sticky"
       mystro.balancer.sticky(model.name, model.sticky_type, model.sticky_arg, 443, "AWSConsolePolicy-1")
     end
 
-    r = model.records.find_or_create_by(zone: zone, name: "#{model.name}.#{e.name}.#{zone.domain}")
+    n = model.bname
+    info "  create record: #{n}.#{e.name}.#{zone.domain}"
+    r = model.records.find_or_create_by(zone: zone, name: "#{n}.#{e.name}.#{zone.domain}")
     r.update_attributes(
         :type   => "CNAME",
         :ttl    => 30,
@@ -32,7 +34,7 @@ class Jobs::Balancer::Create < Job
     r.enqueue(:create)
 
     if model.primary
-      info "  #{model.id} primary dns"
+      info "  create record (primary): #{e.name}.#{zone.domain}"
       p = model.records.find_or_create_by(:zone => zone, :name => "#{e.name}.#{zone.domain}")
       p.update_attributes(
           :type   => "CNAME",

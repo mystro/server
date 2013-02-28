@@ -36,8 +36,13 @@ class Balancer
     rid
   end
 
+  def bname
+    environment ? rid.gsub(/^#{environment.name}-/, "") : rid
+  end
+
   def add_compute(rid)
     computes << Compute.remote(rid)
+    #TODO: Jobs::Balancer::Update to add new compute to balancer on cloud
   end
 
   def envname
