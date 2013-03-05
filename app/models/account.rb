@@ -19,6 +19,11 @@ class Account
     def named(name)
       where(name: name).first
     end
+    def mystro(a)
+      if a.is_a?(Mystro::Account)
+        where(name: a.name).first
+      end
+    end
   end
 
   def to_api
@@ -27,14 +32,6 @@ class Account
         file: file,
         enabled: enabled,
     }
-  end
-
-  class << self
-    def mystro(a)
-      if a.is_a?(Mystro::Account)
-        where(name: a.name).first
-      end
-    end
   end
 
   def mystro
