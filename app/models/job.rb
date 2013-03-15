@@ -100,6 +100,7 @@ class Job
       logger.error "  #{e.message} at #{e.backtrace.first}"
       self.status = :error
       self.message = e.message
+      error e.message
       self.trace = e.backtrace
       self.save!
     end

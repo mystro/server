@@ -10,6 +10,7 @@ class Balancer
   belongs_to :environment, index: true
   belongs_to :account, index: true
   embeds_many :listeners
+  embeds_one :health_check
   has_many :computes
   has_many :records, as: :nameable
 
@@ -81,6 +82,9 @@ class Balancer
         Listener.create_from_fog(balancer, l)
       end
 
+      balancer.health_check = nil
+      healthcheck = HealthCheck.create_from_fog(balancer, obj.health_check)
+
       balancer.save
       balancer
     end
@@ -103,6 +107,10 @@ class Balancer
 
       tbalancer.listeners.each do |tlistener|
         listener = Listener.create_from_template(balancer, tlistener)
+      end
+
+      if tbalancer.healthcheck
+        healthcheck = HealthCheck.create_from_template(balancer, tbalancer.healthcheck)
       end
 
       balancer.account = environment.account

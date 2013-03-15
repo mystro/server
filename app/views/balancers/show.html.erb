@@ -20,6 +20,7 @@
   <tr> <th>Synced At</th> <td><%= @balancer.synced_at %></td> </tr>
 </table>
 
+<%= render "health_checks/health_check", health_check: @balancer.health_check if @balancer.health_check %>
 <%= render "listeners/list", listeners: @balancer.listeners %>
 <%= render "computes/list", computes: @balancer.computes.sort_by(&:short) %>
 <%= render "records/list", records: @balancer.records.sort_by(&:name) %>

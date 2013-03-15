@@ -46,6 +46,11 @@ class Jobs::Balancer::Create < Job
       p.enqueue(:create)
     end
 
+    if model.health_check
+      info "  create health check: #{model.health_check.inspect}"
+      mystro.balancer.health_check(model.rid, model.health_check)
+    end
+
     model.rid       = balancer.id
     model.synced_at = Time.now
     model.save

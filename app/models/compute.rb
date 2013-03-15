@@ -66,7 +66,7 @@ class Compute
   end
 
   def envname
-    environment ? environment.name : ""
+    environment ? environment.name : "unknown"
   end
 
   def subdomain
