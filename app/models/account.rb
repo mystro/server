@@ -4,7 +4,7 @@ class Account
 
   field :name, type: String
   field :file, type: String
-  field :data, type: Hash
+  field :data, type: Hash, default: {}
   field :enabled, type: Boolean, default: false
 
   has_many :environments
@@ -19,6 +19,7 @@ class Account
     def named(name)
       where(name: name).first
     end
+
     def mystro(a)
       if a.is_a?(Mystro::Account)
         where(name: a.name).first
@@ -26,10 +27,28 @@ class Account
     end
   end
 
+  def selectors
+    @selectors ||= Hashie::Mash.new(self.data["selectors"])
+  end
+
+  def selectors_images
+    @selectors_images ||= begin
+      hash = selectors.images
+      if hash
+        hash.each do |k, v|
+          v.map! { |e| [e["name"], e["id"]] }
+        end
+        hash
+      else
+        nil
+      end
+    end
+  end
+
   def to_api
     {
-        name: name,
-        file: file,
+        name:    name,
+        file:    file,
         enabled: enabled,
     }
   end

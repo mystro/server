@@ -25,6 +25,8 @@ class Balancer
 
   field :public_dns, type: String
 
+  scope :for_account, ->(account){ where(:account.in => [nil, Account.named(account)]) }
+
   def name
     rid
   end
@@ -69,6 +71,11 @@ class Balancer
   end
 
   class << self
+
+    def named(name)
+      where(rid: name).first
+    end
+
     def create_from_fog(obj)
       balancer             = Balancer.where(:rid => obj.id).first || Balancer.create(:rid => obj.id)
       balancer.rid         = obj.id

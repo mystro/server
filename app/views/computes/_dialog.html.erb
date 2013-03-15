@@ -1,13 +1,28 @@
 <%
+   if type != "general"
+     n = environment.get_next_number(type)
+     compute = Compute.new_from_template(environment, Hashie::Mash.new(tserver), n)
+   else
+     compute = Compute.new
+     compute.set_defaults(current_account)
+   end
+
+   compute.environment = environment
+
+   account = Account.named(current_user.account)
    environments = Environment.for_account(current_user.account).asc(:name).all
+   balancers = Balancer.for_account(current_user.account).asc(:name).all
    selected_env = compute.environment ? compute.environment.id : nil
+   selected_balancer = type != "general" ? Balancer.named("#{environment.name}-#{tserver["balancer"]}").id : nil rescue nil
+   selected_img = compute.image
    roles = Role.external.asc(:name).all
    groups = (compute.groups||[]).join(",")
    userdata = Userdata.all
    selected_ud = compute.userdata ? compute.userdata.id : Userdata.named("default").id
 %>
 
-<script id="new_compute_dialog" type="text/template">
+<script id="new_compute_dialog_<%= type %>" type="text/template">
+  <%= "#{environment.name}-#{tserver["balancer"]}" %>
   <%= simple_form_for(compute, :html => { :class => "compute_form form-horizontal" }) do |f| %>
       <div>
         <ul class="nav nav-tabs">
@@ -20,49 +35,27 @@
             <div class="form-inputs">
               <%= f.input :name %>
               <%= f.input :environment, :collection => environments, selected: selected_env %>
+              <%= f.input :balancer, :collection => balancers, selected: selected_balancer, include_blank: true %>
               <%= f.association :roles, :collection => roles, :as => :check_boxes %>
               <%#= f.input :roles, :input_html => { :value => (compute.roles||[]).join(",") } %>
             </div>
           </div>
           <div class="tab-pane fade" id="tab2">
-            <%= f.input :region %>
-            <%= f.input :flavor %>
-            <%= f.input :image %>
-            <%= f.input :groups, :input_html => { :value => groups } %>
-            <%= f.input :keypair %>
+            <%= f.input :region, collection: account.selectors.regions %>
+            <%= f.input :flavor, collection: account.selectors.flavors %>
+            <% if account.selectors_images %>
+                <%= f.input :image do %>
+                    <% f.select :image, grouped_options_for_select(account.selectors_images, selected_img) %>
+                <% end %>
+            <% else %>
+                <%= f.input :image %>
+            <% end %>
+            <%= f.input :groups, collection: account.selectors.groups, multiple: true, as: :check_boxes %>
+            <%= f.input :keypair, collection: account.selectors.keypairs %>
             <%= f.input :userdata, collection: userdata, include_blank: false, selected: selected_ud %>
           </div>
         </div>
       </div>
 
   <% end %>
-</script>
-
-<script type="text/javascript">
-    $(function () {
-        $("#create_compute").on("click", function () {
-            bootbox.dialog($("#new_compute_dialog").html(), [
-                {
-                    "Cancel": function () {
-                        console.log("cancel");
-                    }
-                },
-                {
-                    "Create": function () {
-                        console.log("create");
-                        var f = $(".compute_form:last"); // because bootbox makes a clone
-                        data = f.serialize();
-                        console.log("data");
-                        console.log(f.serializeArray());
-                        bootbox.modal("please wait", "creating");
-                        console.log("post");
-                        $.post("/computes.json", data, function () {
-                            console.log("success");
-                            bootbox.hideAll();
-                        });
-                    }
-                }
-            ], {header: "Create Compute"})
-        });
-    });
 </script>

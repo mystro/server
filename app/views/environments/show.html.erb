@@ -1,6 +1,14 @@
 <% content_for :subnav_buttons do %>
-    <a href="#" id="create_compute" class="btn btn-primary" title="Add New Server to this Environment"><i class="icon-plus-sign icon-white"></i>
-      server</a>
+    <a href="#" data-type="general" class="create_compute btn btn-primary" title="Add New Server to this Environment">
+      <i class="icon-plus-sign icon-white"></i> server
+    </a>
+    <% if @environment.template %>
+        <% @environment.template.data["servers"].each do |server|; s = server["attrs"] %>
+            <a href="#" data-type="<%= s["name"] %>" class="create_compute btn btn-primary" title="Add New Server to this Environment">
+              <i class="icon-plus-sign icon-white"></i> <%= s["name"] %>
+            </a>
+        <% end %>
+    <% end %>
     <%= link_to edit_environment_path(@environment), :title => "Edi Environment", :class => "btn btn-primary" do %><i class="icon-edit icon-white"></i> edit
     <% end %>
     <%= link_to @environment, method: :delete, data: { confirm: 'Are you sure?' }, :title => "Destroy Environment", :class => "btn btn-danger" do %><i class="icon-remove-sign icon-white"></i> destroy
@@ -30,11 +38,19 @@
   </tr>
 </table>
 
-<%= render "computes/list", computes: @environment.computes.sort_by(&:short)  %>
+<%= render "computes/list", computes: @environment.computes.sort_by(&:short) %>
 <%= render "balancers/list", balancers: @environment.balancers %>
 
 <script type="text/javascript">
 </script>
 
-<% compute = Compute.new; compute.set_defaults(current_account); compute.environment = @environment %>
-<%= render "computes/dialog", compute: compute %>
+
+<%= render "computes/dialog", type: "general", environment: @environment, tserver: {} %>
+<% if @environment.template %>
+    <% @environment.template.data["servers"].each do |server|; s = server["attrs"] %>
+
+        <%# compute = Compute.new; compute.set_defaults(current_account); compute.environment = @environment %>
+        <%= render "computes/dialog", type: s["name"], environment: @environment, tserver: s %>
+
+    <% end %>
+<% end %>

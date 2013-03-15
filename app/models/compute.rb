@@ -66,7 +66,7 @@ class Compute
   end
 
   def envname
-    environment ? environment.name : "unknown"
+    environment ? environment.name : ""
   end
 
   def subdomain
@@ -140,6 +140,29 @@ class Compute
       end
 
       compute.save
+      compute
+    end
+
+    def new_from_template(environment, tserver_attrs, i=1)
+      tserver = tserver_attrs
+      userdata = Userdata.named(tserver.userdata)
+      raise "userdata #{tserver.userdata} not found, need to `rake mystro:push`?" unless userdata
+
+      o       = {
+          roles:    Role.create_from_fog(tserver.roles),
+          groups:   tserver.groups,
+          image:    tserver.image,
+          flavor:   tserver.flavor,
+          keypair:  tserver.keypair,
+          managed:  true,
+          userdata: userdata,
+      }.delete_if { |k, v| v.nil? }
+
+      name    = tserver.name
+      o.merge!({name: name, num: i})
+      compute = environment.computes.new(o)
+      #compute.set_defaults(environment.account) unless compute.synced_at
+
       compute
     end
 
