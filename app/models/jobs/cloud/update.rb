@@ -54,7 +54,7 @@ class Jobs::Cloud::Update < Job
             z.save
 
             z.records.each do |record|
-              o = Compute.find_by_record(record) || Balancer.find_by_record(record) || Record.find_by_record(record) || nil
+              o = Balancer.find_by_record(record) || Compute.find_by_record(record) || Record.find_by_record(record) || nil
               if o
                 if o.account && !record.account
                   info ".. .. assigning record #{record.name} to account: #{o.account.name}"
