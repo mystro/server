@@ -120,7 +120,7 @@ class Compute
       name    = obj.tags['Name']||""
       num     = nil
       (name, _, _) = name.split(".") if name =~ /\./
-      name.match(/^(\w+)(\d+)$/) do |m|
+      name.match(/^([a-zA-Z]+)([0-9]+)$/) do |m|
         name = m[1]
         num  = m[2]
       end

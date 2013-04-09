@@ -17,8 +17,9 @@ class Jobs::Environment::Create < Job
 
     info "creating computes"
     tdata.servers.each do |tserver|
-      count = tserver.count
       tserver = tserver.attrs
+      info ".. #{tserver.inspect}"
+      count = tserver["count"] # .count calls the hash#count method
       1.upto(count) do |i|
         info ".. #{tserver.name} #{i}"
         compute = Compute.create_from_template(environment, tserver, i)
