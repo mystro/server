@@ -10,13 +10,25 @@
    compute.environment = environment if environment
 
    account = Account.named(current_user.account)
+   regions = nil
+   flavors = nil
+   images = nil
+   groups = nil
+   keypairs = nil
+   if account
+     regions = account.selectors.regions
+     flavors = account.selectors.flavors
+     images = account.selectors_images
+     groups = account.selectors.groups
+     keypairs = account.selectors.keypairs
+   end
+
    environments = Environment.for_account(current_user.account).asc(:name).all
    balancers = Balancer.for_account(current_user.account).asc(:name).all
    selected_env = compute.environment ? compute.environment.id : nil
    selected_balancer = type != "general" ? Balancer.named("#{environment.name}-#{tserver["balancer"]}").id : nil rescue nil
    selected_img = compute.image
    roles = Role.external.asc(:name).all
-   groups = (compute.groups||[]).join(",")
    userdata = Userdata.all
    selected_ud = compute.userdata ? compute.userdata.id : Userdata.named("default").id
 %>
@@ -44,17 +56,23 @@
             </div>
           </div>
           <div class="tab-pane fade" id="tab2">
-            <%= f.input :region, collection: account.selectors.regions %>
-            <%= f.input :flavor, collection: account.selectors.flavors %>
-            <% if account.selectors_images %>
+            <%= f.input :region, collection: regions %>
+            <%= f.input :flavor, collection: flavors %>
+            <% if images %>
                 <%= f.input :image do %>
-                    <% f.select :image, grouped_options_for_select(account.selectors_images, selected_img) %>
+                    <% f.select :image, grouped_options_for_select(images, selected_img) %>
                 <% end %>
             <% else %>
                 <%= f.input :image %>
             <% end %>
-            <%= f.input :groups, collection: account.selectors.groups, multiple: true, as: :check_boxes %>
-            <%= f.input :keypair, collection: account.selectors.keypairs %>
+            <% if groups %>
+                <%= f.input :groups, collection: groups, multiple: true, as: :check_boxes %>
+            <% else %>
+                <%= f.input :groups do %>
+                  <%= f.input_field :groups, value: (compute.groups||[]).join(",") %>
+                <% end %>
+            <% end %>
+            <%= f.input :keypair, collection: keypairs %>
             <%= f.input :userdata, collection: userdata, include_blank: false, selected: selected_ud %>
           </div>
         </div>
