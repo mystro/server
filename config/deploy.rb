@@ -148,7 +148,7 @@ namespace :foreman do
 
   desc "Export the Procfile to upstart scripts"
   task :export, :roles => :app do
-    webs       = 2
+    webs       = 1
     workers    = 3
     schedulers = 1
 
