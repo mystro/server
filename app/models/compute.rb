@@ -143,7 +143,7 @@ class Compute
       compute
     end
 
-    def new_from_template(environment, tserver_attrs, i=1)
+    def new_from_template(environment, tserver_attrs, i=nil)
       tserver = tserver_attrs
       userdata = Userdata.named(tserver.userdata)
       raise "userdata #{tserver.userdata} not found, need to `rake mystro:push`?" unless userdata
@@ -159,6 +159,7 @@ class Compute
       }.delete_if { |k, v| v.nil? }
 
       name    = tserver.name
+      i = environment.get_next_number(tserver.name) unless i
       o.merge!({name: name, num: i})
       compute = environment.computes.new(o)
       #compute.set_defaults(environment.account) unless compute.synced_at

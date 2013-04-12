@@ -1,8 +1,8 @@
 <% content_for :subnav_buttons do %>
-    <a id="create_compute" class="btn btn-primary" title="Create New Compute">create</a>
+    <a data-type="general" class="create_compute btn btn-primary" title="Create New Compute">create</a>
 <% end %>
 
 <%= render "computes/list", computes: @computes %>
 
 <% @compute = Compute.new; @compute.set_defaults(current_account) %>
-<%= render "computes/dialog", compute: @compute  %>
+<%= render "computes/dialog", environment: nil, type: "general"  %>
