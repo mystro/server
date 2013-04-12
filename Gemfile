@@ -2,7 +2,8 @@ source 'https://rubygems.org'
 
 # server
 gem 'rails', '3.2.8'
-gem "unicorn", ">= 4.3.1", :group => :production
+#gem "unicorn", ">= 4.3.1", :group => :production
+gem "thin", ">= 1.5.0"
 
 gem "devise", ">= 2.1.2"
 #gem "cancan", ">= 1.6.8"
@@ -62,7 +63,6 @@ group :assets do
 end
 
 group :test do
-  gem "thin", ">= 1.5.0"
   gem "rspec-rails", ">= 2.11.0"
   gem "capybara", ">= 1.1.2"
   gem "database_cleaner", ">= 0.9.1"
@@ -75,7 +75,6 @@ group :test do
 end
 
 group :development do
-  gem "thin", ">= 1.5.0"
   gem "rspec-rails", ">= 2.11.0"
   gem "factory_girl_rails", ">= 4.1.0"
   gem 'quiet_assets', ">= 1.0.1"
