@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 # server
 gem 'rails', '3.2.8'
-#gem "unicorn", ">= 4.3.1", :group => :production
+gem "unicorn", ">= 4.3.1", :group => :production
 gem "thin", ">= 1.5.0"
 
 gem "devise", ">= 2.1.2"
