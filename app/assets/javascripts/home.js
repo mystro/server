@@ -27,7 +27,7 @@ function updateStatus() {
 }
 $(function(){
     if ($("#jobs_status").size()) {
-        interval = setInterval(updateStatus, 2000);
+        // interval = setInterval(updateStatus, 2000);
     }
     $(".tablesorter:has(tbody tr)").tablesorter();
 

@@ -27,7 +27,9 @@ MystroServer::Application.routes.draw do
   resources :balancers
   resources :listeners
 
-  resources :computes
+  resources :computes do
+    get "dialog", :on => :collection
+  end
   resources :roles
 
   resources :environments do

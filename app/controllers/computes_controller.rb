@@ -92,4 +92,51 @@ class ComputesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def dialog
+    @type = params[:type]
+    @env = params[:environment]
+    @environment = Environment.named(@env) if @env
+
+    if @type != "general" && (!@environment || !@environment.template)
+      @type = "general"
+    end
+
+    if @type != "general"
+      n = @environment.get_next_number(@type)
+      tserver = @environment.template.server_attrs
+      @compute = Compute.new_from_template(@environment, Hashie::Mash.new(tserver), n)
+    else
+      @compute = Compute.new
+      @compute.set_defaults(current_account)
+    end
+
+    @compute.environment = @environment if @environment
+
+    @account = Account.named(current_account)
+    @regions = nil
+    @flavors = nil
+    @images = nil
+    @groups = nil
+    @keypairs = nil
+    if @account
+      @regions = @account.selectors.regions
+      @flavors = @account.selectors.flavors
+      @images = @account.selectors_images
+      @groups = @account.selectors.groups
+      @keypairs = @account.selectors.keypairs
+    end
+
+    @environments = Environment.for_account(current_account).asc(:name).all
+    @balancers = Balancer.for_account(current_account).asc(:name).all
+    @selected_env = @compute.environment ? @compute.environment.id : nil
+    #TODO: fix this
+    @selected_balancer = type != "general" ? Balancer.named("#{@environment.name}-#{tserver["balancer"]}").id : nil rescue nil
+    @selected_img = @compute.image
+    @roles = Role.external.asc(:name).all
+    @userdata = Userdata.all
+    @selected_ud = @compute.userdata ? @compute.userdata.id : Userdata.named("default").id
+
+    render "computes/dialog", layout: false
+  end
 end

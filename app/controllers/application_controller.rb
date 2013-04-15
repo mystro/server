@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  include ApplicationHelper
+
   protect_from_forgery
 
   before_filter :set_locale #http://guides.rubyonrails.org/i18n.html

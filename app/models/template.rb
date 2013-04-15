@@ -30,6 +30,16 @@ class Template
     Mystro::DSL::Template.load(file)
   end
 
+  def server_attrs(name)
+    if data["servers"]
+      ts = data["servers"].select {|e| e["name"] == name}.first
+      if ts && ts["attrs"]
+        return ts["attrs"]
+      end
+    end
+    nil
+  end
+
   def to_api
     {
         name: name,
