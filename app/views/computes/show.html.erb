@@ -9,8 +9,20 @@
 
 <table class="table table-condensed table-bordered fields-horizontal">
   <tr>
+    <th>Account</th>
+    <td><%= @compute.account ? link_to(@compute.account.name, @compute.account) : "" %></td>
+  </tr>
+  <tr>
+    <th>Environment</th>
+    <td><%= @compute.environment ? link_to(@compute.environment.name, @compute.environment) : "" %></td>
+  </tr>
+  <tr>
     <th>Name</th>
     <td><%= @compute.name %><%= @compute.num > 0 ? @compute.num : "" %></td>
+  </tr>
+  <tr>
+    <th>Balancer</th>
+    <td><%= @compute.balancer ? link_to(@compute.balancer.name, @compute.balancer) : "" %></td>
   </tr>
   <tr>
     <th>Roles</th>
@@ -19,16 +31,34 @@
     </td>
   </tr>
   <tr>
-    <th>Environment</th>
-    <td><%= @compute.environment ? link_to(@compute.environment.name, @compute.environment) : "" %></td>
+    <th>Region</th>
+    <td>
+      <%= @compute.region %>
+    </td>
   </tr>
   <tr>
-    <th>Account</th>
-    <td><%= @compute.account ? link_to(@compute.account.name, @compute.account) : "" %></td>
+    <th>Image</th>
+    <td>
+      <%= @compute.image %>
+    </td>
   </tr>
   <tr>
-    <th>Balancer</th>
-    <td><%= @compute.balancer ? link_to(@compute.balancer.name, @compute.balancer) : "" %></td>
+    <th>Flavor</th>
+    <td>
+      <%= @compute.flavor %>
+    </td>
+  </tr>
+  <tr>
+    <th>Keypair</th>
+    <td>
+      <%= @compute.keypair %>
+    </td>
+  </tr>
+  <tr>
+    <th>Groups</th>
+    <td>
+      <%= @compute.groups.join(",") %>
+    </td>
   </tr>
   <tr> <th>Synced At</th> <td><%= @compute.synced_at %></td> </tr>
 </table>

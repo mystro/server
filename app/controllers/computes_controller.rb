@@ -40,12 +40,19 @@ class ComputesController < ApplicationController
   # POST /computes
   # POST /computes.json
   def create
-    roles = params[:compute].delete(:roles)
     groups = params[:compute].delete(:groups)
 
+    logger.info "groups: #{groups.class} #{groups.inspect}"
+
     @compute = Compute.new(params[:compute])
-    @compute.roles = roles =~ /,/ ? roles.split(",") : [roles].compact
-    @compute.groups = groups =~ /,/ ? groups.split(",") : [groups].compact
+    @compute.groups = case groups
+                        when String
+                          groups.split(",")
+                        when Array
+                          [groups].compact.flatten.reject(&:empty?)
+                        else
+                          raise "don't know class type"
+                      end
     @compute.account = mystro_account_id
 
     saved = @compute.save
