@@ -16,13 +16,15 @@ gem "ipaddress"
 # mystro
 if ENV["MYSTRO_DEV"]
   gem "mystro-common", :path => "../common"
+  #gem "damsel", :path => "../../damsel"
   #gem "mystro-client", :path => "~/catz/mystro/client"
   #gem "mystro-plugin-chef", :path => "~/catz/mystro/mystro-plugin-chef"
   #gem "mystro-plugin-scout", :path => "~/catz/mystro/mystro-plugin-scout"
   #gem "mystro-plugin-mongo", :path => "~/catz/mystro/mystro-plugin-mongo"
 else
   #gem "mystro-common"
-  gem "mystro-common", :git => "git@github.com:mystro/common.git"
+  gem "mystro-common", github: "mystro/common", tag: "v0.1.0"
+  #gem "damsel"
   #gem "mystro-client"
   #gem "mystro-plugin-chef"
   #gem "mystro-plugin-scout"
