@@ -19,16 +19,25 @@
     </div>
   </nav>
 </header>
-<div class="subnav">
-  <div class="container">
-    <ul class="nav nav-pills pull-left">
-      <%= yield :subnav_pills if content_for?(:subnav_pills) %>
+<!--<div class="subnav">-->
+  <!--<div class="container">-->
+    <!--<ul class="nav nav-pills pull-left">-->
+      <!--<%#= yield :subnav_pills if content_for?(:subnav_pills) %>-->
+    <!--</ul>-->
+    <!--<div class="buttons pull-right">-->
+      <!--<%#= yield :subnav_buttons if content_for?(:subnav_buttons) %>-->
+    <!--</div>-->
+  <!--</div>-->
+<!--</div>-->
+<% if content_for?(:subnav) %>
+<div class="container">
+  <div class="subnav subnav-fixed">
+    <ul class="nav nav-pills">
+      <%= yield :subnav %>
     </ul>
-    <div class="buttons pull-right">
-      <%= yield :subnav_buttons if content_for?(:subnav_buttons) %>
-    </div>
   </div>
 </div>
+<% end %>
 <div id="main" role="main">
   <div class="container">
     <%= render 'layouts/messages' %>

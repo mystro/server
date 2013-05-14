@@ -1,0 +1,22 @@
+<% content_for :subnav do %>
+    <li class="<%= controller.controller_path == 'environments' ? 'active' : '' %>">
+      <%= link_to main_app.environments_path do %>
+          Environments
+      <% end %>
+    </li>
+    <li class="<%= controller.controller_path == 'computes' ? 'active' : '' %>">
+      <%= link_to main_app.computes_path do %>
+          Computes
+      <% end %>
+    </li>
+    <li class="<%= controller.controller_path == 'balancers' ? 'active' : '' %>">
+      <%= link_to main_app.balancers_path do %>
+          Balancers
+      <% end %>
+    </li>
+    <li class="<%= controller.controller_path == 'records' ? 'active' : '' %>">
+      <%= link_to main_app.records_path do %>
+          Dns
+      <% end %>
+    </li>
+<% end %>

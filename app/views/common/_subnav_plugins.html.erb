@@ -1,0 +1,9 @@
+<% content_for :subnav do %>
+    <% Mystro::Plugin.ui.each do |name, path| %>
+        <li>
+          <%= link_to path do %>
+              <%= name %>
+          <% end %>
+        </li>
+    <% end %>
+<% end %>
