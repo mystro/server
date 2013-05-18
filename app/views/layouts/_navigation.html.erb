@@ -3,58 +3,75 @@
   <span class="icon-bar"></span>
   <span class="icon-bar"></span>
 </a>
-<%= link_to "Mystro", root_path, :class => 'brand', :title => server_version %>
+<%= link_to "Mystro", main_app.root_path, :class => 'brand', :title => server_version %>
 <div class="nav-collapse">
   <ul class="nav">
     <li class="<%= controller.controller_path == '' || controller.controller_path == 'home' ? 'active' : '' %>">
-      <%= link_to root_path do %>
-        <i class="icon-home "></i> Home
-      <% end %>
-    </li>
-    <li class="<%= controller.controller_path == 'environments' ? 'active' : '' %>">
-      <%= link_to environments_path do %>
-          Environments
-      <% end %>
-    </li>
-    <li class="<%= controller.controller_path == 'computes' ? 'active' : '' %>">
-      <%= link_to computes_path do %>
-          Computes
-      <% end %>
-    </li>
-    <li class="<%= controller.controller_path == 'balancers' ? 'active' : '' %>">
-      <%= link_to balancers_path do %>
-          Balancers
-      <% end %>
-    </li>
-    <li class="<%= controller.controller_path == 'records' ? 'active' : '' %>">
-      <%= link_to records_path do %>
-          Dns
+      <%= link_to "/" do %>
+          <i class="icon-home "></i> Home
       <% end %>
     </li>
     <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Models <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li class="<%= controller.controller_path == 'environments' ? 'active' : '' %>">
+          <%= link_to main_app.environments_path do %>
+              Environments
+          <% end %>
+        </li>
+        <li class="<%= controller.controller_path == 'computes' ? 'active' : '' %>">
+          <%= link_to main_app.computes_path do %>
+              Computes
+          <% end %>
+        </li>
+        <li class="<%= controller.controller_path == 'balancers' ? 'active' : '' %>">
+          <%= link_to main_app.balancers_path do %>
+              Balancers
+          <% end %>
+        </li>
+        <li class="<%= controller.controller_path == 'records' ? 'active' : '' %>">
+          <%= link_to main_app.records_path do %>
+              Dns
+          <% end %>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Plugins <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <% Mystro::Plugin.ui.each do |name, path| %>
+            <li>
+              <%= link_to path do %>
+                  <%= name %>
+              <% end %>
+            </li>
+        <% end %>
+      </ul>
+    </li>
+    <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other <b class="caret"></b></a>
-    <ul class="dropdown-menu">
-      <li>
-        <%= link_to accounts_path do %>
-            Accounts
-        <% end %>
-      </li>
-      <li>
-        <%= link_to templates_path do %>
-            Templates
-        <% end %>
-      </li>
-      <li>
-        <%= link_to roles_path do %>
-            Roles
-        <% end %>
-      </li>
-      <li>
-        <%= link_to userdata_index_path do %>
-            Userdata
-        <% end %>
-      </li>
-    </ul>
+      <ul class="dropdown-menu">
+        <li>
+          <%= link_to main_app.accounts_path do %>
+              Accounts
+          <% end %>
+        </li>
+        <li>
+          <%= link_to main_app.templates_path do %>
+              Templates
+          <% end %>
+        </li>
+        <li>
+          <%= link_to main_app.roles_path do %>
+              Roles
+          <% end %>
+        </li>
+        <li>
+          <%= link_to main_app.userdata_index_path do %>
+              Userdata
+          <% end %>
+        </li>
+      </ul>
     </li>
   </ul>
   <!--
@@ -64,26 +81,28 @@
   -->
   <ul class="nav pull-right">
     <li>
-      <%= link_to "/resque", title: "manage resque" do %>
-          <span id="resque_status" title="resque workers" class="badge <%= "badge-important" if Resque.workers.count == 0 %>"><%= Resque.workers.count %></span> <i class="icon-time"></i>
+      <%= link_to main_app.resque_path, title: "manage resque" do %>
+          <span id="resque_status" title="resque workers" class="badge <%= "badge-important" if Resque.workers.count == 0 %>"><%= Resque.workers.count %></span>
+          <i class="icon-time"></i>
       <% end %>
     </li>
     <li>
-      <%= link_to jobs_path, title: "manage jobs" do %>
-          <span id="jobs_status" title="active jobs" class="badge <%= "badge-important" if Job.errors? %>"><%= Job.count %></span> <i class="icon-refresh"></i>
+      <%= link_to main_app.jobs_path, title: "manage jobs" do %>
+          <span id="jobs_status" title="active jobs" class="badge <%= "badge-important" if Job.errors? %>"><%= Job.count %></span>
+          <i class="icon-refresh"></i>
       <% end %>
     </li>
     <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= current_user.account %> <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li>
-          <%= link_to "/accounts/everything", :class => "account_select", :data => {account: "everything"} do %>
+          <%= link_to "/accounts/everything", :class => "account_select", :data => { account: "everything" } do %>
               <i class="<%= "everything" == current_user.account ? "icon-ok" : "icon-ok icon-white" %>"></i> everything
           <% end %>
         </li>
         <% Account.all.each do |account| %>
             <li>
-              <%= link_to account_path(account), :class => "account_select", :data => {account: account.name} do %>
+              <%= link_to "/account/#{account.id}", :class => "account_select", :data => { account: account.name } do %>
                   <i class="<%= account.name == current_user.account ? "icon-ok" : "icon-ok icon-white" %>"></i> <%= account.name %>
               <% end %>
             </li>
@@ -94,28 +113,28 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= current_user.name %> <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li>
-          <%= link_to users_path, :title => "manage users" do %>
+          <%= link_to main_app.users_path, :title => "manage users" do %>
               <i class="icon-user "></i> Manage Users
           <% end %>
         </li>
         <li class="divider"></li>
         <li>
-          <%= link_to edit_user_registration_path, :title => "edit profile" do %>
+          <%= link_to main_app.edit_user_registration_path, :title => "edit profile" do %>
               <i class="icon-cog "></i> Profile
           <% end %>
         </li>
         <li>
-          <%= link_to destroy_user_session_path, :method => 'delete', :title => "logout" do %>
+          <%= link_to main_app.destroy_user_session_path, :method => 'delete', :title => "logout" do %>
               <i class="icon-share "></i> Logout
           <% end %>
         </li>
         <li class="divider"></li>
-        <% %w{Jobs::Cloud::Update Jobs::Chef::Roles}.each do |k| %>
-        <li>
-          <%= link_to "#", class: "create_job", klass: k do %>
-              Run <%= k %>
-          <% end %>
-        </li>
+        <% (%w{Jobs::Cloud::Update Jobs::Chef::Roles}+Mystro::Plugin.jobs).each do |k| %>
+            <li>
+              <%= link_to "#", class: "create_job", klass: k do %>
+                  Run <%= k %>
+              <% end %>
+            </li>
         <% end %>
       </ul>
     </li>

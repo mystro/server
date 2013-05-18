@@ -11,8 +11,8 @@ class Job
   field :accepted_at, type: DateTime
 
   default_scope where(accepted_at: nil)
-  scope :active, ->{ where(:status.in => [:new, :working, :waiting, :retry, :error], accepted_at: nil)}
-  scope :errors, ->{ where(:status.in => [:error])}
+  scope :active, -> { where(:status.in => [:new, :working, :waiting, :retry, :error], accepted_at: nil) }
+  scope :errors, -> { where(:status.in => [:error]) }
 
   def accept
     self.accepted_at = Time.now
@@ -45,9 +45,9 @@ class Job
   end
 
   # wait while return value from block is true
-  def wait(options = { }, &block)
+  def wait(options = {}, &block)
     return unless block_given?
-    o = { interval: 3, maximum: 600 }.merge(options)
+    o = {interval: 3, maximum: 600}.merge(options)
     interval = o[:interval]
     maximum = o[:maximum]
     count = 0
@@ -63,7 +63,7 @@ class Job
       if data && data["id"] && data["class"]
         c = data["class"].constantize
         begin
-        c.find(data["id"])# rescue nil #TODO: make this smarter
+          c.find(data["id"]) # rescue nil #TODO: make this smarter
         rescue Mongoid::Errors::DocumentNotFound => e
           logger.error "document not found"
           nil
@@ -111,6 +111,7 @@ class Job
   end
 
   def pushlog(sev, msg)
+    puts "#{sev} #{msg}"
     self.log << {severity: sev, message: msg}
   end
 

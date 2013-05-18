@@ -1,8 +1,4 @@
 MystroServer::Application.routes.draw do
-
-  mount Resque::Server.new, :at => "/admin/resque"
-  resource :resque
-
   namespace :api do
     scope :defaults => { :format => 'json' } do
       resource :status
@@ -61,5 +57,12 @@ MystroServer::Application.routes.draw do
     root :to => 'home#index'
   end
 
+  match "/home/widget/:environment" => "home#widget"
+  match "/home/raw" => "home#raw"
   root :to => "home#index"
+
+
+  mount Resque::Server.new, :at => "/admin/resque"
+  resource :resque
+
 end

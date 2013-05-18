@@ -42,6 +42,24 @@ class Environment
     end
   end
 
+  def records
+    @records ||= [computes.map(&:records) + balancers.map(&:records)].flatten
+  end
+
+  def records_count
+    @records_count ||= records.count
+  end
+
+  def versions
+    @versions ||= begin
+      out = []
+      computes.each do |c|
+        out += c.versions
+      end
+      out.flatten.uniq
+    end
+  end
+
   def as_json(options={})
     j = super(:include => [:computes, :balancers])
     j[:age] = age
@@ -65,6 +83,9 @@ class Environment
   end
 
   class << self
+    def named(name)
+      where(name: name).first
+    end
     def create_from_fog(tags)
       # since environments don't actually exist in the cloud, except as meta data,
       # this is here for convenience

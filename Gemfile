@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 # server
+gem 'rake', '10.0.4'
 gem 'rails', '3.2.8'
 gem "unicorn", ">= 4.3.1", :group => :production
 gem "thin", ">= 1.5.0"
@@ -21,14 +22,16 @@ if ENV["MYSTRO_DEV"]
   #gem "mystro-plugin-chef", :path => "~/catz/mystro/mystro-plugin-chef"
   #gem "mystro-plugin-scout", :path => "~/catz/mystro/mystro-plugin-scout"
   #gem "mystro-plugin-mongo", :path => "~/catz/mystro/mystro-plugin-mongo"
+  gem "mystro-volley", path: "../mystro-volley"
 else
   #gem "mystro-common"
-  gem "mystro-common", github: "mystro/common", tag: "v0.1.0"
+  gem "mystro-common", github: "mystro/common", tag: "v0.1.2"
   #gem "damsel"
   #gem "mystro-client"
   #gem "mystro-plugin-chef"
   #gem "mystro-plugin-scout"
   #gem "mystro-plugin-mongo"
+  gem "mystro-volley", github: "mystro/mystro-volley"
 end
 
 # jobs

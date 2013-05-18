@@ -4,15 +4,17 @@
     <th>Name</th>
     <th>Description</th>
     <th>Internal</th>
+    <th>Deployable</th>
     <th class="links {sorter: false}"></th>
   </tr>
   </thead>
   <tbody>
 <% @roles.each do |role| %>
   <tr>
-    <td><%= role.name %></td>
+    <td><%= link_to role.name, role_path(role) %></td>
     <td><%= role.description %></td>
     <td><%= role.internal %></td>
+    <td><%= role.deployable %></td>
     <td class="links"><%= render "common/links", :obj => role, :edit => edit_role_path(role) %></td>
   </tr>
 <% end %>

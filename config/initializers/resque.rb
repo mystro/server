@@ -30,3 +30,5 @@ end
 
 Resque::Server.use Authentication
 Resque.redis.namespace = "resque:Mystro"
+
+

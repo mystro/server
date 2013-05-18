@@ -114,6 +114,11 @@ class Compute
     }
   end
 
+  has_many :installs, class_name: "MystroVolley::Install"
+  def versions
+    installs.map(&:version).uniq
+  end
+
   class << self
     def create_from_fog(obj)
       compute = Compute.where(:rid => obj.id).first || Compute.create(:rid => obj.id)
