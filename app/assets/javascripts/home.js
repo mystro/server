@@ -27,7 +27,7 @@ function updateStatus() {
 }
 $(function(){
     if ($("#jobs_status").size()) {
-//        interval = setInterval(updateStatus, 2000);
+        interval = setInterval(updateStatus, 2000);
     }
     $(".tablesorter:has(tbody tr)").tablesorter();
 
@@ -39,9 +39,10 @@ $(function(){
         e.preventDefault();
         var id = $(this).attr("data-id");
         var tp = $(this).attr("data-type");
+        var base = $(this).attr("data-base") || "";
         var tr = $(this).parent("td").parent("tr");
         if (id != "nil" && tp != "unknown") {
-            var u = "/" + tp + "/" + id + ".json";
+            var u = base + "/" + tp + "/" + id + ".json";
             console.log("delete_me:" + u);
             d = {
                 _method: "DELETE"

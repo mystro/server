@@ -15,6 +15,7 @@
 config/mystro
 config/chef
 config/volley
+logs/
 
 # bundler state
 /.bundle
