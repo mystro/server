@@ -2,7 +2,7 @@ PATH
   remote: ../common
   specs:
     mystro-common (0.1.2)
-      activesupport
+      activesupport (= 3.2.8)
       erubis
       fog
       hashie
