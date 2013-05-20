@@ -1,3 +1,24 @@
+PATH
+  remote: ../common
+  specs:
+    mystro-common (0.1.2)
+      activesupport (= 3.2.8)
+      erubis
+      fog
+      hashie
+      ipaddress
+      yell (~> 1.2.0)
+
+PATH
+  remote: ../mystro-volley
+  specs:
+    mystro-volley (0.1.0.rc3)
+      mcollective-client
+      mongoid
+      mystro-common (= 0.1.2)
+      rails (~> 3.2.8)
+      volley
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -189,19 +210,6 @@ GEM
     moped (1.5.0)
     multi_json (1.7.3)
     multi_xml (0.5.3)
-    mystro-common (0.1.2)
-      activesupport
-      erubis
-      fog
-      hashie
-      ipaddress
-      yell (~> 1.2.0)
-    mystro-volley (0.1.0.rc3)
-      mcollective-client
-      mongoid
-      mystro-common (= 0.1.2)
-      rails (~> 3.2.8)
-      volley
     net-scp (1.1.1)
       net-ssh (>= 2.6.5)
     net-sftp (2.1.2)
@@ -387,8 +395,8 @@ DEPENDENCIES
   mongo
   mongoid (>= 3.0.9)
   mongoid-rspec (>= 1.4.6)
-  mystro-common (= 0.1.2)
-  mystro-volley (= 0.1.0.rc3)
+  mystro-common!
+  mystro-volley!
   quiet_assets (>= 1.0.1)
   rails (= 3.2.8)
   rake (= 10.0.4)
