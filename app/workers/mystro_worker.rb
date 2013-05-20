@@ -1,5 +1,4 @@
 class MystroWorker
-  extend Resque::Plugins::Logger
   @queue = :default
 
   class << self

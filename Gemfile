@@ -21,13 +21,13 @@ if ENV["MYSTRO_DEV"]
 else
   #gem "mystro-common"
   gem "mystro-common", "0.1.2"
-  gem "mystro-volley", "0.1.0.rc1"
+  gem "mystro-volley", "0.1.0.rc3"
 end
 
 # jobs
 gem "resque"
 gem 'resque-scheduler', :require => 'resque_scheduler'
-gem 'resque-logger'
+#gem 'resque-logger'
 
 # data
 gem "mongoid", ">= 3.0.9"

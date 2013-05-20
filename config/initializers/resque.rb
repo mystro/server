@@ -11,13 +11,18 @@ class Authentication
   end
 end
 
-log_path = File.join Rails.root, 'log'
-config = {
-    folder:     log_path,                 # destination folder
-    class_name: Yell,                     # logger class name
-    class_args: [],              # logger additional parameters
-}
-Resque.logger = config
+#log_path = File.join Rails.root, 'log'
+#config = {
+#    folder:     log_path,                 # destination folder
+#    class_name: Logger,                   # logger class name
+#    class_args: [ 'daily' ],  # logger additional parameters
+#    level:      Logger::INFO,             # optional
+#    formatter:  Logger::Formatter.new,    # optional
+#}
+#Resque.logger = config
+
+#Resque.logger = Logger.new(File.join(Rails.root, "log", "resque"))
+Resque.logger = Yell.new :datefile, File.join(Rails.root, "log", "workers.log")
 
 # reload worker code
 # https://github.com/defunkt/resque/issues/447

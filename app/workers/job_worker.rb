@@ -1,5 +1,4 @@
 class JobWorker
-  extend Resque::Plugins::Logger
   @queue = :default
 
   class << self
@@ -11,6 +10,10 @@ class JobWorker
     rescue => e
       logger.error e.message
       logger.error e
+    end
+
+    def logger
+      Resque.logger
     end
   end
 end

@@ -1,5 +1,4 @@
 class ChefWorker
-  extend Resque::Plugins::Logger
   @queue = :default
 
   class << self
