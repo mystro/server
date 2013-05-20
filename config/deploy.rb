@@ -49,8 +49,9 @@ Cape do |cape|
   # Create Capistrano recipes for all Rake tasks.
   tasks = %w{mystro:reset mystro:setup mystro:cloud:update mystro:chef:roles}
   tasks.each do |task|
-    cape.mirror_rake_tasks task, :roles => :app do |env|
-      env['RAILS_ENV'] = rails_env
+    cape.mirror_rake_tasks task do |env|
+      recipes.options[:roles] = :app
+      recipes.env["RAILS_ENV"] = "production"
     end
   end
 end
@@ -70,6 +71,7 @@ namespace :mystro do
   task :push do
     mystro.config.update
     mystro.chef.update
+    mystro.volley.update
     foreman.restart
     mystro.files
   end
@@ -120,6 +122,31 @@ namespace :mystro do
     desc "symlink mystro configuration"
     task :symlink do
       dir = "config/mystro"
+      run("if [ -e '#{release_path}' ]; then rm #{release_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{release_path}/#{dir}; else rm #{current_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{current_path}/#{dir}; fi;")
+    end
+  end
+
+  namespace :volley do
+    task :update do
+      mystro.volley.push
+      mystro.volley.symlink
+    end
+
+    desc "push volley configuration"
+    task :push do
+      require "rails"
+      dir = "config/volley"
+      file = "volley-config-#{$$}-#{Time.now.to_i}.tgz"
+      remote = "#{shared_path}/config/#{file}"
+      system("cd #{dir} && tar cfz /tmp/#{file} *")
+      upload("/tmp/#{file}", remote)
+      run("rm -rf #{shared_path}/#{dir}; mkdir -p #{shared_path}/#{dir}")
+      run("cd #{shared_path}/#{dir} && tar xfz #{remote} && rm #{remote}")
+    end
+
+    desc "symlink volley configuration"
+    task :symlink do
+      dir = "config/volley"
       run("if [ -e '#{release_path}' ]; then rm #{release_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{release_path}/#{dir}; else rm #{current_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{current_path}/#{dir}; fi;")
     end
   end
