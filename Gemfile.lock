@@ -12,9 +12,10 @@ PATH
 PATH
   remote: ../mystro-volley
   specs:
-    mystro-volley (0.1.0)
+    mystro-volley (0.1.0.rc1)
       mcollective-client
       mongoid
+      mystro-common (= 0.1.2)
       rails (~> 3.2.8)
       volley
 
