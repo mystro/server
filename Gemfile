@@ -11,7 +11,7 @@ gem "devise", ">= 2.1.2"
 #gem "rolify", ">= 3.2.0"
 
 gem "foreman"
-gem "json", "~> 1.7.7" # specified to solve depedency conflict with chef
+gem "json", "~> 1.7.7"
 gem "ipaddress"
 
 # mystro
