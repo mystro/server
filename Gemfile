@@ -11,7 +11,7 @@ gem "devise", ">= 2.1.2"
 #gem "rolify", ">= 3.2.0"
 
 gem "foreman"
-gem "json", "1.6.1" # specified to solve depedency conflict with chef
+gem "json", "~> 1.7.7" # specified to solve depedency conflict with chef
 gem "ipaddress"
 
 # mystro
@@ -46,7 +46,7 @@ gem 'client_side_validations-simple_form'
 gem "highline"
 gem "yell"
 
-gem "chef", "~> 10.16.0"
+gem "chef", "~> 10.26.0"
 gem "scout_api"
 gem "mongo"
 
