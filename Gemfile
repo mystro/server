@@ -21,7 +21,7 @@ if ENV["MYSTRO_DEV"]
 else
   #gem "mystro-common"
   gem "mystro-common", "0.1.2"
-  gem "mystro-volley", "0.1.0.rc3"
+  gem "mystro-volley", github: "mystro/mystro-volley"
 end
 
 # jobs
