@@ -36,6 +36,7 @@ after "deploy:restart", "foreman:restart"
 
 after "deploy:update_code", "mystro:config:update"
 after "deploy:update_code", "mystro:chef:update"
+after "deploy:update_code", "mystro:volley:update"
 after "deploy:restart", "mystro:files"
 after "deploy:setup", "mystro:setup"
 
@@ -49,7 +50,7 @@ Cape do |cape|
   # Create Capistrano recipes for all Rake tasks.
   tasks = %w{mystro:reset mystro:setup mystro:cloud:update mystro:chef:roles}
   tasks.each do |task|
-    cape.mirror_rake_tasks task do |env|
+    cape.mirror_rake_tasks task do |recipes|
       recipes.options[:roles] = :app
       recipes.env["RAILS_ENV"] = "production"
     end
