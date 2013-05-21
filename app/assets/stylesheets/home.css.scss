@@ -80,7 +80,23 @@ div.log {
 
 }
 
-div.mw {
+div.mw-simple {
+  background-color: #000000;
+  width: 200px;
+  margin: 3px;
+  float: left;
+
+  a {
+    color: inherit;
+  }
+  .mw-title {
+    height: 20px;
+    line-height: 20px;
+    font-size: 16px;
+  }
+}
+
+div.mw-scoreboard {
   $border: #b8b8b8;
 
   $blue-key:#43839F;

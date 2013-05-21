@@ -1,7 +1,7 @@
 <%
    c = "#{"mw-warning" if warning} #{"mw-error" if error}"
 %>
-<div class="mw mw-simple <%= c %>">
+<div class="mw <%= c %>">
   <div class="mw-title <%= c %>">
     <%= link_to title, view %>
   </div>

@@ -1,3 +1,1 @@
-<% @environments.each do |env| %>
-    <%= render "common/widget", widget_data(env) %>
-<% end %>
+<%= render "environments/list", environments: @environments %>
