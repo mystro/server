@@ -3,9 +3,9 @@
 
   <div class="form-inputs">
     <%= f.input :name %>
-    <%= f.association :account, :collection => Account.all %>
-    <%= f.association :environment, :collection => Environment.with_account(current_user.account).all %>
-    <%= f.association :balancer, :collection => Balancer.with_account(current_user.account).all %>
+    <%= f.association :account, :collection => Account.asc(:name).all %>
+    <%= f.association :environment, :collection => Environment.with_account(current_user.account).asc(:name).all %>
+    <%= f.association :balancer, :collection => Balancer.with_account(current_user.account).asc(:name).all %>
     <%= f.input :region, disabled: true %>
     <%= f.input :flavor, disabled: true %>
     <%= f.input :image, disabled: true %>
