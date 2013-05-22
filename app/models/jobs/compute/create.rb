@@ -22,7 +22,7 @@ class Jobs::Compute::Create < Job
       raise "zone '#{z}' not found, could not create dns record" unless zone
 
       info "compute:#{model.id}#create queueing record"
-      record = model.records.find_or_create_by(:zone => zone, :name => "#{model.long}")
+      record = model.records.find_or_create_by(:zone => zone, :name => model.long)
       record.update_attributes(
           :type   => "CNAME",
           :ttl    => 300,
@@ -31,6 +31,29 @@ class Jobs::Compute::Create < Job
       record.account = Account.mystro(mystro)
       record.save
       record.enqueue(:create)
+
+      info "check if we should build solo record"
+      if model.num == 1
+        info "model.num == 1"
+        e = model.environment
+        if e.computes.select {|e| e.name == model.name}.count == 1
+          info "computes.count == 1"
+          if model.balancer == nil
+            n = "#{model.name}.#{e.name}.#{z}"
+            info "create solo record (single compute with no balancer) #{n}"
+            record2 = model.records.find_or_create_by(zone: zone, name: n)
+            record2.update_attributes(
+                :type   => "CNAME",
+                :ttl    => 300,
+                :values => [r.dns_name]
+            )
+            record2.account = Account.mystro(mystro)
+            record2.save
+            record2.enqueue(:create)
+          end
+        end
+      end
+
     end
 
     info "compute:#{model.id}#create save"
