@@ -70,5 +70,25 @@ class Jobs::Cloud::Update < Job
         end
       end
     end
+
+    info "clean up"
+    yesterday = Time.now - 24.hours
+    computes = Compute.where(:synced_at.lte => yesterday)
+    computes.each do |c|
+      info "remove compute #{c.short}"
+      c.destroy
+    end
+
+    balancers = Balancer.where(:synced_at.lte => yesterday)
+    balancers.each do |b|
+      info "remove balancer #{b.name}"
+      b.destroy
+    end
+
+    records = Record.where(:synced_at.lte => yesterday)
+    records.each do |r|
+      info "remove record #{r.long}"
+      r.destroy
+    end
   end
 end
