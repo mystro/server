@@ -63,6 +63,11 @@ class Balancer
     o
   end
 
+  def to_fog
+    a = Mystro::Account.list[account.name].balancer
+    a.find(name)
+  end
+
   def zones
     computes.collect do |e|
       s = Mystro.compute.find(e.rid)

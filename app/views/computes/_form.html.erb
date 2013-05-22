@@ -6,11 +6,11 @@
     <%= f.association :account, :collection => Account.all %>
     <%= f.association :environment, :collection => Environment.with_account(current_user.account).all %>
     <%= f.association :balancer, :collection => Balancer.with_account(current_user.account).all %>
-    <%= f.input :region %>
-    <%= f.input :flavor %>
-    <%= f.input :image %>
-    <%= f.input :groups %>
-    <%= f.input :keypair %>
+    <%= f.input :region, disabled: true %>
+    <%= f.input :flavor, disabled: true %>
+    <%= f.input :image, disabled: true %>
+    <%= f.input :groups, disabled: true, input_html: {value: @compute.groups.join(",")} %>
+    <%= f.input :keypair, disabled: true %>
   </div>
 
   <div class="form-actions">

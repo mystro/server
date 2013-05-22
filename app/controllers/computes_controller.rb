@@ -2,7 +2,7 @@ class ComputesController < ApplicationController
   # GET /computes
   # GET /computes.json
   def index
-    @computes = filters(Compute, {account: current_user.account}).includes(:environment, :balancer) #Compute.where(account_id: mystro_account_id).all
+    @computes = filters(Compute, { account: current_user.account }).includes(:environment, :balancer) #Compute.where(account_id: mystro_account_id).all
 
     respond_to do |format|
       format.html # index.html.erb
@@ -44,15 +44,15 @@ class ComputesController < ApplicationController
 
     logger.info "groups: #{groups.class} #{groups.inspect}"
 
-    @compute = Compute.new(params[:compute])
-    @compute.groups = case groups
-                        when String
-                          groups.split(",")
-                        when Array
-                          [groups].compact.flatten.reject(&:empty?)
-                        else
-                          raise "don't know class type"
-                      end
+    @compute         = Compute.new(params[:compute])
+    @compute.groups  = case groups
+                         when String
+                           groups.split(",")
+                         when Array
+                           [groups].compact.flatten.reject(&:empty?)
+                         else
+                           raise "don't know class type"
+                       end
     @compute.account = mystro_account_id
 
     saved = @compute.save
@@ -74,8 +74,20 @@ class ComputesController < ApplicationController
   def update
     @compute = Compute.find(params[:id])
 
+    changed = nil
+    if @compute.balancer && params[:compute]["balancer_id"] == ""
+      @compute.balancer.enqueue(:remove, { rid: @compute.rid })
+    elsif !@compute.balancer && params[:compute]["balancer_id"]
+      changed = :add
+    end
+
     respond_to do |format|
       if @compute.update_attributes(params[:compute])
+
+        if changed
+          @compute.balancer.enqueue(changed, { rid: @compute.rid })
+        end
+
         format.html { redirect_to @compute, notice: 'Compute was successfully updated.' }
         format.json { head :no_content }
       else
@@ -88,8 +100,8 @@ class ComputesController < ApplicationController
   # DELETE /computes/1
   # DELETE /computes/1.json
   def destroy
-    @compute = Compute.unscoped.find(params[:id])
-    @compute.account ||= mystro_account_id
+    @compute          = Compute.unscoped.find(params[:id])
+    @compute.account  ||= mystro_account_id
     @compute.deleting = true
     @compute.save
     @compute.enqueue(:destroy)
