@@ -131,4 +131,10 @@ $(function(){
         console.log("region change");
 
     });
+
+    $(document).on("change", "#record_zone", function(){
+        var s = $("#record_zone option:selected").text();
+        console.log("record_zone change:"+s);
+        $("#domain_text").text("."+s);
+    });
 });
