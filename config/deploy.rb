@@ -18,7 +18,7 @@ set :bundle_flags,    "--quiet"
 set :whenever_command, "bundle exec whenever"
 require 'whenever/capistrano'
 
-require 'webserver/apache'
+require 'capistrano/webserver/apache'
 set :webserver_dir, "/srv/sites"
 
 ## RVM specific
