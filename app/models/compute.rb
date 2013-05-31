@@ -29,17 +29,19 @@ class Compute
   field :private_dns, type: String
   field :private_ip, type: String
 
+  index({num: 1})
+
   # a bit hacky, but easiest way to make sure we get defaults from current account
   def set_defaults(account)
     self.account = account
     ud = Userdata.named(account.mystro.compute.userdata) || nil rescue nil
     ud ||= Userdata.named("default")
     if account && account.mystro
-      self.image    = account.mystro.compute.image
-      self.flavor   = account.mystro.compute.flavor
-      self.keypair  = account.mystro.compute.keypair
-      self.groups   = account.mystro.compute.groups
-      self.region   = account.mystro.compute.region
+      self.image = account.mystro.compute.image
+      self.flavor = account.mystro.compute.flavor
+      self.keypair = account.mystro.compute.keypair
+      self.groups = account.mystro.compute.groups
+      self.region = account.mystro.compute.region
       self.userdata = ud
     end
   end
@@ -75,10 +77,10 @@ class Compute
 
   def fog_tags
     {
-        'Name'        => display,
+        'Name' => display,
         'Environment' => envname,
-        'Roles'       => roles_string,
-        'Account'     => account ? account.name : ""
+        'Roles' => roles_string,
+        'Account' => account ? account.name : ""
     }
   end
 
@@ -87,34 +89,35 @@ class Compute
     z = account.mystro.dns.zone || Mystro.account.dns.zone || "unknown"
     a = account.name || "unknown"
     {
-        image_id:  image,
+        image_id: image,
         flavor_id: flavor,
-        key_name:  keypair,
-        groups:    groups,
-        region:    region,
+        key_name: keypair,
+        groups: groups,
+        region: region,
         user_data: Mystro::Userdata.create(long, roles.map(&:name), envname,
                                            nickname: display,
-                                           package:  u,
-                                           zone:     z,
-                                           account:  a)
+                                           package: u,
+                                           zone: z,
+                                           account: a)
     }
   end
 
   def to_api
     {
-        id:          id,
-        name:        display,
-        long:        (long rescue nil),
-        dns:         public_dns,
-        ip:          public_ip,
+        id: id,
+        name: display,
+        long: (long rescue nil),
+        dns: public_dns,
+        ip: public_ip,
         environment: environment ? environment.name : nil,
-        account:     account ? account.name : nil,
-        balancer:    balancer ? balancer.name : nil,
-        roles:       roles_string
+        account: account ? account.name : nil,
+        balancer: balancer ? balancer.name : nil,
+        roles: roles_string
     }
   end
 
   has_many :installs, class_name: "MystroVolley::Install"
+
   def versions
     installs.map(&:version).uniq
   end
@@ -122,21 +125,21 @@ class Compute
   class << self
     def create_from_fog(obj)
       compute = Compute.where(:rid => obj.id).first || Compute.create(:rid => obj.id)
-      name    = obj.tags['Name']||""
-      num     = nil
+      name = obj.tags['Name']||""
+      num = nil
       (name, _, _) = name.split(".") if name =~ /\./
       name.match(/^([a-zA-Z]+)([0-9]+)$/) do |m|
         name = m[1]
-        num  = m[2]
+        num = m[2]
       end
       compute.name = name
       compute.num = num if num
-      compute.state       = obj.state.to_s.downcase
-      compute.public_dns  = obj.dns_name
-      compute.public_ip   = obj.public_ip_address
+      compute.state = obj.state.to_s.downcase
+      compute.public_dns = obj.dns_name
+      compute.public_ip = obj.public_ip_address
       compute.private_dns = obj.private_dns_name
-      compute.private_ip  = obj.private_ip_address
-      compute.synced_at   = Time.now
+      compute.private_ip = obj.private_ip_address
+      compute.synced_at = Time.now
 
       list = (obj.tags["Role"]||obj.tags["Roles"]||"").split(",")
       list.each do |r|
@@ -153,17 +156,17 @@ class Compute
       userdata = Userdata.named(tserver.userdata)
       raise "userdata #{tserver.userdata} not found, need to `rake mystro:push`?" unless userdata
 
-      o       = {
-          roles:    Role.create_from_fog(tserver.roles),
-          groups:   tserver.groups,
-          image:    tserver.image,
-          flavor:   tserver.flavor,
-          keypair:  tserver.keypair,
-          managed:  true,
+      o = {
+          roles: Role.create_from_fog(tserver.roles),
+          groups: tserver.groups,
+          image: tserver.image,
+          flavor: tserver.flavor,
+          keypair: tserver.keypair,
+          managed: true,
           userdata: userdata,
       }.delete_if { |k, v| v.nil? }
 
-      name    = tserver.name
+      name = tserver.name
       i = environment.get_next_number(tserver.name) unless i
       o.merge!({name: name, num: i})
       compute = environment.computes.new(o)
@@ -177,16 +180,16 @@ class Compute
       userdata = Userdata.named(tserver.userdata)
       raise "userdata #{tserver.userdata} not found, need to `rake mystro:push`?" unless userdata
 
-      o       = {
-          roles:    Role.create_from_fog(tserver.roles),
-          groups:   tserver.groups,
-          image:    tserver.image,
-          flavor:   tserver.flavor,
-          keypair:  tserver.keypair,
-          managed:  true,
+      o = {
+          roles: Role.create_from_fog(tserver.roles),
+          groups: tserver.groups,
+          image: tserver.image,
+          flavor: tserver.flavor,
+          keypair: tserver.keypair,
+          managed: true,
           userdata: userdata,
       }.delete_if { |k, v| v.nil? }
-      name    = tserver.name
+      name = tserver.name
       compute = environment.computes.find_or_create_by(name: name, num: i)
       compute.set_defaults(environment.account) unless compute.synced_at
       compute.update_attributes(o)

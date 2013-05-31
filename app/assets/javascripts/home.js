@@ -29,7 +29,7 @@ $(function(){
     if ($("#jobs_status").size()) {
         interval = setInterval(updateStatus, 2000);
     }
-    $(".tablesorter:has(tbody tr)").tablesorter();
+//    $(".tablesorter:has(tbody tr)").tablesorter();
 
     $(".btn").tooltip();
 

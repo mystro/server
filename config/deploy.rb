@@ -68,22 +68,23 @@ namespace :mystro do
     run("mkdir -p #{shared_path}/config")
   end
 
-  desc "update mystro and chef configuration and reload accounts and templates"
+  desc "update mystro configuration and reload accounts and templates"
   task :push do
     mystro.config.update
     mystro.chef.update
     mystro.volley.update
+    mystro.mcollective.update
     foreman.restart
     mystro.files
   end
 
   namespace :chef do
+    desc "update mystro configuration"
     task :update do
       mystro.chef.push
       mystro.chef.symlink
     end
 
-    desc "push mystro configuration"
     task :push do
       require "rails"
       dir = "config/chef"
@@ -95,7 +96,6 @@ namespace :mystro do
       run("cd #{shared_path}/#{dir} && tar xfz #{remote} && rm #{remote}")
     end
 
-    desc "symlink mystro configuration"
     task :symlink do
       dir = "config/chef"
       run("if [ -e '#{release_path}' ]; then rm #{release_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{release_path}/#{dir}; else rm #{current_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{current_path}/#{dir}; fi;")
@@ -103,12 +103,12 @@ namespace :mystro do
   end
 
   namespace :config do
+    desc "update mystro configuration"
     task :update do
       mystro.config.push
       mystro.config.symlink
     end
 
-    desc "push mystro configuration"
     task :push do
       require "rails"
       dir = "config/mystro"
@@ -120,7 +120,6 @@ namespace :mystro do
       run("cd #{shared_path}/#{dir} && tar xfz #{remote} && rm #{remote}")
     end
 
-    desc "symlink mystro configuration"
     task :symlink do
       dir = "config/mystro"
       run("if [ -e '#{release_path}' ]; then rm #{release_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{release_path}/#{dir}; else rm #{current_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{current_path}/#{dir}; fi;")
@@ -128,12 +127,12 @@ namespace :mystro do
   end
 
   namespace :volley do
+    desc "update volley configuration"
     task :update do
       mystro.volley.push
       mystro.volley.symlink
     end
 
-    desc "push volley configuration"
     task :push do
       require "rails"
       dir = "config/volley"
@@ -145,7 +144,30 @@ namespace :mystro do
       run("cd #{shared_path}/#{dir} && tar xfz #{remote} && rm #{remote}")
     end
 
-    desc "symlink volley configuration"
+    task :symlink do
+      dir = "config/volley"
+      run("if [ -e '#{release_path}' ]; then rm #{release_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{release_path}/#{dir}; else rm #{current_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{current_path}/#{dir}; fi;")
+    end
+  end
+
+  namespace :mcollective do
+    desc "update mcollective configuration"
+    task :update do
+      mystro.mcollective.push
+      mystro.mcollective.symlink
+    end
+
+    task :push do
+      require "rails"
+      dir = "config/mcollective"
+      file = "mcollective-config-#{$$}-#{Time.now.to_i}.tgz"
+      remote = "#{shared_path}/config/#{file}"
+      system("cd #{dir} && tar cfz /tmp/#{file} *")
+      upload("/tmp/#{file}", remote)
+      run("rm -rf #{shared_path}/#{dir}; mkdir -p #{shared_path}/#{dir}")
+      run("cd #{shared_path}/#{dir} && tar xfz #{remote} && rm #{remote}")
+    end
+
     task :symlink do
       dir = "config/volley"
       run("if [ -e '#{release_path}' ]; then rm #{release_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{release_path}/#{dir}; else rm #{current_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{current_path}/#{dir}; fi;")
