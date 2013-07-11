@@ -27,7 +27,6 @@ end
 # jobs
 gem "resque"
 gem 'resque-scheduler', :require => 'resque_scheduler'
-#gem 'resque-logger'
 
 # data
 gem "mongoid", ">= 3.0.9"

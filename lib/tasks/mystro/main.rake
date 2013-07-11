@@ -30,6 +30,38 @@ namespace :mystro do
     Rake::Task["mystro:user:admin"].invoke
   end
 
+  desc "link config files into server/config directory"
+  task :config, [:dir] => :environment do |_, args|
+    arg = args.dir || "../config"
+    dir = File.expand_path(arg)
+    raise "'#{dir}' is not a directory" unless File.directory?(dir)
+    cwd = Dir.pwd
+    Dir.chdir(dir) do
+      Dir.entries(".").each do |d|
+        dest = "#{cwd}/config/#{d}"
+        if !File.directory?(d)
+          puts "   #{d} - skipped, not directory"
+          next
+        end
+        if d =~ /^\./
+          puts "   #{d} - skipped, starts with dot (.)"
+          next
+        end
+        if File.exists?(dest)
+          puts "   #{d} - skipped, destination exists (#{dest})"
+          next
+        end
+        puts "   #{dest} -> #{dir}/#{d}"
+        FileUtils.symlink("#{dir}/#{d}", dest)
+      end
+    end
+  end
+
+  desc "use mystro configuration to bootstrap server"
+  task :bootstrap => :environment do
+
+  end
+
   namespace :chef do
     desc "load roles from chef server"
     task :roles => :environment do
