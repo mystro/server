@@ -1,12 +1,8 @@
 class Jobs::Compute::Create < Job
   def work
-    #info "model: #{model.inspect}"
-    #info "data:  #{data.inspect}"
-    #info "dns:   #{mystro.data.dns && data["dns"] != false}"
-
-    r               = mystro.compute.create(model)
-    rid             = r.id
-    model.rid     = r.id
+    r = mystro.compute.create(model)
+    rid = r.id
+    model.rid = r.id
     model.managed = true
     model.save
 
@@ -19,7 +15,7 @@ class Jobs::Compute::Create < Job
     model.reload
 
     if mystro.data.dns && data["dns"] != false
-      z    = mystro.data.dns.zone
+      z = mystro.data.dns.zone
       zone = Zone.where(:domain => z).first
 
       raise "zone '#{z}' not found, could not create dns record" unless zone
@@ -27,8 +23,8 @@ class Jobs::Compute::Create < Job
       info "compute#create queueing record"
       record = model.records.find_or_create_by(:zone => zone, :name => model.long)
       record.update_attributes(
-          :type   => "CNAME",
-          :ttl    => 300,
+          :type => "CNAME",
+          :ttl => 300,
           :values => [r.dns_name]
       )
       record.account = Account.mystro(mystro)
@@ -38,15 +34,15 @@ class Jobs::Compute::Create < Job
       if model.num == 1
         info "model.num == 1"
         e = model.environment
-        if e.computes.select {|e| e.name == model.name}.count == 1
+        if e.computes.select { |e| e.name == model.name }.count == 1
           info "computes.count == 1"
           if model.balancer == nil
             n = "#{model.name}.#{e.name}.#{z}"
             debug "compute#create queueing solo record (single compute - num == 1 - with no balancer) #{n}"
             record2 = model.records.find_or_create_by(zone: zone, name: n)
             record2.update_attributes(
-                :type   => "CNAME",
-                :ttl    => 300,
+                :type => "CNAME",
+                :ttl => 300,
                 :values => [r.dns_name]
             )
             record2.account = Account.mystro(mystro)

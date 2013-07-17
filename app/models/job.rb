@@ -78,6 +78,8 @@ class Job
         a = model.account
         Mystro::Account.list[a.name]
       end
+    rescue => e
+      pushlog(:error, "problem getting mystro account")
     end
   end
 
@@ -96,13 +98,15 @@ class Job
 
       self.accept
     rescue => e
-      logger.error "JOB#RUN: error running job, attempting to save"
-      logger.error "  #{e.message} at #{e.backtrace.first}"
+      error e.message
+      error e.backtrace
+
       self.status = :error
       self.message = e.message
-      error e.message
       self.trace = e.backtrace
       self.save!
+
+      false
     end
   end
 

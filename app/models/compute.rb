@@ -51,7 +51,7 @@ class Compute
   end
 
   def long
-    "#{short}.#{account && account.mystro.dns.zone ? account.mystro.dns.zone : ""}"
+    "#{short}.#{self.zone}"
   end
 
   def short
@@ -72,7 +72,11 @@ class Compute
   end
 
   def subdomain
-    account.mystro.dns.zone.split(".")[0] || "" rescue ""
+    self.zone.split(".")[0] || "" rescue ""
+  end
+
+  def zone
+    account && account.mystro.dns && account.mystro.dns.zone ? account.mystro.dns.zone : "unknown"
   end
 
   def fog_tags
@@ -85,8 +89,8 @@ class Compute
   end
 
   def fog_options
-    u = account.mystro.compute.userdata || "default"
-    z = account.mystro.dns.zone || Mystro.account.dns.zone || "unknown"
+    u = self.userdata.name || account.mystro.compute.userdata || "default"
+    z = self.zone
     a = account.name || "unknown"
     {
         image_id: image,
