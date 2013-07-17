@@ -17,4 +17,5 @@
 //= require rails.validations
 //= require rails.validations.simple_form
 
-//= require mystro-volley/application
+//TODO: VOLLEY
+// require mystro-volley/application

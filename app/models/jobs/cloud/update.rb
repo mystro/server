@@ -1,9 +1,9 @@
 class Jobs::Cloud::Update < Job
   def work
-    Account.all.each do |account|
+    ::Account.all.each do |account|
       info ".. account: #{account.name}"
-      data   = Hashie::Mash.new(account.data)
-      mystro = Mystro::Account.list[account.name]
+      data   = ::Hashie::Mash.new(account.data)
+      mystro = ::Mystro::Account.list[account.name]
 
       next unless mystro && data
 
@@ -12,8 +12,8 @@ class Jobs::Cloud::Update < Job
         if computes.count > 0
           computes.each do |compute|
             t = compute.tags
-            e = Environment.create_from_fog(t)
-            c = Compute.create_from_fog(compute)
+            e = ::Environment.create_from_fog(t)
+            c = ::Compute.create_from_fog(compute)
 
             if e && e.account && c.account != e.account
               c.account = e.account
@@ -32,7 +32,7 @@ class Jobs::Cloud::Update < Job
         balancers = mystro.balancer.all
         if balancers.count > 0
           balancers.each do |balancer|
-            b = Balancer.create_from_fog(balancer)
+            b = ::Balancer.create_from_fog(balancer)
             if b.environment && b.environment.account && b.account != b.environment.account
               b.account = b.environment.account
             end
@@ -50,11 +50,11 @@ class Jobs::Cloud::Update < Job
         zones = mystro.dns.zones
         if zones.count > 0
           zones.each do |zone|
-            z = Zone.create_from_fog(zone)
+            z = ::Zone.create_from_fog(zone)
             z.save
 
             z.records.each do |record|
-              o = Balancer.find_by_record(record) || Compute.find_by_record(record) || Record.find_by_record(record) || nil
+              o = ::Balancer.find_by_record(record) || ::Compute.find_by_record(record) || ::Record.find_by_record(record) || nil
               if o
                 if o.account && !record.account
                   info ".. .. assigning record #{record.name} to account: #{o.account.name}"
@@ -73,19 +73,19 @@ class Jobs::Cloud::Update < Job
 
     info "clean up"
     yesterday = Time.now - 24.hours
-    computes = Compute.where(:synced_at.lte => yesterday)
+    computes = ::Compute.where(:synced_at.lte => yesterday)
     computes.each do |c|
       info "remove compute #{c.short}"
       c.destroy
     end
 
-    balancers = Balancer.where(:synced_at.lte => yesterday)
+    balancers = ::Balancer.where(:synced_at.lte => yesterday)
     balancers.each do |b|
       info "remove balancer #{b.name}"
       b.destroy
     end
 
-    records = Record.where(:synced_at.lte => yesterday)
+    records = ::Record.where(:synced_at.lte => yesterday)
     records.each do |r|
       info "remove record #{r.long}"
       r.destroy

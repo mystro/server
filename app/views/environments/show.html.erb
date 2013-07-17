@@ -37,8 +37,8 @@
     <td><%= @environment.created_at %></td>
   </tr>
 </table>
-
-<%= render "mystro_volley/versions/list", versions: @environment.versions %>
+<!-- TODO: VOLLEY -->
+<%#= render "mystro_volley/versions/list", versions: @environment.versions %>
 <%= render "computes/list", computes: @environment.computes.sort_by(&:short) %>
 <%= render "balancers/list", balancers: @environment.balancers %>
 <%= render "records/list", records: @environment.records %>

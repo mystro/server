@@ -17,11 +17,11 @@ gem 'ipaddress'
 # mystro
 if ENV['MYSTRO_DEV']
   gem 'mystro-common', :path => '../common'
-  gem 'mystro-volley', path: '../mystro-volley'
+  #gem 'mystro-volley', path: '../mystro-volley'
 else
   #gem 'mystro-common'
   gem 'mystro-common', '0.1.2'
-  gem 'mystro-volley', github: 'mystro/mystro-volley', branch: 'develop'
+  #gem 'mystro-volley', github: 'mystro/mystro-volley', branch: 'develop'
 end
 
 # jobs

@@ -59,34 +59,60 @@ namespace :mystro do
 
   desc "use mystro configuration to bootstrap server"
   task :bootstrap => :environment do
-    puts "checking mystro and cloud configuration..."
-    begin
-      compute = Mystro.compute
-      compute.running
-      puts ".. compute"
-    rescue => e
-      raise "failed to talk to compute service, error was: #{e.message} at #{e.backtrace.first}"
-    end
-
+    #puts "checking mystro and cloud configuration..."
     #begin
-    #  dns = Mystro.dns
-    #  dns.all
-    #  puts ".. dns"
+    #  compute = Mystro.compute
+    #  compute.running
+    #  puts ".. compute"
     #rescue => e
-    #  raise "failed to talk to DNS service, error was: #{e.message} at #{e.backtrace.first}"
+    #  raise "failed to talk to compute service, error was: #{e.message} at #{e.backtrace.first}"
     #end
+    #
+    ##begin
+    ##  dns = Mystro.dns
+    ##  dns.all
+    ##  puts ".. dns"
+    ##rescue => e
+    ##  raise "failed to talk to DNS service, error was: #{e.message} at #{e.backtrace.first}"
+    ##end
+    #
+    #puts "done"
 
-    puts "done"
+    puts
+    aname = ask("Account name: ") { |q| q.default = 'ops' }
+    ename = ask("Environment name: ") { |q| q.default = 'dev' }
+    sname = ask("Server name: ") { |q| q.default = 'mystro' }
+    puts
+    image = Mystro.config.compute!.image || Mystro::Account.list[aname].compute.image rescue nil
+    image = ask("Image (AMI): ") {|q| q.default = image}
+    flavor = Mystro.config.compute!.flavor || Mystro::Account.list[aname].compute.flavor rescue nil
+    flavor = ask("Flavor (size): ") {|q| q.default = flavor}
+    groups = Mystro.config.compute!.groups || Mystro::Account.list[aname].compute.groups rescue nil
+    groups = ask("Groups (comma separated): ") {|q| q.default = groups.join(",")}
+    groups = groups.split(",")
+    keypair = Mystro.config.compute!.keypair || Mystro::Account.list[aname].compute.keypair rescue nil
+    keypair = ask("Key pair name: ") { |q| q.default = keypair }
+
 
     puts "creating compute..."
-    account = Account.first
-    puts ".. using account: #{account.name}"
-    environment = Environment.where(name: "ops").first || Environment.create(name: "ops")
-    puts ".. using environment: #{environment.name}"
-    compute = Compute.new(name: "mystro", account: account, environment: environment)
+    account = Account.where(name: aname).first || Account.create(name: aname)
+    #puts ".. using account: #{account.name}"
+    environment =
+        Environment.where(name: ename).first ||
+        Environment.create(name: ename, account: account, template: Template.named('empty'), protected: true)
+    #puts ".. using environment: #{environment.name}"
+    compute = Compute.new(name: sname)
     compute.set_defaults(account)
-    puts ".. creating compute: #{compute}"
-    puts ".. options: #{compute.fog_options}"
+    compute.environment = environment
+    compute.keypair = keypair
+    compute.image = image
+    compute.flavor = flavor
+    compute.groups = groups
+    #puts ".. creating compute: #{compute.inspect}"
+    #puts ".. options: #{compute.fog_options}"
+
+    agree("ready to create compute? ")
+
     compute.save!
 
     puts ".. enqueue job"
