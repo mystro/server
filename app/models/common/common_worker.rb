@@ -26,6 +26,7 @@ module CommonWorker
         logger.info "** RUNNING: JOB=#{j.id} NAME=#{n} DATA=#{d}"
         j.work
       end
+      j.id
     end
 
     extend ClassMethods

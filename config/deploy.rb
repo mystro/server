@@ -1,8 +1,10 @@
+set :application, "mystro"
+load 'config/deploy/variables.rb'
+
+set :stages, %w(production) #defaults stage doesn't do anything
 set :default_stage, "production"
-set :stages, %w(production staging)
-set :application, "mystroserver"
-set :user, "ubuntu"
-set :ssh_options, { :forward_agent => true }
+set :stage_dir, 'config/deploy/stages'
+require 'capistrano/ext/multistage'
 
 set :scm, :git
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
@@ -11,7 +13,6 @@ set :repository,  "git@github.com:mystro/server.git"
 set :deploy_to, "/srv/apps/#{application}"
 set :deploy_via, :remote_cache
 
-require 'capistrano/ext/multistage'
 require 'bundler/capistrano'
 set :bundle_flags,    "--quiet"
 

@@ -59,7 +59,44 @@ namespace :mystro do
 
   desc "use mystro configuration to bootstrap server"
   task :bootstrap => :environment do
+    puts "checking mystro and cloud configuration..."
+    begin
+      compute = Mystro.compute
+      compute.running
+      puts ".. compute"
+    rescue => e
+      raise "failed to talk to compute service, error was: #{e.message} at #{e.backtrace.first}"
+    end
 
+    #begin
+    #  dns = Mystro.dns
+    #  dns.all
+    #  puts ".. dns"
+    #rescue => e
+    #  raise "failed to talk to DNS service, error was: #{e.message} at #{e.backtrace.first}"
+    #end
+
+    puts "done"
+
+    puts "creating compute..."
+    account = Account.first
+    puts ".. using account: #{account.name}"
+    environment = Environment.where(name: "ops").first || Environment.create(name: "ops")
+    puts ".. using environment: #{environment.name}"
+    compute = Compute.new(name: "mystro", account: account, environment: environment)
+    compute.set_defaults(account)
+    puts ".. creating compute: #{compute}"
+    puts ".. options: #{compute.fog_options}"
+    compute.save!
+
+    puts ".. enqueue job"
+    jid = compute.enqueue(:create, dns: false)
+
+    if Resque.workers.count == 0
+      puts ".. no workers, running job now"
+      job = Job.find(jid)
+      job.run
+    end
   end
 
   namespace :chef do

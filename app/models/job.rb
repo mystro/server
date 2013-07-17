@@ -107,11 +107,18 @@ class Job
   end
 
   def logger
-    @logger ||= Rails.logger
+    @logger ||= begin
+      Yell.new do |l|
+        #:datefile, File.join(Rails.root, "log", "workers.log"), level: [:info, :warn, :error, :fatal]
+        l.level = [:info, :warn, :error, :fatal]
+        l.adapter :datefile, File.join(Rails.root, "log", "jobs.log")
+      end
+    end
   end
 
   def pushlog(sev, msg)
-    puts "#{sev} #{msg}"
+    puts "[JOB] #{sev.upcase}: #{msg}"
+    logger.send(sev.to_sym, msg)
     self.log << {severity: sev, message: msg}
   end
 
