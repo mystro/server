@@ -20,7 +20,7 @@ if ENV['MYSTRO_DEV']
   #gem 'mystro-volley', path: '../mystro-volley'
 else
   #gem 'mystro-common'
-  gem 'mystro-common', '0.1.2'
+  gem 'mystro-common', '0.1.3'
   #gem 'mystro-volley', github: 'mystro/mystro-volley', branch: 'develop'
 end
 
