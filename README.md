@@ -2,6 +2,14 @@
 
 ## Getting Started
 
+### Requirements
+
+The Getting Started guides expect that you have the following already configured and working on your system:
+
+* gcc compiler
+* ruby installation (1.9.3+)
+* git
+
 ### Development Environment
 
 A quick recipe on how to get a Mystro development environment configured.
@@ -108,10 +116,51 @@ Once this is complete, you should be able to connect to
 
 ## Using Chef?
 
-Similarly to the mystro:bootstrap:server command, you can easily build a chef server using:
+Similarly to the mystro:bootstrap:server command, there is a simplified process for building a chef server.
+
+First you will need to create a security group in AWS for the chef server.
+Create a group called 'chefserver' and add the following:
+Port | Source
+--- | ---
+22 | 0.0.0.0/0
+80 | 0.0.0.0/0
+443 | 0.0.0.0/0
+4000 | 0.0.0.0/0
+4040 | 0.0.0.0/0
+
+Once this is complete, run the following task. Make sure that you set the correct security group.
 ```
 rake mystro:bootstrap:chef
+
+...
+Groups (comma separated): |default| chefserver
+...
 ```
+
+Once the server is up and running, you may need to edit the configuration to fix dns.
+If chef is detecting the wrong FQDN for your server, try the following:
+
+First, fix the hostname on the server (this is for ubuntu)
+```
+hostname "chef.domain.com"
+echo "chef.domain.com" | sudo tee /etc/hostname
+echo -e "127.0.0.1 `hostname` `hostname -s`" | sudo tee -a /etc/hosts
+```
+
+Once you've done this, you can try rerunning the chef configuration tool:
+```sudo chef-server-ctl reconfigure```
+
+If that doesn't help, you can also do the following, this will force the settings into chef:
+```
+# /etc/chef-server/chef-server.rb
+lb['api_fqdn'] = "chef.domain.com"
+lb['web_ui_fqdn'] = "chef.domain.com"
+nginx['url'] = "https://chef.domain.com"
+nginx['server_name'] = "chef.domain.com"
+```
+
+Then reconfigure again:
+```sudo chef-server-ctl reconfigure```
 
 ## Documentation and Support
 
