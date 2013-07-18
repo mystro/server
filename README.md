@@ -136,11 +136,11 @@ First you will need to create a security group in AWS for the chef server.
 Create a group called 'chefserver' and add the following:
 <table>
 <tr><th>Port</th><th>Source</th></tr>
-<tr><td>22</td><td>|</td><td>0.0.0.0/0</td></tr>
-<tr><td>80</td><td>|</td><td>0.0.0.0/0</td></tr>
-<tr><td>443</td><td>|</td><td>0.0.0.0/0</td></tr>
-<tr><td>4000</td><td>|</td><td>0.0.0.0/0</td></tr>
-<tr><td>4040</td><td>|</td><td>0.0.0.0/0</td></tr>
+<tr><td>22</td><td>0.0.0.0/0</td></tr>
+<tr><td>80</td><td>0.0.0.0/0</td></tr>
+<tr><td>443</td><td>0.0.0.0/0</td></tr>
+<tr><td>4000</td><td>0.0.0.0/0</td></tr>
+<tr><td>4040</td><td>0.0.0.0/0</td></tr>
 </table>
 
 Once this is complete, run the following task. Make sure that you set the correct security group.
