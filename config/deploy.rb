@@ -35,6 +35,7 @@ set :keep_releases, 3
 after "deploy:restart", "deploy:cleanup"
 after "deploy:restart", "foreman:restart"
 
+before "deploy:setup", "mystro:directories"
 after "deploy:update_code", "mystro:config:update"
 after "deploy:update_code", "mystro:chef:update"
 after "deploy:update_code", "mystro:volley:update"
@@ -81,8 +82,13 @@ namespace :mystro do
     run "cd #{current_path} && #{rake} #{task} RAILS_ENV=#{rails_env}"
   end
 
+  task :directories do
+    run("#{sudo} chown -R #{user} /srv")
+  end
+
   task :setup do
     run("mkdir -p #{shared_path}/config")
+    run("mkdir -p #{fetch(:webserver_dir)}")
   end
 
   desc "update mystro configuration and reload accounts and templates"
