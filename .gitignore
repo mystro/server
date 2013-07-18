@@ -14,6 +14,9 @@
 .mystro
 config/mystro
 config/chef
+config/mcollective
+config/volley
+config/webserver
 
 # bundler state
 /.bundle
