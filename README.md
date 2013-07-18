@@ -205,7 +205,9 @@ If you add functionality to this application, create an alternative implementati
 ## Credits
 
 Shawn Catanzarite - @shawncatz
+
 INQ Mobile - for allowing me to work on this as part of my day job ;)
+
 RealGravity - for allowing me to work on this as part of my day job ;) ;)
 
 ## License
