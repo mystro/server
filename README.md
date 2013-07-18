@@ -77,7 +77,9 @@ Now, you'll want setup the local database, this requires that you have MongoDB a
 
 ### Server configuration
 
-Quick recipe on getting server setup for deployment
+Quick recipe on getting server setup for deployment.
+
+This requires that you have a working development environment, follow the guide above before attempting this.
 
 The mystro:bootstrap rake task will instantiate a server with your cloud provider.
 This task uses Mystro and Fog to create an instance, inject Userdata information
