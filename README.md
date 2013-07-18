@@ -125,7 +125,8 @@ The 'mystro:bootstrap' capistrano task runs the following:
 # cap mystro:reset       # configure database
 ```
 
-Once this is complete, you should be able to connect to
+Once this is complete, you should be able to browse http://mystro.domain.com/
+The default user is 'admin@localhost.com' and password is 't0wn3end'
 
 ## Using Chef?
 
