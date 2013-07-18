@@ -7,8 +7,22 @@
 The Getting Started guides expect that you have the following already configured and working on your system:
 
 * gcc compiler
-* ruby installation (1.9.3+)
+* ruby installation (1.9.3+) - for ruby I recommend rvm or chruby
 * git
+* Redis
+* MongoDB
+
+On Mac OSX, this is pretty simple.
+
+* install Xcode
+* install command line tools through Xcode
+* install brew
+* install rvm
+
+* rvm install 1.9.3
+* brew install git
+* brew install redis-server
+* brew install mongodb
 
 ### Development Environment
 
@@ -77,7 +91,8 @@ connection information for you, so that you can connect to the server.
 
 Once the server is ready, you will need to update the Capistrano configuration files with
 the server's host information. Generally, you will also want to create an DNS cname to point
-to the EC2 host that is created.
+to the EC2 host that is created. If you have Mystro configured with a DNS provider (Route 53, Zerigo, etc)
+it will automatically create a DNS record for you.
 
 Edit the config/deploy/stages/production.rb file (this file is part of the mystro config repo)
 ```
@@ -95,11 +110,9 @@ Also, change this value in the config/webserver/webserver.conf file
 ```
 
 Now you can deploy the application
+*** Make sure you have changed the webserver configuration
 ```
 cap mystro:bootstrap
-# make sure you have changed the webserver configuration
-# config/webserver/webserver.conf
-cap webserver:configuration
 ```
 
 The 'mystro:bootstrap' capistrano task runs the following:
