@@ -82,6 +82,22 @@ namespace :mystro do
     run "cd #{current_path} && #{rake} #{task} RAILS_ENV=#{rails_env}"
   end
 
+  task :bootstrap do
+    # cap mystro:directories # ensure proper directories are created
+    # cap deploy:setup       # setup deploy directories
+    # cap deploy:cold        # do a first time deploy
+    # cap foreman:export     # create upstart scripts
+    # cap foreman:restart    # start mystro services
+    # cap mystro:reset       # configure database
+    mystro.directories
+    deploy.setup
+    deploy.cold
+    webserver.configuration
+    foreman.export
+    foreman.restart
+    mystro.reset
+  end
+
   task :directories do
     run("#{sudo} chown -R #{user} /srv")
   end
