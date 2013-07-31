@@ -1,6 +1,6 @@
 class Jobs::Chef::Roles < Job
   def work
-    if Mystro.config.chef && defined?(Mystro::Plugin::Chef)
+    if Mystro.config.plugins.chef && defined?(Mystro::Plugin::Chef)
       list = Mystro::Plugin::Chef.role_list
       info "found #{list.count} roles"
       list.each do |e|
