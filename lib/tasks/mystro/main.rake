@@ -114,5 +114,16 @@ namespace :mystro do
       puts 'queueing destroy action'
       c.enqueue(:destroy)
     end
+    task :userdata => :environment do
+      a = Account.where(name: 'ops').first
+      m = a.mystro
+      e = Environment.where(name: 'dev').first || Environment.create(name: "dev")
+      r = Role.where(name: "test").first || Role.create(name: "test")
+      c = Compute.new(name:    'test', num: 1, environment: e, role_ids: r.id)
+      c.set_defaults(a)
+      o = c.fog_options
+      u = o[:user_data]
+      puts u
+    end
   end
 end
