@@ -14,6 +14,7 @@ class Jobs::Cloud::Update < Job
             t = compute.tags
             e = ::Environment.create_from_fog(t)
             c = ::Compute.create_from_fog(compute)
+            c.tags = t
 
             if e && e.account && c.account != e.account
               c.account = e.account

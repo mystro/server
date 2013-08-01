@@ -28,6 +28,7 @@ class Compute
   field :public_ip, type: String
   field :private_dns, type: String
   field :private_ip, type: String
+  field :tags, type: Hash, default: {}
 
   index({num: 1})
 
