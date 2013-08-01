@@ -63,6 +63,11 @@
   <tr> <th>Synced At</th> <td><%= @compute.synced_at %></td> </tr>
 </table>
 <table class="table table-condensed table-bordered fields-horizontal">
+  <% @compute.tags.each do |k, v| %>
+  <tr><th><%= k %></th><td><%= v %></td></tr>
+  <% end %>
+</table>
+<table class="table table-condensed table-bordered fields-horizontal">
   <tr> <th>Remote ID</th> <td><%= @compute.rid %></td> </tr>
   <tr> <th>State</th> <td><%= @compute.state %></td> </tr>
   <tr> <th>Public DNS</th> <td><%= @compute.public_dns %></td> </tr>
