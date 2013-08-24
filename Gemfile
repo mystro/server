@@ -15,6 +15,11 @@ gem 'json', '~> 1.7.7'
 gem 'ipaddress'
 gem "settingslogic"
 
+# jobs
+gem 'resque'
+gem 'resque-scheduler', :require => 'resque_scheduler'
+# and qujo
+
 # mystro
 if ENV['MYSTRO_DEV']
   gem 'mystro-client', :path => '../client'
@@ -22,15 +27,11 @@ if ENV['MYSTRO_DEV']
   gem 'mystro-volley', path: '../mystro-volley'
   gem 'qujo', path: "~/catz/qujo"
 else
-  gem 'mystro-client', '0.1.0.rc3'
-  gem 'mystro-common', '0.1.6'
+  gem 'mystro-client', '0.1.0'
+  gem 'mystro-common', '0.1.7'
   gem 'mystro-volley', github: 'mystro/mystro-volley', branch: 'develop'
   gem 'qujo', github: 'shawncatz/qujo'
 end
-
-# jobs
-gem 'resque'
-gem 'resque-scheduler', :require => 'resque_scheduler'
 
 # data
 gem 'mongoid', '>= 3.0.9'
