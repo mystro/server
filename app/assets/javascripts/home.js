@@ -1,34 +1,4 @@
-var interval = null;
-function updateStatus() {
-    console.log("update status");
-    $.get("/api/status", function (d) {
-//        console.log("update status return");
-//        console.log(d);
-
-        var j = $("#jobs_status").first();
-//        console.log(j);
-        j.removeClass("badge-important");
-        j.text(d["jobs"]["count"]);
-        if (d["jobs"]["error"]) {
-//            console.log("jobs error true");
-            j.addClass("badge-important")
-        }
-
-        var r = $("#resque_status").first();
-//        console.log(r);
-        r.removeClass("badge-important");
-        r.text(d["resque"]["count"]);
-        if (d["resque"]["error"]) {
-//            console.log("resque error true");
-            r.addClass("badge-important")
-        }
-
-    });
-}
 $(function(){
-    if ($("#jobs_status").size()) {
-        interval = setInterval(updateStatus, 2000);
-    }
 //    $(".tablesorter:has(tbody tr)").tablesorter();
 
     $(".btn").tooltip();

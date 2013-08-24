@@ -1,0 +1,13 @@
+defaults: &default_settings
+  ui:
+    jobs: #%w{Jobs::Series::UpdateAll Jobs::Image::UpdateAll}
+      cloud:
+        - Jobs::Cloud::Update
+      chef:
+        - Jobs::Chef::Roles
+
+development:
+  <<: *default_settings
+
+production:
+  <<: *default_settings

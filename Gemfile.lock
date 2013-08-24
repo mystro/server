@@ -323,6 +323,7 @@ GEM
       hashie
       httparty
       nokogiri
+    settingslogic (2.0.9)
     sextant (0.2.4)
       rails (>= 3.2)
     simple_form (2.1.0)
@@ -426,6 +427,7 @@ DEPENDENCIES
   rspec-rails (>= 2.11.0)
   sass-rails (~> 3.2.3)
   scout_api
+  settingslogic
   sextant
   simple_form (>= 2.0.4)
   symbolize

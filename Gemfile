@@ -13,6 +13,7 @@ gem 'devise', '>= 2.1.2'
 gem 'foreman'
 gem 'json', '~> 1.7.7'
 gem 'ipaddress'
+gem "settingslogic"
 
 # mystro
 if ENV['MYSTRO_DEV']
