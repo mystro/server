@@ -19,10 +19,12 @@ if ENV['MYSTRO_DEV']
   gem 'mystro-client', :path => '../client'
   gem 'mystro-common', :path => '../common'
   gem 'mystro-volley', path: '../mystro-volley'
+  gem 'qujo', path: "~/catz/qujo"
 else
   gem 'mystro-client', '0.1.0.rc3'
   gem 'mystro-common', '0.1.4'
   gem 'mystro-volley', github: 'mystro/mystro-volley', branch: 'develop'
+  gem 'qujo', github: 'shawncatz/qujo'
 end
 
 # jobs

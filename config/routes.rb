@@ -35,12 +35,6 @@ MystroServer::Application.routes.draw do
   resources :records
 
   resources :userdata
-  resources :jobs do
-    post "accept", on: :member
-    post "refresh", on: :member
-    get "errors", on: :collection
-    get "all", on: :collection
-  end
 
 
   #resources :providers
@@ -61,8 +55,5 @@ MystroServer::Application.routes.draw do
   match "/home/raw" => "home#raw"
   root :to => "home#index"
 
-
-  mount Resque::Server.new, :at => "/admin/resque"
-  resource :resque
-
+  mount Qujo::Engine => "/"
 end

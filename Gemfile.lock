@@ -28,6 +28,14 @@ PATH
       rails (~> 3.2.8)
       volley
 
+PATH
+  remote: ~/catz/qujo
+  specs:
+    qujo (0.1.0)
+      activesupport (~> 3.2.11)
+      rails (~> 3.2.11)
+      resque (~> 1.24.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -410,6 +418,7 @@ DEPENDENCIES
   mystro-common!
   mystro-volley!
   quiet_assets (>= 1.0.1)
+  qujo!
   rails (= 3.2.14)
   rake (= 10.1.0)
   resque

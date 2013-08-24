@@ -16,6 +16,7 @@
 //= require_tree .
 //= require rails.validations
 //= require rails.validations.simple_form
+//= require qujo/application
 
 //TODO: VOLLEY
 // require mystro-volley/application
