@@ -10,7 +10,7 @@ PATH
 PATH
   remote: ../common
   specs:
-    mystro-common (0.1.4)
+    mystro-common (0.1.6)
       activesupport (= 3.2.14)
       erubis
       fog (~> 1.12.1)
@@ -24,7 +24,7 @@ PATH
     mystro-volley (0.1.0.rc3)
       mcollective-client
       mongoid
-      mystro-common (= 0.1.4)
+      mystro-common (~> 0.1.4)
       rails (~> 3.2.8)
       volley
 
