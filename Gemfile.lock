@@ -10,7 +10,7 @@ PATH
 PATH
   remote: ../common
   specs:
-    mystro-common (0.1.7)
+    mystro-common (0.1.8)
       activesupport (= 3.2.14)
       erubis
       fog (~> 1.12.1)
