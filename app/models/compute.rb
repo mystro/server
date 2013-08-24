@@ -114,6 +114,8 @@ class Compute
         long: (long rescue nil),
         dns: public_dns,
         ip: public_ip,
+        private_dns: private_dns,
+        private_ip: private_ip,
         environment: environment ? environment.name : nil,
         account: account ? account.name : nil,
         balancer: balancer ? balancer.name : nil,

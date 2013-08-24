@@ -1,7 +1,7 @@
 PATH
   remote: ../client
   specs:
-    mystro-client (0.1.0.rc3)
+    mystro-client (0.1.0)
       clamp
       httparty
       mystro-common
@@ -21,11 +21,11 @@ PATH
 PATH
   remote: ../mystro-volley
   specs:
-    mystro-volley (0.1.0.rc3)
+    mystro-volley (0.1.0)
       mcollective-client
       mongoid
-      mystro-common (~> 0.1.4)
-      rails (~> 3.2.8)
+      mystro-common (~> 0.1.6)
+      rails (~> 3.2.11)
       volley
 
 PATH
