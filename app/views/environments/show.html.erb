@@ -38,7 +38,7 @@
   </tr>
 </table>
 <!-- TODO: VOLLEY -->
-<%#= render "mystro_volley/versions/list", versions: @environment.versions %>
+<%= render "mystro_volley/versions/list", versions: @environment.versions if defined?(Mystro::Plugin::Volley) %>
 <%= render "computes/list", computes: @environment.computes.sort_by(&:short) %>
 <%= render "balancers/list", balancers: @environment.balancers %>
 <%= render "records/list", records: @environment.records %>

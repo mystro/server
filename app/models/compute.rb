@@ -124,10 +124,10 @@ class Compute
   end
 
   #TODO: VOLLEY
-  #has_many :installs, class_name: "MystroVolley::Install"
-  #def versions
-  #  installs.map(&:version).uniq
-  #end
+  has_many :installs, class_name: "MystroVolley::Install"
+  def versions
+    installs.map(&:version).uniq
+  end
 
   class << self
     def create_from_fog(obj)

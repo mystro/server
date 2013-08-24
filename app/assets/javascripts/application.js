@@ -19,4 +19,4 @@
 //= require qujo/application
 
 //TODO: VOLLEY
-// require mystro-volley/application
+//= require mystro-volley/application
