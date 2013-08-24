@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
 # server
-gem 'rake', '10.0.4'
-gem 'rails', '3.2.8'
+gem 'rake', '10.1.0'
+gem 'rails', '3.2.14'
 gem 'unicorn', '>= 4.3.1', :group => :production
 gem 'thin', '>= 1.5.0'
 
@@ -18,11 +18,11 @@ gem 'ipaddress'
 if ENV['MYSTRO_DEV']
   gem 'mystro-client', :path => '../client'
   gem 'mystro-common', :path => '../common'
-  #gem 'mystro-volley', path: '../mystro-volley'
+  gem 'mystro-volley', path: '../mystro-volley'
 else
   gem 'mystro-client', '0.1.0.rc3'
   gem 'mystro-common', '0.1.4'
-  #gem 'mystro-volley', github: 'mystro/mystro-volley', branch: 'develop'
+  gem 'mystro-volley', github: 'mystro/mystro-volley', branch: 'develop'
 end
 
 # jobs

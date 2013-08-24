@@ -1,6 +1,6 @@
 # Be sure to restart your server when you modify this file.
 
-MystroServer::Application.config.session_store :cookie_store, key: '_mystro-server_session'
+MystroServer::Application.config.session_store :cookie_store, key: '_mystro_server_session'
 
 # Use the database for sessions instead of the cookie-based default,
 # which shouldn't be used to store highly confidential information
