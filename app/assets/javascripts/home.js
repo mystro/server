@@ -61,14 +61,6 @@ $(function(){
         });
     });
 
-    $(".create_job").on("click", function () {
-        var c = $(this).attr("klass");
-        console.log("create job");
-        $.post("/jobs", {job: {_type: c}}, function (d) {
-            console.log("create job returned")
-        });
-    });
-
     $(".update_status").on("click", function () {
     });
 
