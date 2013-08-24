@@ -49,7 +49,7 @@ class ApplicationController < ActionController::Base
   end
 
   def mystro_account
-    Mystro::Account.list[mystro_selected]
+    Mystro::Account.get(mystro_selected)
   end
 
   def mystro_account_id

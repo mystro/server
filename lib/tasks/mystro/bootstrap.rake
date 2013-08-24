@@ -28,10 +28,10 @@ namespace :mystro do
 
     def defaults(aname)
       {
-          image: (Mystro.config.compute!.image || Mystro::Account.list[aname].compute.image rescue nil),
-          flavor: (Mystro.config.compute!.flavor || Mystro::Account.list[aname].compute.flavor rescue nil),
-          groups: (Mystro.config.compute!.groups || Mystro::Account.list[aname].compute.groups rescue []).join(','),
-          keypair: (Mystro.config.compute!.keypair || Mystro::Account.list[aname].compute.keypair rescue nil),
+          image: (Mystro.config.compute!.image || Mystro::Account.get(aname).compute.image rescue nil),
+          flavor: (Mystro.config.compute!.flavor || MMystro::Account.get(aname)compute.flavor rescue nil),
+          groups: (Mystro.config.compute!.groups || MyMystro::Account.get(aname)ompute.groups rescue []).join(','),
+          keypair: (Mystro.config.compute!.keypair || Mystro::Account.get(aname).compute.keypair rescue nil),
       }
     end
 

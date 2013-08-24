@@ -54,7 +54,7 @@ class Account
   end
 
   def mystro
-    a = Mystro::Account.list[name]
+    a = Mystro::Account.get(name)
     a.data if a
   end
 
@@ -63,10 +63,7 @@ class Account
   end
 
   def load
-    #puts "account#load #{name} #{file}"
-    #puts "#{Mystro::Account.list.inspect}"
-    d = Mystro::Account.list[name]
-    #puts "account#load d: #{d}"
+    d = Mystro::Account.get(name)
     d.data.to_hash if d
   end
 end

@@ -64,7 +64,7 @@ class Balancer
   end
 
   def to_fog
-    a = Mystro::Account.list[account.name].balancer
+    a = Mystro::Account.get(account.name).balancer
     a.find(name)
   end
 

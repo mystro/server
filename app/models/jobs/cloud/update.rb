@@ -3,7 +3,7 @@ class Jobs::Cloud::Update < Job
     ::Account.all.each do |account|
       info ".. account: #{account.name}"
       data   = ::Hashie::Mash.new(account.data)
-      mystro = ::Mystro::Account.list[account.name]
+      mystro = ::Mystro::Account.get(account.name)
 
       next unless mystro && data
 

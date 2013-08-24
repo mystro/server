@@ -21,7 +21,7 @@ namespace :mystro do
       puts "fixing tags:"
       %w{inqcloud reader}.each do |account|
         puts ".. #{account}"
-        mystro = Mystro::Account.list[account]
+        mystro = Mystro::Account.get(account)
         fog    = mystro.compute.fog
         if mystro
           computes = mystro.compute.all
