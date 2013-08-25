@@ -31,7 +31,7 @@ PATH
 PATH
   remote: ~/catz/qujo
   specs:
-    qujo (0.1.1)
+    qujo (0.1.2)
       activesupport (~> 3.2.11)
       rails (~> 3.2.11)
       resque (~> 1.24.1)

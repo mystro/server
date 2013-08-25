@@ -30,7 +30,7 @@ else
   gem 'mystro-client', '0.1.0'
   gem 'mystro-common', '0.1.9'
   gem 'mystro-volley', github: 'mystro/mystro-volley', branch: 'develop'
-  gem 'qujo', '~> 0.1.1'
+  gem 'qujo', '~> 0.1.2'
 end
 
 # data
