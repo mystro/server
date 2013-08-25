@@ -74,6 +74,7 @@
   <tr> <th>Public IP</th> <td><%= @compute.public_ip %></td> </tr>
   <tr> <th>Private DNS</th> <td><%= @compute.private_dns %></td> </tr>
   <tr> <th>Private IP</th> <td><%= @compute.private_ip %></td> </tr>
+  <tr> <th>Availability Zone</th> <td><%= @compute.availability_zone %></td> </tr>
 </table>
 
 <%= render "records/list", records: @compute.records.sort_by(&:name) %>

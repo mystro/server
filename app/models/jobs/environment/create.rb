@@ -1,6 +1,8 @@
 class Jobs::Environment::Create < Job
   def work
     environment = model
+    raise "model not set" unless environment
+
     template    = environment.template
     raise "could not find template" unless template
     raise "template has no data" unless template.data

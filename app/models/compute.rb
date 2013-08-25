@@ -28,6 +28,7 @@ class Compute
   field :public_ip, type: String
   field :private_dns, type: String
   field :private_ip, type: String
+  field :availability_zone, type: String
   field :tags, type: Hash, default: {}
 
   index({num: 1})
@@ -146,6 +147,7 @@ class Compute
       compute.public_ip = obj.public_ip_address
       compute.private_dns = obj.private_dns_name
       compute.private_ip = obj.private_ip_address
+      compute.availability_zone = obj.availability_zone
       compute.synced_at = Time.now
 
       list = (obj.tags["Role"]||obj.tags["Roles"]||"").split(",")

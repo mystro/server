@@ -1,8 +1,9 @@
 class Jobs::Record::Create < Job
   def work
-    mystro.dns.create(model)
-    model.rid = model.name
-    model.synced_at = Time.now
-    model.save!
+    r = model
+    mystro.dns.create(r)
+    r.rid = model.name
+    r.synced_at = Time.now
+    r.save!
   end
 end

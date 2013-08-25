@@ -56,7 +56,7 @@ class Balancer
     o = {
         id: rid,
         "ListenerDescriptions" => listeners.map {|l| l.fog_options},
-        availability_zones: zones
+        "AvailabilityZones" => zones
     }
     #azs = zones
     #o.merge!({}) if azs.count > 0
@@ -69,10 +69,7 @@ class Balancer
   end
 
   def zones
-    computes.collect do |e|
-      s = Mystro.compute.find(e.rid)
-      s ? s.availability_zone : nil
-    end.compact.uniq
+    computes.collect(&:availability_zone).compact.uniq
   end
 
   class << self

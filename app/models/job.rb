@@ -18,6 +18,18 @@ class Job
     end
   end
 
+  # wait for objects be synced (set synced_at value)
+  def wait_for(list=nil)
+    return unless list && list.count
+    classes = list.map { |e| e.class }.uniq
+    logger.info "#{self.class.name}##{self.id} waiting for list of #{classes.join(",")}"
+    wait do
+      list.each { |e| e.reload }
+      unsynced = list.select { |e| e.synced_at.nil? }
+      unsynced.count > 0
+    end
+  end
+
   #include Mongoid::Document
   #include Mongoid::Timestamps
   #include Mongoid::Symbolize
@@ -51,17 +63,6 @@ class Job
   #  self.save
   #end
   #
-  ## wait for objects be synced (set synced_at value)
-  #def wait_for(list=nil)
-  #  return unless list && list.count
-  #  classes = list.map { |e| e.class }.uniq
-  #  logger.info "#{self.class.name}##{self.id} waiting for list of #{classes.join(",")}"
-  #  wait do
-  #    list.each { |e| e.reload }
-  #    unsynced = list.select { |e| e.synced_at.nil? }
-  #    unsynced.count > 0
-  #  end
-  #end
   #
   ## wait while return value from block is true
   #def wait(options = {}, &block)
