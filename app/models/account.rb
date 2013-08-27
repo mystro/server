@@ -64,6 +64,7 @@ class Account
 
   def load
     d = Mystro::Account.get(name)
+    #puts "account#load d: #{d}"
     d.data.to_hash if d
   end
 end
