@@ -18,6 +18,11 @@ namespace :mystro do
         a.data = d
         a.save
         puts ".. create #{name} #{file}"
+        if d["dns"] && d["dns"]["zone"]
+          z = d["dns"]["zone"]
+          puts ".. .. create zone: #{z}"
+          Zone.create(domain: z)
+        end
       end
     end
     task :userdata => :environment do

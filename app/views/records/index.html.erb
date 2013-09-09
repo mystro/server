@@ -1,15 +1,8 @@
 <% content_for :subnav_pills do %>
-      <li class="nav dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">zone <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-          <% Zone.all.collect { |z| z.domain }.each do |domain| %>
-              <li><%= link_to domain, "#" %></li>
-          <% end %>
-        </ul>
-      </li>
+    <li><%= link_to current_account.mystro_zone, "#" %></li>
 <% end %>
 <% content_for :subnav_buttons do %>
-      <a id="create_record" href="#" class="btn btn-primary" title="Create New DNS Record">create</a>
+    <a id="create_record" href="#" class="btn btn-primary" title="Create New DNS Record">create</a>
 <% end %>
 
 <%= render "records/list", records: @records %>

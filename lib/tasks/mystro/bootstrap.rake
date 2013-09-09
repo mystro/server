@@ -11,13 +11,13 @@ namespace :mystro do
         raise "failed to talk to compute service, error was: #{e.message} at #{e.backtrace.first}"
       end
 
-      ##begin
-      ##  dns = Mystro.dns
-      ##  dns.all
-      ##  puts '.. dns'
-      ##rescue => e
-      ##  raise "failed to talk to DNS service, error was: #{e.message} at #{e.backtrace.first}"
-      ##end
+      begin
+        dns = Mystro.dns
+        dns.all
+        puts '.. dns'
+      rescue => e
+        raise "failed to talk to DNS service, error was: #{e.message} at #{e.backtrace.first}"
+      end
 
       puts 'done'
     end
@@ -28,10 +28,10 @@ namespace :mystro do
 
     def defaults(aname)
       {
-          image: (Mystro.config.compute!.image || Mystro::Account.get(name).compute.image rescue nil),
-          flavor: (Mystro.config.compute!.flavor || Mystro::Account.get(name).compute.flavor rescue nil),
-          groups: (Mystro.config.compute!.groups || Mystro::Account.get(name).compute.groups rescue []).join(','),
-          keypair: (Mystro.config.compute!.keypair || Mystro::Account.get(name).compute.keypair rescue nil),
+          image: (Mystro.config.compute!.image || Mystro::Account.get(aname).compute.image rescue nil),
+          flavor: (Mystro.config.compute!.flavor || Mystro::Account.get(aname).compute.flavor rescue nil),
+          groups: (Mystro.config.compute!.groups || Mystro::Account.get(aname).compute.groups rescue []).join(','),
+          keypair: (Mystro.config.compute!.keypair || Mystro::Account.get(aname).compute.keypair rescue nil),
       }
     end
 
@@ -71,7 +71,7 @@ namespace :mystro do
       if agree('ready to create compute? ')
         compute.save!
 
-        jcc = Jobs::Compute::Create.create(data: {id: compute.id.to_s, class: compute.class.name})
+        jcc = Jobs::Compute::Create.create(data: {model: {id: compute.id.to_s, class: compute.class.name}})
         puts "#{Time.now} creating compute..."
         # race condition, takes a sec for persistence engine
         # sleep
