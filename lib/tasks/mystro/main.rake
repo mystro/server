@@ -47,16 +47,8 @@ namespace :mystro do
           puts "   #{d} - skipped, starts with dot (.)"
           next
         end
-        #if File.exists?(dest)
-          FileUtils.rm_rf(dest)
-          #if !File.symlink?(dest)
-          #  puts "   #{d} - skipped, destination exists and is not a link (#{dest})"
-          #  next
-          #else
-          #  puts "delete #{dest}"x
-          #end
-        #end
         puts "   #{dest} -> #{dir}/#{d}"
+        FileUtils.rm_rf(dest)
         FileUtils.symlink("#{dir}/#{d}", dest)
       end
     end
