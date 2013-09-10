@@ -1,7 +1,7 @@
 namespace :mystro do
   namespace :dns do
     task :zones => :environment do
-      a = Mystro::Account.get('material')
+      a = Mystro::Organization.get('material')
       d = a.dns
       ap d
 

@@ -61,8 +61,8 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li>
-          <%= link_to main_app.accounts_path do %>
-              Accounts
+          <%= link_to main_app.organizations_path do %>
+              Organizations
           <% end %>
         </li>
         <li>
@@ -93,17 +93,17 @@
       <%= render 'qujo/common/bootstrap', jobs: {}.merge(Settings.ui.jobs).merge(Mystro::Plugin.jobs) %>
     </li>
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= current_user.account %> <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= session[:org] %> <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li>
-          <%= link_to "/accounts/everything", :class => "account_select", :data => { account: "everything" } do %>
-              <i class="<%= "everything" == current_user.account ? "icon-ok" : "icon-ok icon-white" %>"></i> everything
+          <%= link_to "/organizations/everything", :class => "organization_select", :data => { organization: "everything" } do %>
+              <i class="<%= "everything" == session[:org] ? "icon-ok" : "icon-ok icon-white" %>"></i> everything
           <% end %>
         </li>
-        <% Account.all.each do |account| %>
+        <% Organization.all.each do |organization| %>
             <li>
-              <%= link_to "/account/#{account.id}", :class => "account_select", :data => { account: account.name } do %>
-                  <i class="<%= account.name == current_user.account ? "icon-ok" : "icon-ok icon-white" %>"></i> <%= account.name %>
+              <%= link_to "/organization/#{organization.id}", :class => "organization_select", :data => { organization: organization.name } do %>
+                  <i class="<%= organization.name == session[:org] ? "icon-ok" : "icon-ok icon-white" %>"></i> <%= organization.name %>
               <% end %>
             </li>
         <% end %>

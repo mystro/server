@@ -35,10 +35,10 @@ describe AccountsController do
   end
 
   describe "GET index" do
-    it "assigns all accounts as @accounts" do
+    it "assigns all organizations as @organizations" do
       account = Account.create! valid_attributes
       get :index, {}, valid_session
-      assigns(:accounts).should eq([account])
+      assigns(:organizations).should eq([account])
     end
   end
 
@@ -106,7 +106,7 @@ describe AccountsController do
     describe "with valid params" do
       it "updates the requested account" do
         account = Account.create! valid_attributes
-        # Assuming there are no other accounts in the database, this
+        # Assuming there are no other organizations in the database, this
         # specifies that the Account created on the previous line
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
@@ -154,7 +154,7 @@ describe AccountsController do
       }.to change(Account, :count).by(-1)
     end
 
-    it "redirects to the accounts list" do
+    it "redirects to the organizations list" do
       account = Account.create! valid_attributes
       delete :destroy, {:id => account.to_param}, valid_session
       response.should redirect_to(accounts_url)

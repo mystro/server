@@ -9,12 +9,12 @@ class Job
 
   def mystro
     @mystro ||= begin
-      if model && model.account
-        a = model.account
-        Mystro::Account.get(a.name)
+      if model && model.organization
+        a = model.organization
+        Mystro::Organization.get(a.name)
       end
     rescue => e
-      pushlog(:error, "problem getting mystro account")
+      pushlog(:error, "problem getting mystro organization")
     end
   end
 

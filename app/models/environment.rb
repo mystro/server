@@ -1,25 +1,27 @@
 class Environment
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Qujo::Concerns::Model
 
-  include CommonAccount
-  include CommonWorker
-  include CommonDeleting
+  include Org
+  include Named
+  include Deleting
 
   has_many :computes
   has_many :balancers
   belongs_to :template, index: true
-  belongs_to :account, index: true
+  belongs_to :organization, index: true
 
   field :name, type: String
   field :protected, type: Boolean, default: false
 
-  index({ name: 1, account: 1 }, { unique: true})
-
-  scope :for_account, ->(account){ where(:account.in => [nil, Account.named(account)]) }
-
   validates_presence_of(:name)
   validates_presence_of(:template)
+
+  index({ name: 1 })
+  index({ name: 1, organization: 1 }, { unique: true})
+
+  scope :for_org, ->(org) {where(:organization.in =>  [nil, Organization.named(org)])}
 
   def display
     name
@@ -74,7 +76,7 @@ class Environment
         template: template ? template.name : nil,
         computes: computes.count,
         balancers: balancers.count,
-        account: account ? account.name : nil,
+        organization: organization ? organization.name : nil,
         deleting: deleting,
         protected: protected,
         created: created_at,
@@ -91,18 +93,18 @@ class Environment
       # this is here for convenience
       if tags.is_a?(String)
         name = tags
-        account = "unknown"
+        organization = "unknown"
       else
         name = tags["Environment"]
-        account = tags["Account"] || "unknown"
+        organization = tags["Organization"] || "unknown"
       end
       return nil unless name
-      a = Account.named(account)
-      e = Environment.where(name: name, account: a).first ||
+      a = Organization.named(organization)
+      e = Environment.where(name: name, organization: a).first ||
           Environment.where(:name => name).first ||
-          Environment.create!(name: name, account: account, template: Template.named("empty"))
-      unless e.account
-        e.account = a
+          Environment.create!(name: name, organization: organization, template: Template.named("empty"))
+      unless e.organization
+        e.organization = a
         e.save
       end
       e

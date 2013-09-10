@@ -1,5 +1,5 @@
 <%
-   account = current_account
+   organization = session[:org]
    zone = record.zone
    zones = Zone.all
    selected_zone = zone ? zone.id : nil
@@ -8,7 +8,7 @@
    domain = zone ? zone.domain : nil
 %>
 <script id="new_record_dialog" type="text/template">
-  <% if account %>
+  <% if organization %>
       <%= simple_form_for(record, :validate => true, :html => { :class => "form-horizontal record_form" }) do |f| %>
           <%= f.error_notification %>
 
@@ -23,7 +23,7 @@
           </div>
       <% end %>
   <% else %>
-      must select an account and/or zone
+      must select an organization and/or zone
   <% end %>
 </script>
 

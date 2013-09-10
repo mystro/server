@@ -49,13 +49,13 @@ $(function(){
         bootbox.alert("must remove protection first")
     });
 
-    $(".account_select").on("click", function (e) {
+    $(".organization_select").on("click", function (e) {
         e.preventDefault();
-        var a = $(this).attr("data-account");
+        var a = $(this).data("organization");
         if (console) {
-            console.log("select account: " + a);
+            console.log("select org: " + a);
         }
-        $.post("/accounts/" + a + "/select", {}, function (d) {
+        $.post("/organizations/" + a + "/select", {}, function (d) {
             console.log(d);
             window.location.reload();
         });

@@ -2,7 +2,7 @@ class ComputesController < ApplicationController
   # GET /computes
   # GET /computes.json
   def index
-    @computes = filters(Compute, { account: current_user.account }).includes(:environment, :balancer) #Compute.where(account_id: mystro_account_id).all
+    @computes = Compute.org(@current_org).includes(:environment, :balancer)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -53,7 +53,7 @@ class ComputesController < ApplicationController
                          else
                            raise "don't know class type"
                        end
-    @compute.account = mystro_account_id
+    @compute.organization = mystro_organization_id
 
     saved = @compute.save
 
@@ -101,7 +101,7 @@ class ComputesController < ApplicationController
   # DELETE /computes/1.json
   def destroy
     @compute          = Compute.unscoped.find(params[:id])
-    @compute.account  ||= mystro_account_id
+    @compute.organization  ||= mystro_organization_id
     @compute.deleting = true
     @compute.save
     @compute.enqueue(:destroy)

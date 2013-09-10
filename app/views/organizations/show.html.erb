@@ -2,17 +2,17 @@
 <table class="table table-condensed table-bordered fields-horizontal">
   <tr>
     <th>Name</th>
-    <td><%= @account.name %></td>
+    <td><%= @organization.name %></td>
   </tr>
   <tr>
     <th>File</th>
-    <td><%= @account.file %></td>
+    <td><%= @organization.file %></td>
   </tr>
   <tr>
     <th>Enabled</th>
-    <td><%= @account.enabled %></td>
+    <td><%= @organization.enabled %></td>
   </tr>
 
 </table>
 
-<pre><%= @account.data.to_yaml %></pre>
+<pre><%= @organization.data.to_yaml %></pre>

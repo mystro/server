@@ -2,8 +2,11 @@ class HomeController < ApplicationController
   include ApplicationHelper
   include ActionView::Helpers::DateHelper
 
+  before_filter :current_org
+
   def index
-    @environments = Environment.for_account(current_user.account).asc(:name)
+    @environments = Environment.org(@current_org).includes(:computes, :balancers).all
+    render 'environments/index'
   rescue => e
     logger.error "ERROR: #{e.message}"
     e.backtrace.each {|b| logger.error b}
@@ -17,7 +20,7 @@ class HomeController < ApplicationController
   end
 
   def raw
-    #logger.info "MYSTRO: #{mystro_selected} #{mystro_account.data.inspect}"
-    @computes = mystro_account.compute.all || []
+    #logger.info "MYSTRO: #{mystro_selected} #{mystro_organization.data.inspect}"
+    @computes = mystro_organization.compute.all || []
   end
 end

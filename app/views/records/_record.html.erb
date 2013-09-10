@@ -1,4 +1,4 @@
-<% c ||= "error" unless record.nameable && record.account %>
+<% c ||= "error" unless record.nameable && record.organization %>
 <% c ||= "warning" if record.old? %>
 <tr class="<%= c %> <%= "deleting" if record.deleting %> ">
   <td><%= record.type %></td>

@@ -1,6 +1,6 @@
 <% content_for :subnav_pills do %>
-    <% if current_account %>
-    <li><%= link_to current_account.mystro_zone, "#" %></li>
+    <% if session[:org] %>
+    <li><%= link_to session[:org].mystro_zone, "#" %></li>
     <% end %>
 <% end %>
 <% content_for :subnav_buttons do %>
@@ -10,8 +10,8 @@
 <%= render "records/list", records: @records %>
 
 <%
-   a = current_account
-   record = Record.new(account: a)
+   a = session[:org]
+   record = Record.new(organization: a)
    record.zone = Zone.named(a.mystro_zone) if a
 %>
 <%= render "records/dialog", record: record %>

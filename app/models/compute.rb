@@ -1,49 +1,53 @@
 class Compute
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Qujo::Concerns::Model
 
-  include CommonAccount
-  include CommonRemote
-  include CommonWorker
-  include CommonDeleting
+  include Cloud
+  include Deleting
+  include Org
 
   belongs_to :environment, index: true
   belongs_to :balancer, index: true
-  belongs_to :account, index: true
   belongs_to :userdata, index: true
   has_many :records, as: :nameable
-  has_and_belongs_to_many :roles
+  has_and_belongs_to_many :roles #TODO: part of chef, shouldn't be included here
 
   field :name, type: String
   field :num, type: Integer, default: 0
   #[:name, :environment, :roles, :image, :flavor, :keypair, :groups, :region]
-  field :image, type: String, default: Mystro.account.compute.image
-  field :flavor, type: String, default: Mystro.account.compute.flavor
-  field :keypair, type: String, default: Mystro.account.compute.keypair
-  field :groups, type: Array, default: Mystro.account.compute.groups
-  field :region, type: String, default: Mystro.account.compute.region
+  field :image, type: String#, default: Mystro.organization.compute.image
+  field :flavor, type: String#, default:  Mystro.organization.compute.flavor
+  field :keypair, type: String#, default: Mystro.organization.compute.keypair
+  field :groups, type: Array#, default: Mystro.organization.compute.groups
+  field :region, type: String#, default: Mystro.organization.compute.region
 
-  field :state, type: String
-  field :public_dns, type: String
-  field :public_ip, type: String
-  field :private_dns, type: String
-  field :private_ip, type: String
-  field :availability_zone, type: String
-  field :tags, type: Hash, default: {}
+  cloud do
+    provides :state, String
+    provides :public_dns, String
+    provides :public_ip, String
+    provides :private_dns, String
+    provides :private_ip, String
+    provides :availability_zone, String
+    provides :tags, Hash, default: {}
+  end
 
-  index({num: 1})
+  index({name: 1})
+  index({name: 1,num: 1})
+
 
   # a bit hacky, but easiest way to make sure we get defaults from current account
-  def set_defaults(account)
-    self.account = account
-    ud = Userdata.named(account.mystro.compute.userdata) || nil rescue nil
+  def set_defaults(organization)
+    organization = organization.is_a?(String) ? Organization.named(organization) : organization
+    self.organization = organization
+    ud = Userdata.named(organization.mystro.compute.userdata) || nil rescue nil
     ud ||= Userdata.named("default")
-    if account && account.mystro
-      self.image = account.mystro.compute.image
-      self.flavor = account.mystro.compute.flavor
-      self.keypair = account.mystro.compute.keypair
-      self.groups = account.mystro.compute.groups
-      self.region = account.mystro.compute.region
+    if organization && organization.mystro
+      self.image = organization.mystro.compute.image
+      self.flavor = organization.mystro.compute.flavor
+      self.keypair = organization.mystro.compute.keypair
+      self.groups = organization.mystro.compute.groups
+      self.region = organization.mystro.compute.region
       self.userdata = ud
     end
   end

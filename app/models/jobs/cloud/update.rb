@@ -1,9 +1,9 @@
 class Jobs::Cloud::Update < Job
   def work
-    ::Account.all.each do |account|
-      info ".. account: #{account.name}"
-      data   = ::Hashie::Mash.new(account.data)
-      mystro = ::Mystro::Account.get(account.name)
+    ::Organization.all.each do |organization|
+      info ".. organization: #{organization.name}"
+      data   = ::Hashie::Mash.new(organization.data)
+      mystro = ::Mystro::Organization.get(organization.name)
 
       next unless mystro && data
 
@@ -16,14 +16,14 @@ class Jobs::Cloud::Update < Job
             c = ::Compute.create_from_fog(compute)
             c.tags = t
 
-            if e && e.account && c.account != e.account
-              c.account = e.account
+            if e && e.organization && c.organization != e.organization
+              c.organization = e.organization
             else
-              c.account = account
+              c.organization = organization
             end
             c.environment = e
 
-            info "  compute: #{c.short} account:#{c.account ? c.account.name : "no"} environment:#{e ? e.name : "no"}"
+            info "  compute: #{c.short} organization:#{c.organization ? c.organization.name : "no"} environment:#{e ? e.name : "no"}"
             c.save
           end
         end
@@ -34,8 +34,8 @@ class Jobs::Cloud::Update < Job
         if balancers.count > 0
           balancers.each do |balancer|
             b = ::Balancer.create_from_fog(balancer)
-            if b.environment && b.environment.account && b.account != b.environment.account
-              b.account = b.environment.account
+            if b.environment && b.environment.organization && b.organization != b.environment.organization
+              b.organization = b.environment.organization
             end
             b.save
 
@@ -57,9 +57,9 @@ class Jobs::Cloud::Update < Job
             z.records.each do |record|
               o = ::Balancer.find_by_record(record) || ::Compute.find_by_record(record) || ::Record.find_by_record(record) || nil
               if o
-                if o.account && !record.account
-                  info ".. .. assigning record #{record.name} to account: #{o.account.name}"
-                  record.account = o.account
+                if o.organization && !record.organization
+                  info ".. .. assigning record #{record.name} to organization: #{o.organization.name}"
+                  record.organization = o.organization
                 end
                 record.nameable = o
                 record.save

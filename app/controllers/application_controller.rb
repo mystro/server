@@ -1,40 +1,13 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery
+  # Prevent CSRF attacks by raising an exception.
+  # For APIs, you may want to use :null_session instead.
+  protect_from_forgery with: :exception
 
   before_filter :set_locale #http://guides.rubyonrails.org/i18n.html
   before_filter :authenticate_user!
   before_filter :set_time_zone
-  #before_filter :mystro_selected
 
-  #before_filter :job_errors
-  #before_filter :resque_workers
-
-  protected
-
-  def resque_workers
-    flash.now[:error] = "Resque workers are not running" if Resque.workers.count == 0
-  end
-
-  def job_errors
-    flash.now[:error] = "There are jobs with errors" if Job.errors?
-  end
-
-  def filters(model, options={})
-    q = model.scoped
-
-    if options[:account]
-      a = options.delete(:account)
-      unless a == "everything"
-        q = q.where(account_id: Account.named(a).id)
-      end
-    end
-
-    options.each do |k, v|
-      q = q.where(k => v)
-    end
-
-    q
-  end
+  before_filter :current_org
 
   def set_locale
     I18n.locale = params[:locale] || I18n.default_locale
@@ -44,22 +17,33 @@ class ApplicationController < ActionController::Base
     Time.zone = current_user.time_zone if current_user
   end
 
-  def mystro_selected
-    ( current_user ? current_user.account : nil ) || Mystro::Account.selected
+  def session_org
+    session[:org] ||= "ops"
   end
 
-  def mystro_account
-    Mystro::Account.get(mystro_selected)
+  def current_org
+    @organization ||= Organization.named(session_org)
   end
 
-  def mystro_account_id
-    account = Account.where(name: mystro_selected).first
-    account.id if account
-  end
+  #def set_organization
+  #  @current_org = current_org
+  #end
 
-  def enqueue(object, action, options={})
-    o = {"user" => current_user, "account" => current_user.account}.merge(options)
-    object.enqueue(action, o)
+  def filters(model, options={})
+    q = model.scoped
+
+    if options[:organization]
+      o = options.delete(:organization)
+      if o
+        q = q.where(organization: o)
+      end
+    end
+
+    options.each do |k, v|
+      q = q.where(k => v)
+    end
+
+    q
   end
 
   def raise_404

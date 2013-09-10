@@ -4,27 +4,27 @@
      compute = Compute.new_from_template(environment, Hashie::Mash.new(tserver), n)
    else
      compute = Compute.new
-     compute.set_defaults(current_account)
+     compute.set_defaults(session[:org])
    end
 
    compute.environment = environment if environment
 
-   account = Account.named(current_user.account)
+   organization = Organization.named(session[:org])
    regions = nil
    flavors = nil
    images = nil
    groups = nil
    keypairs = nil
-   if account
-     regions = account.selectors.regions
-     flavors = account.selectors.flavors
-     images = account.selectors_images
-     groups = account.selectors.groups
-     keypairs = account.selectors.keypairs
+   if organization
+     regions = organization.selectors.regions
+     flavors = organization.selectors.flavors
+     images = organization.selectors_images
+     groups = organization.selectors.groups
+     keypairs = organization.selectors.keypairs
    end
 
-   environments = Environment.for_account(current_user.account).asc(:name).all
-   balancers = Balancer.for_account(current_user.account).asc(:name).all
+   environments = Environment.for_org(session[:org]).asc(:name).all
+   balancers = Balancer.for_org(session[:org]).asc(:name).all
    selected_env = compute.environment ? compute.environment.id : nil
    selected_balancer = type != "general" ? Balancer.named("#{environment.name}-#{tserver["balancer"]}").id : nil rescue nil
    selected_img = compute.image

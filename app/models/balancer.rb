@@ -1,31 +1,30 @@
 class Balancer
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Qujo::Concerns::Model
 
-  include CommonAccount
-  include CommonRemote
-  include CommonWorker
-  include CommonDeleting
+  include Cloud
+  include Org
+  include Deleting
 
   belongs_to :environment, index: true
-  belongs_to :account, index: true
+  belongs_to :organization, index: true
   embeds_many :listeners
   embeds_one :health_check
   has_many :computes
   has_many :records, as: :nameable
 
-  #field :name, type: String # name is stored in the remote id (rid)
-  field :environment_id, type: String
   field :primary, type: Boolean, default: false
-
   #TODO: sticky settings are on listeners not balancers.
   field :sticky, type: Boolean, default: false
   field :sticky_type, type: String
   field :sticky_arg, type: String
 
-  field :public_dns, type: String
+  cloud do
+    provides :public_dns, String
+  end
 
-  scope :for_account, ->(account){ where(:account.in => [nil, Account.named(account)]) }
+  scope :for_org, ->(org){ where(:organization.in => [nil, Organization.named(org)]) }
 
   def name
     rid

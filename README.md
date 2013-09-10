@@ -55,7 +55,7 @@ connect:
 ```
 
 This would be a good time to add any other resource configurations as well. You can add them
-to the common/mystro/config.yml file and they will be the default for all mystro accounts.
+to the common/mystro/config.yml file and they will be the default for all mystro organizations.
 
 The defaults for compute are typical for using Mystro with AWS.
 

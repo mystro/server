@@ -19,15 +19,15 @@ namespace :mystro do
     end
     task :fix_tags => :environment do
       puts "fixing tags:"
-      %w{inqcloud reader}.each do |account|
-        puts ".. #{account}"
-        mystro = Mystro::Account.get(account)
+      %w{inqcloud reader}.each do |organization|
+        puts ".. #{organization}"
+        mystro = Mystro::Organization.get(organization)
         fog    = mystro.compute.fog
         if mystro
           computes = mystro.compute.all
           computes.each do |compute|
-            t = { "Account" => account }.merge(compute.tags)
-            puts ".. .. [#{t["Account"] || "no"}] #{t["Name"]}/#{t["Environment"]}"
+            t = { "Organization" => organization }.merge(compute.tags)
+            puts ".. .. [#{t["Organization"] || "no"}] #{t["Name"]}/#{t["Environment"]}"
             fog.create_tags([compute.id], t)
           end
         end

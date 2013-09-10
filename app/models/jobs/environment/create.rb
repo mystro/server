@@ -35,8 +35,8 @@ class Jobs::Environment::Create < Job
           end
         end
 
-        info ".. .. setting account #{environment.account.name}"
-        compute.account = environment.account
+        info ".. .. setting organization #{environment.organization.name}"
+        compute.organization = environment.organization
         compute.save!
       end
     end

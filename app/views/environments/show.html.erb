@@ -21,8 +21,8 @@
     <td><%= @environment.name %></td>
   </tr>
   <tr>
-    <th>Account</th>
-    <td><%= @environment.account ? link_to(@environment.account.name, @environment.account) : "" %></td>
+    <th>Organization</th>
+    <td><%= @environment.organization ? link_to(@environment.organization.name, @environment.organization) : "" %></td>
   </tr>
   <tr>
     <th>Template</th>
@@ -51,7 +51,7 @@
 <% if @environment.template %>
     <% @environment.template.data["servers"].each do |server|; s = server["attrs"] %>
 
-        <%# compute = Compute.new; compute.set_defaults(current_account); compute.environment = @environment %>
+        <%# compute = Compute.new; compute.set_defaults(session[:org]); compute.environment = @environment %>
         <%= render "computes/dialog", type: s["name"], environment: @environment, tserver: s %>
 
     <% end %>

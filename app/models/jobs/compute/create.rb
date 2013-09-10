@@ -29,7 +29,7 @@ class Jobs::Compute::Create < Job
           :ttl => 300,
           :values => [r.dns_name]
       )
-      record.account = Account.mystro(mystro)
+      record.organization = Organization.mystro(mystro)
       record.save
       record.enqueue(:create)
 
@@ -47,7 +47,7 @@ class Jobs::Compute::Create < Job
                 :ttl => 300,
                 :values => [r.dns_name]
             )
-            record2.account = Account.mystro(mystro)
+            record2.organization = Organization.mystro(mystro)
             record2.save
             record2.enqueue(:create)
           end

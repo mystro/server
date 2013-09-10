@@ -1,5 +1,5 @@
 <%
-   templates = ::Template.active.for_account(current_user.account).asc(:account, :name).all
+   templates = ::Template.active.for_org(session[:org]).asc(:organization, :name).all
 %>
 <script id="new_environment_dialog" type="text/template">
   <% env = Environment.new %>

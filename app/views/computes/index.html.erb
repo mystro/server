@@ -4,5 +4,5 @@
 
 <%= render "computes/list", computes: @computes %>
 
-<% @compute = Compute.new; @compute.set_defaults(current_account) %>
+<% @compute = Compute.new; @compute.set_defaults(session[:org]) %>
 <%= render "computes/dialog", environment: nil, type: "general"  %>

@@ -2,7 +2,7 @@ class RecordsController < ApplicationController
   # GET /records
   # GET /records.json
   def index
-    @records = filters(Record, {account: current_user.account}).all
+    @records = filters(Record, {organization: session_org}).all
 
     respond_to do |format|
       format.html # index.html.erb
@@ -26,7 +26,7 @@ class RecordsController < ApplicationController
   # GET /records/new.json
   def new
     @record = Record.new
-    @record.account = mystro_account_id
+    @record.organization = mystro_organization_id
 
     respond_to do |format|
       format.html # new.html.erb
@@ -49,9 +49,9 @@ class RecordsController < ApplicationController
     if @record.zone
       @record.name = @record.name + ".#{@record.zone.domain}"
     else
-      @record.name = @record.name + ".#{mystro_account.data.dns.zone}"
+      @record.name = @record.name + ".#{mystro_organization.data.dns.zone}"
     end
-    @record.account = mystro_account_id
+    @record.organization = mystro_organization_id
 
     respond_to do |format|
       if @record.save
@@ -86,7 +86,7 @@ class RecordsController < ApplicationController
   # DELETE /records/1.json
   def destroy
     @record = Record.unscoped.find(params[:id])
-    @record.account ||= mystro_account_id
+    @record.organization ||= mystro_organization_id
     @record.deleting = true
     @record.save
     @record.enqueue(:destroy)

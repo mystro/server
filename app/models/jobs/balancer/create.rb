@@ -29,7 +29,7 @@ class Jobs::Balancer::Create < Job
         :ttl    => 30,
         :values => [balancer.dns_name]
     )
-    r.account = model.account
+    r.organization = model.organization
     r.save!
     r.enqueue(:create)
 
@@ -41,7 +41,7 @@ class Jobs::Balancer::Create < Job
           :ttl    => 30,
           :values => [balancer.dns_name]
       )
-      p.account = model.account
+      p.organization = model.organization
       p.save!
       p.enqueue(:create)
     end

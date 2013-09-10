@@ -21,7 +21,7 @@ namespace :mystro do
     Rake::Task['mystro:files:load'].invoke
     Rake::Task['mystro:chef:roles'].invoke
 
-    Rake::Task['mystro:account:unknown'].invoke
+    Rake::Task['mystro:organization:unknown'].invoke
 
     # load cloud resources
     Rake::Task['mystro:cloud:update'].invoke unless Compute.all.count > 0
@@ -58,7 +58,7 @@ namespace :mystro do
     desc 'load roles from chef server'
     task :roles => :environment do
       puts '.. loading chef roles'
-      if Mystro.account[:plugins] && Mystro.account[:plugins][:chef]
+      if Mystro.organization[:plugins] && Mystro.organization[:plugins][:chef]
         ChefWorker.perform
       else
         puts '** chef is not configured, will not load roles'
@@ -69,7 +69,7 @@ namespace :mystro do
   namespace :test do
     task :config => :environment do
       puts "DIR: #{Mystro.directory}"
-      puts Mystro.account.to_hash.to_yaml
+      puts Mystro.organization.to_hash.to_yaml
     end
     task :create_environment => :environment do
       e = Environment.where(:name => 'blarg').first
@@ -100,11 +100,11 @@ namespace :mystro do
       end
 
       c = Compute.create(name:    'test', num: 1, environment: e, role_ids: [],
-                         region:  Mystro.account.compute.region,
-                         flavor:  Mystro.account.compute.flavor,
-                         image:   Mystro.account.compute.image,
-                         groups:  Mystro.account.compute.groups,
-                         keypair: Mystro.account.compute.keypair)
+                         region:  Mystro.organization.compute.region,
+                         flavor:  Mystro.organization.compute.flavor,
+                         image:   Mystro.organization.compute.image,
+                         groups:  Mystro.organization.compute.groups,
+                         keypair: Mystro.organization.compute.keypair)
       puts 'queueing create action'
       c.enqueue(:create)
       10.times { |i| print '.'; sleep 1 }; puts

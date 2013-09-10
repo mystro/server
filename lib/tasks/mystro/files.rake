@@ -2,17 +2,17 @@ namespace :mystro do
   namespace :files do
     desc "load mystro configuration files to database"
     task :load => :environment do
-      Rake::Task["mystro:files:accounts"].invoke
+      Rake::Task["mystro:files:organizations"].invoke
       Rake::Task["mystro:files:userdata"].invoke
       Rake::Task["mystro:files:templates"].invoke
     end
-    task :accounts => :environment do
-      puts ".. loading accounts ..."
-      Account.update_all(enabled: false)
-      files = Dir["config/mystro/accounts/*"]
+    task :organizations => :environment do
+      puts ".. loading organizations ..."
+      Organization.update_all(enabled: false)
+      files = Dir["config/mystro/organizations/*"]
       files.each do |file|
         name = File.basename(file).gsub(/\.yml/, "")
-        a = Account.find_or_create_by(:name => name, :file => file)
+        a = Organization.find_or_create_by(:name => name, :file => file)
         a.enabled = true
         d = a.load
         a.data = d
@@ -70,7 +70,7 @@ namespace :mystro do
         an = file =~ /\// ? file.split("/").first : nil
         t = Template.find_or_create_by(:name => name, :file => f)
         t.enabled = true
-        t.account = Account.named(an) if an
+        t.organization = Organization.named(an) if an
         d = JSON.parse(t.load.to_json)
         t.data = d
         t.save

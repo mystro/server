@@ -9,13 +9,13 @@
   </tr>
   </thead>
   <tbody>
-  <% @accounts.each do |account| %>
+  <% @organizations.each do |organization| %>
       <tr>
-        <td><%= link_to account.name, account_path(account) %></td>
-        <td><%= account.file %></td>
-        <td><%= account.enabled %></td>
+        <td><%= link_to organization.name, organization_path(organization) %></td>
+        <td><%= organization.file %></td>
+        <td><%= organization.enabled %></td>
         <td class="links">
-          <%= render "common/links", :obj => account, :edit => edit_account_path(account) %>
+          <%= render "common/links", :obj => organization, :edit => edit_organization_path(organization) %>
         </td>
       </tr>
   <% end %>

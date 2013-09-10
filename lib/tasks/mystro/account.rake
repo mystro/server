@@ -1,7 +1,7 @@
 namespace :mystro do
-  namespace :account do
+  namespace :organization do
     task :unknown do
-      Account.find_or_create_by(name: "unknown")
+      Organization.find_or_create_by(name: "unknown")
     end
   end
 end

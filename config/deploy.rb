@@ -107,7 +107,7 @@ namespace :mystro do
     run("mkdir -p #{fetch(:webserver_dir)}")
   end
 
-  desc "update mystro configuration and reload accounts and templates"
+  desc "update mystro configuration and reload organizations and templates"
   task :push do
     mystro.config.update
     mystro.chef.update

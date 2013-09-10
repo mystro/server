@@ -28,16 +28,16 @@ namespace :mystro do
 
     def defaults(aname)
       {
-          image: (Mystro.config.compute!.image || Mystro::Account.get(aname).compute.image rescue nil),
-          flavor: (Mystro.config.compute!.flavor || Mystro::Account.get(aname).compute.flavor rescue nil),
-          groups: (Mystro.config.compute!.groups || Mystro::Account.get(aname).compute.groups rescue []).join(','),
-          keypair: (Mystro.config.compute!.keypair || Mystro::Account.get(aname).compute.keypair rescue nil),
+          image: (Mystro.config.compute!.image || Mystro::Organization.get(aname).compute.image rescue nil),
+          flavor: (Mystro.config.compute!.flavor || Mystro::Organization.get(aname).compute.flavor rescue nil),
+          groups: (Mystro.config.compute!.groups || Mystro::Organization.get(aname).compute.groups rescue []).join(','),
+          keypair: (Mystro.config.compute!.keypair || Mystro::Organization.get(aname).compute.keypair rescue nil),
       }
     end
 
     def build_server(name, userdata)
       puts
-      aname = question('Account name: ', 'ops')
+      aname = question('Organization name: ', 'ops')
       ename = question('Environment name: ', 'dev')
       sname = question('Server name: ', name)
       puts
@@ -49,15 +49,15 @@ namespace :mystro do
       keypair = question('Key pair name: ', defs[:keypair])
       userdata = question('Userdata package name: ', userdata)
 
-      account = Account.where(name: aname).first || Account.create(name: aname)
-      #puts ".. using account: #{account.name}"
+      organization = Organization.where(name: aname).first || Organization.create(name: aname)
+      #puts ".. using org: #{organization.name}"
       environment =
           Environment.where(name: ename).first ||
-              Environment.create(name: ename, account: account, template: Template.named('empty'), protected: true)
+              Environment.create(name: ename, organization: organization, template: Template.named('empty'), protected: true)
       #puts ".. using environment: #{environment.name}"
       role = Role.where(name: "mystroserver").first || Role.create(name: "mystroserver", description: "created by mystro:boostrap", internal: true)
       compute = Compute.new(name: sname)
-      compute.set_defaults(account)
+      compute.set_defaults(organization)
       compute.environment = environment
       compute.keypair = keypair
       compute.image = image

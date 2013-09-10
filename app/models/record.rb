@@ -2,20 +2,25 @@ class Record
   include Mongoid::Document
   include Mongoid::Timestamps
   include Mongoid::Symbolize
+  include Qujo::Concerns::Model
 
-  include CommonAccount
-  include CommonRemote
-  include CommonWorker
-  include CommonDeleting
+  include Cloud
+  include Deleting
 
   belongs_to :zone, index: true
   belongs_to :nameable, polymorphic: true
-  belongs_to :account, index: true
+  belongs_to :organization, index: true
 
   field :name, type: String
-  symbolize :type, in: [:CNAME, :A], scopes: true, default: :CNAME
-  field :ttl, type: Integer, default: 300
-  field :values, type: Array
+  #symbolize :type, in: [:CNAME, :A], scopes: true, default: :CNAME
+  #field :ttl, type: Integer, default: 300
+  #field :values, type: Array
+
+  cloud do
+    provides :type, :symbolize, in: [:CNAME, :A], scopes: true, default: :CNAME
+    provides :ttl, Integer, default: 300
+    provides :values, Array
+  end
 
   validates_presence_of :name
   validates_presence_of :values

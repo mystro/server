@@ -4,10 +4,6 @@ class HealthCheck
 
   embedded_in :balancer
 
-  #field :from, type: String
-  #field :to, type: String
-  #field :cert, type: String
-
   field :targeturl, type: String
   field :healthy, type: Integer, default: 10
   field :unhealthy, type: Integer, default: 2

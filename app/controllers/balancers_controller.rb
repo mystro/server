@@ -2,7 +2,7 @@ class BalancersController < ApplicationController
   # GET /balancers
   # GET /balancers.json
   def index
-    @balancers = filters(Balancer, {account: current_user.account}).all
+    @balancers = Balancer.org(@current_org)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -41,7 +41,7 @@ class BalancersController < ApplicationController
   ## POST /balancers.json
   #def create
   #  @balancer = Balancer.new(params[:balancer])
-  #  @balancer.account = mystro_account_id
+  #  @balancer.organization = mystro_organization_id
   #
   #  respond_to do |format|
   #    if @balancer.save
@@ -74,7 +74,7 @@ class BalancersController < ApplicationController
   # DELETE /balancers/1.json
   def destroy
     @balancer = Balancer.unscoped.find(params[:id])
-    @balancer.account ||= mystro_account_id
+    @balancer.organization ||= mystro_organization_id
     @balancer.deleting = true
     @balancer.save
     @balancer.enqueue(:destroy)

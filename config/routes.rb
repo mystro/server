@@ -2,8 +2,8 @@ MystroServer::Application.routes.draw do
   namespace :api do
     scope :defaults => { :format => 'json' } do
       resource :status
-      resources :accounts do
-        resources :accounts
+      resources :organizations do
+        resources :organizations
         resources :environments
         resources :computes do
           collection do
@@ -16,7 +16,7 @@ MystroServer::Application.routes.draw do
     end
   end
 
-  resources :accounts do
+  resources :organizations do
     post "select", :on => :member
   end
 
