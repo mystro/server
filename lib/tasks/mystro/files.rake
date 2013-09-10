@@ -2,6 +2,7 @@ namespace :mystro do
   namespace :files do
     desc "load mystro configuration files to database"
     task :load => :environment do
+      Rake::Task["mystro:files:providers"].invoke
       Rake::Task["mystro:files:organizations"].invoke
       Rake::Task["mystro:files:userdata"].invoke
       Rake::Task["mystro:files:templates"].invoke
@@ -17,12 +18,25 @@ namespace :mystro do
         d = a.load
         a.data = d
         a.save
-        puts ".. create #{name} #{file}"
+        puts ".. .. create #{name} #{file}"
         if d["dns"] && d["dns"]["zone"]
           z = d["dns"]["zone"]
-          puts ".. .. create zone: #{z}"
+          puts ".. .. .. create zone: #{z}"
           Zone.create(domain: z)
         end
+      end
+    end
+    task :providers => :environment do
+      puts ".. loading providers ..."
+      #Provider.update_all(enabled: false)
+      files = Dir["config/mystro/providers/*"]
+      files.each do |file|
+        name = File.basename(file).gsub(/\.yml/, "")
+        p = Provider.find_or_create_by(:name => name, :file => file)
+        d = p.load
+        p.data = d
+        p.save
+        puts ".. .. create #{name} #{file}"
       end
     end
     task :userdata => :environment do

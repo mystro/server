@@ -1,10 +1,9 @@
-<%= simple_form_for(@provider) do |f| %>
+<%= simple_form_for(@organization) do |f| %>
   <%= f.error_notification %>
 
   <div class="form-inputs">
-    <%= f.input :cloud, :collection => Provider.get_cloud_values, :prompt => "select cloud..." %>
-    <%= f.input :key %>
-    <%= f.input :secret %>
+    <%= f.input :name %>
+    <%= f.input :file %>
   </div>
 
   <div class="form-actions">

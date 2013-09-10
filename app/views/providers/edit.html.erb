@@ -1,6 +1,5 @@
-<h1>Editing provider</h1>
-
+<% content_for :subnav_buttons do %>
+    <%= link_to 'Show', @organization, :class => "btn" %>
+    <%= link_to 'Back', organizations_path, :class => "btn" %>
+<% end %>
 <%= render 'form' %>
-
-<%= link_to 'Show', @provider %> |
-<%= link_to 'Back', providers_path %>

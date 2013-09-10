@@ -16,28 +16,25 @@ MystroServer::Application.routes.draw do
     end
   end
 
-  resources :organizations do
-    post "select", :on => :member
-  end
-
   resources :balancers
   resources :listeners
 
   resources :computes
-  resources :roles
 
   resources :environments do
     post "refresh", on: :member
   end
-  resources :templates
 
   resources :zones
   resources :records
 
+  resources :roles
+  resources :templates
   resources :userdata
-
-
-  #resources :providers
+  resources :providers
+  resources :organizations do
+    post "select", :on => :member
+  end
 
   # DO NOT UNCOMMENT THIS FOR NOW
   # creates a redirect loop
