@@ -28,12 +28,12 @@ class EnvironmentsController < ApplicationController
   #  end
   #end
 
-  ## GET /environments/1/edit
-  #def edit
-  #  @environment = Environment.find(params[:id])
-  #  @templates = Template.active.org(@current_org).asc(:organization, :name).all
-  #  @organizations = Organization.all
-  #end
+  # GET /environments/1/edit
+  def edit
+    @environment = Environment.find(params[:id])
+    @templates = Template.active.org(@current_org).asc(:organization, :name).all
+    @organizations = Organization.all
+  end
 
   # POST /environments
   # POST /environments.json

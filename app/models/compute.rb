@@ -53,8 +53,8 @@ class Compute
   end
 
   def name=(value)
-    s = name =~ /\./ ? value.split(".").first : value
-    n = nil
+    s = value =~ /\./ ? value.split(".").first : value
+    n = 0
     s.match(/^([a-zA-Z]+)([0-9]+)$/) do |m|
       s = m[1]
       n = m[2]
@@ -76,8 +76,9 @@ class Compute
   end
 
   def display
-    a = subdomain
-    "#{short}#{a ? ".#{a}" : ""}"
+    #o = organization && organization.name || nil
+    #e = environment && environment.name || nil
+    name.blank? ? '--not set--' : "#{name}#{number}"
   end
 
   def number
@@ -152,7 +153,6 @@ class Compute
       name = obj.tags['Name']||""
 
       compute.name = name
-      compute.num = num if num
       compute.image = obj.image
       compute.flavor = obj.flavor
       compute.state = obj.state

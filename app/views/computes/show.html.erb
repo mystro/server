@@ -7,7 +7,7 @@
     <% end %>
 <% end %>
 
-<table class="table table-condensed table-bordered fields-horizontal">
+<table class="table table-condensed table-striped table-hover fields-horizontal">
   <tr>
     <th>Organization</th>
     <td><%= @compute.organization ? link_to(@compute.organization.name, @compute.organization) : "" %></td>
@@ -30,44 +30,10 @@
       <%= @compute.roles.map {|role| link_to role.name, role}.join(", ").html_safe %>
     </td>
   </tr>
-  <tr>
-    <th>Region</th>
-    <td>
-      <%= @compute.region %>
-    </td>
-  </tr>
-  <tr>
-    <th>Image</th>
-    <td>
-      <%= @compute.image %>
-    </td>
-  </tr>
-  <tr>
-    <th>Flavor</th>
-    <td>
-      <%= @compute.flavor %>
-    </td>
-  </tr>
-  <tr>
-    <th>Keypair</th>
-    <td>
-      <%= @compute.keypair %>
-    </td>
-  </tr>
-  <tr>
-    <th>Groups</th>
-    <td>
-      <%= @compute.groups.join(",") %>
-    </td>
-  </tr>
   <tr> <th>Synced At</th> <td><%= @compute.synced_at %></td> </tr>
 </table>
-<table class="table table-condensed table-bordered fields-horizontal">
-  <% @compute.tags.each do |k, v| %>
-  <tr><th><%= k %></th><td><%= v %></td></tr>
-  <% end %>
-</table>
-<table class="table table-condensed table-bordered fields-horizontal">
+<h3>cloud</h3>
+<table class="table table-condensed table-striped table-hover fields-horizontal">
   <tr> <th>Remote ID</th> <td><%= @compute.rid %></td> </tr>
   <tr> <th>State</th> <td><%= @compute.state %></td> </tr>
   <tr> <th>Public DNS</th> <td><%= @compute.public_dns %></td> </tr>
@@ -75,6 +41,17 @@
   <tr> <th>Private DNS</th> <td><%= @compute.private_dns %></td> </tr>
   <tr> <th>Private IP</th> <td><%= @compute.private_ip %></td> </tr>
   <tr> <th>Availability Zone</th> <td><%= @compute.availability_zone %></td> </tr>
+  <tr> <th>Region</th> <td> <%= @compute.region %> </td> </tr>
+  <tr> <th>Image</th> <td> <%= @compute.image %> </td> </tr>
+  <tr> <th>Flavor</th> <td> <%= @compute.flavor %> </td> </tr>
+  <tr> <th>Keypair</th> <td> <%= @compute.keypair %> </td> </tr>
+  <tr> <th>Groups</th> <td> <%= @compute.groups.join(",") %> </td> </tr>
+</table>
+<h3>tags</h3>
+<table class="table table-condensed table-striped table-hover fields-horizontal">
+  <% @compute.tags.each do |k, v| %>
+      <tr><th><%= k %></th><td><%= v %></td></tr>
+  <% end %>
 </table>
 
 <%= render "records/list", records: @compute.records.sort_by(&:name) %>

@@ -11,7 +11,6 @@ class Jobs::Cloud::Update < Job
         computes = mystro.compute.running
         if computes.count > 0
           computes.each do |compute|
-            info "cloud: #{compute.inspect}"
             e = ::Environment.create_from_cloud(compute.tags)
             c = ::Compute.create_from_cloud(compute)
 
@@ -28,24 +27,26 @@ class Jobs::Cloud::Update < Job
         end
       end
 
-      #if mystro.balancer
-      #  balancers = mystro.balancer.all
-      #  if balancers.count > 0
-      #    balancers.each do |balancer|
-      #      b = ::Balancer.create_from_fog(balancer)
-      #      if b.environment && b.environment.organization && b.organization != b.environment.organization
-      #        b.organization = b.environment.organization
-      #      end
-      #      b.save
-      #
-      #      balancer.instances.each do |i|
-      #        b.add_compute(i)
-      #      end
-      #      b.save
-      #    end
-      #  end
-      #end
-      #
+      if mystro.balancer
+        balancers = mystro.balancer.all
+        if balancers.count > 0
+          balancers.each do |balancer|
+            b = ::Balancer.create_from_cloud(balancer)
+            e = b.environment
+            if e && e.organization && b.organization != b.environment.organization
+              b.organization = b.environment.organization
+            end
+            b.save
+
+            balancer.computes.each do |i|
+              b.add_compute(i)
+            end
+            info "  balancer: #{b.name} organization:#{b.organization ? b.organization.name : "no"} environment:#{e ? e.name : "no"}"
+            b.save
+          end
+        end
+      end
+
       #if mystro.dns
       #  zones = mystro.dns.zones
       #  if zones.count > 0

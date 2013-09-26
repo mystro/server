@@ -24,7 +24,7 @@ class Balancer
     provides :public_dns, String
   end
 
-  scope :for_org, ->(org){ where(:organization.in => [nil, Organization.named(org)]) }
+  scope :for_org, ->(org) { where(:organization.in => [nil, Organization.named(org)]) }
 
   def name
     rid
@@ -54,7 +54,7 @@ class Balancer
   def fog_options
     o = {
         id: rid,
-        "ListenerDescriptions" => listeners.map {|l| l.fog_options},
+        "ListenerDescriptions" => listeners.map { |l| l.fog_options },
         "AvailabilityZones" => zones
     }
     #azs = zones
@@ -77,39 +77,50 @@ class Balancer
       where(rid: name).first
     end
 
-    def create_from_fog(obj)
-      balancer             = Balancer.where(:rid => obj.id).first || Balancer.create(:rid => obj.id)
-      balancer.rid         = obj.id
-      (e, r)               = obj.id.split(/\-/)
-      balancer.environment = Environment.create_from_fog(e)
-      balancer.synced_at   = Time.now
-      balancer.public_dns  = obj.dns_name
-
-      balancer.listeners = []
-      obj.listeners.each do |l|
-        Listener.create_from_fog(balancer, l)
-      end
-
-      balancer.health_check = nil
-      healthcheck = HealthCheck.create_from_fog(balancer, obj.health_check)
-
+    def create_from_cloud(obj)
+      balancer = Balancer.where(:rid => obj.id).first || Balancer.create(:rid => obj.id)
+        (e, r)               = obj.id.split(/\-/)
+      balancer.environment = Environment.create_from_cloud(e)
+      balancer.synced_at = Time.now
+      balancer.public_dns = obj.dns
+      balancer.listeners = obj.listeners.map {|l| Listener.create_from_cloud(balancer, l)}
+      balancer.health_check = HealthCheck.create_from_cloud(balancer, obj.health)
       balancer.save
       balancer
     end
 
+    #def create_from_fog(obj)
+    #  balancer             = Balancer.where(:rid => obj.id).first || Balancer.create(:rid => obj.id)
+    #  balancer.rid         = obj.id
+    #  balancer.environment = Environment.create_from_fog(e)
+    #  balancer.synced_at   = Time.now
+    #  balancer.public_dns  = obj.dns_name
+    #
+    #  balancer.listeners = []
+    #  obj.listeners.each do |l|
+    #    Listener.create_from_fog(balancer, l)
+    #  end
+    #
+    #  balancer.health_check = nil
+    #  healthcheck = HealthCheck.create_from_fog(balancer, obj.health_check)
+    #
+    #  balancer.save
+    #  balancer
+    #end
+
     def create_from_template(environment, tbalancer)
-      name     = "#{environment.name}-#{tbalancer.name}"
+      name = "#{environment.name}-#{tbalancer.name}"
       balancer = environment.balancers.find_or_create_by(name: name)
 
-      attrs    = {
-          rid:     name,
+      attrs = {
+          rid: name,
           primary: tbalancer.primary,
           managed: true
       }
       attrs.merge!({
-                       sticky:      true,
+                       sticky: true,
                        sticky_type: tbalancer.sticky_type,
-                       sticky_arg:  tbalancer.sticky_arg,
+                       sticky_arg: tbalancer.sticky_arg,
                    }) if tbalancer.sticky
       balancer.update_attributes(attrs)
 

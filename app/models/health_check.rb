@@ -21,9 +21,7 @@ class HealthCheck
   end
 
   class << self
-    def create_from_fog(balancer, obj)
-      #TODO: show reference to cert
-      #obj={"Interval"=>30, "Target"=>"HTTP:8080/INQReaderServer/rest/AjaxConfig/config", "HealthyThreshold"=>10, "Timeout"=>5, "UnhealthyThreshold"=>2},
+    def create_from_cloud(balancer, obj)
       create!(
           balancer: balancer,
           targeturl: obj["Target"],
@@ -33,6 +31,18 @@ class HealthCheck
           timeout: obj["Timeout"],
       )
     end
+    #def create_from_fog(balancer, obj)
+    #  #TODO: show reference to cert
+    #  #obj={"Interval"=>30, "Target"=>"HTTP:8080/INQReaderServer/rest/AjaxConfig/config", "HealthyThreshold"=>10, "Timeout"=>5, "UnhealthyThreshold"=>2},
+    #  create!(
+    #      balancer: balancer,
+    #      targeturl: obj["Target"],
+    #      healthy: obj["HealthyThreshold"],
+    #      unhealthy: obj["UnhealthyThreshold"],
+    #      interval: obj["Interval"],
+    #      timeout: obj["Timeout"],
+    #  )
+    #end
 
     def create_from_template(balancer, thealth)
       balancer.health_check = nil

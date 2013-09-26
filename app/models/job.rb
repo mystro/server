@@ -9,12 +9,11 @@ class Job
 
   def mystro
     @mystro ||= begin
-      if model && model.organization
-        a = model.organization
-        Mystro::Organization.get(a.name)
-      end
-    rescue => e
-      pushlog(:error, "problem getting mystro organization")
+      raise 'model or organization not set' unless model && model.organization
+      a = model.organization
+      o = Mystro::Organization.get(a.name)
+      raise 'organization not found' unless o
+      o
     end
   end
 

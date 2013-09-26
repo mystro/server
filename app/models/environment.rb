@@ -93,13 +93,13 @@ class Environment
       # this is here for convenience
       if tags.is_a?(String)
         name = tags
-        organization = "unknown"
+        organization = 'unknown'
       else
-        name = tags["Environment"]
-        organization = tags["Organization"] || "unknown"
+        name = tags['Environment'] || 'unknown'
+        organization = tags['Organization'] || tags['Account'] || 'unknown'
       end
       return nil unless name
-      a = Organization.named(organization)
+      a = Organization.named(organization) || Organization.create(name: organization)
       e = Environment.where(name: name, organization: a).first ||
           Environment.where(:name => name).first ||
           Environment.create!(name: name, organization: organization, template: Template.named("empty"))
