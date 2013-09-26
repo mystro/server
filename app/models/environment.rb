@@ -88,7 +88,7 @@ class Environment
     def named(name)
       where(name: name).first
     end
-    def create_from_fog(tags)
+    def create_from_cloud(tags)
       # since environments don't actually exist in the cloud, except as meta data,
       # this is here for convenience
       if tags.is_a?(String)

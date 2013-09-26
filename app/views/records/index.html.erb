@@ -1,6 +1,6 @@
 <% content_for :subnav_pills do %>
     <% if session[:org] %>
-    <li><%= link_to session[:org].mystro_zone, "#" %></li>
+    <li><%= link_to Organization.named(session[:org]).mystro_zone, "#" %></li>
     <% end %>
 <% end %>
 <% content_for :subnav_buttons do %>
@@ -10,7 +10,7 @@
 <%= render "records/list", records: @records %>
 
 <%
-   a = session[:org]
+   a = Organization.named(session[:org])
    record = Record.new(organization: a)
    record.zone = Zone.named(a.mystro_zone) if a
 %>

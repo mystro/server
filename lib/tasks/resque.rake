@@ -32,3 +32,6 @@ task "resque:setup" => :environment do
   # So, something like this:
   #require 'jobs'
 end
+task 'resque:clear_workers' => :environment do
+  Resque.workers.each {|w| w.unregister_worker}
+end

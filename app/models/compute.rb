@@ -16,11 +16,11 @@ class Compute
   field :name, type: String
   field :num, type: Integer, default: 0
   #[:name, :environment, :roles, :image, :flavor, :keypair, :groups, :region]
-  field :image, type: String#, default: Mystro.organization.compute.image
-  field :flavor, type: String#, default:  Mystro.organization.compute.flavor
-  field :keypair, type: String#, default: Mystro.organization.compute.keypair
-  field :groups, type: Array#, default: Mystro.organization.compute.groups
-  field :region, type: String#, default: Mystro.organization.compute.region
+  field :image, type: String #, default: Mystro.organization.compute.image
+  field :flavor, type: String #, default:  Mystro.organization.compute.flavor
+  field :keypair, type: String #, default: Mystro.organization.compute.keypair
+  field :groups, type: Array #, default: Mystro.organization.compute.groups
+  field :region, type: String #, default: Mystro.organization.compute.region
 
   cloud do
     provides :state, String
@@ -33,7 +33,7 @@ class Compute
   end
 
   index({name: 1})
-  index({name: 1,num: 1})
+  index({name: 1, num: 1})
 
 
   # a bit hacky, but easiest way to make sure we get defaults from current account
@@ -50,6 +50,17 @@ class Compute
       self.region = organization.mystro.compute.region
       self.userdata = ud
     end
+  end
+
+  def name=(value)
+    s = name =~ /\./ ? value.split(".").first : value
+    n = nil
+    s.match(/^([a-zA-Z]+)([0-9]+)$/) do |m|
+      s = m[1]
+      n = m[2]
+    end
+    super(s)
+    self.num = n
   end
 
   def roles_string
@@ -130,28 +141,29 @@ class Compute
 
   #TODO: VOLLEY
   has_many :installs, class_name: "MystroVolley::Install"
+
   def versions
     installs.map(&:version).uniq
   end
 
   class << self
-    def create_from_fog(obj)
+    def create_from_cloud(obj)
       compute = Compute.where(:rid => obj.id).first || Compute.create(:rid => obj.id)
       name = obj.tags['Name']||""
-      num = nil
-      (name, _, _) = name.split(".") if name =~ /\./
-      name.match(/^([a-zA-Z]+)([0-9]+)$/) do |m|
-        name = m[1]
-        num = m[2]
-      end
+
       compute.name = name
       compute.num = num if num
-      compute.state = obj.state.to_s.downcase
-      compute.public_dns = obj.dns_name
-      compute.public_ip = obj.public_ip_address
-      compute.private_dns = obj.private_dns_name
-      compute.private_ip = obj.private_ip_address
-      compute.availability_zone = obj.availability_zone
+      compute.image = obj.image
+      compute.flavor = obj.flavor
+      compute.state = obj.state
+      compute.public_dns = obj.dns
+      compute.public_ip = obj.ip
+      compute.private_dns = obj.private_dns
+      compute.private_ip = obj.private_ip
+      compute.availability_zone = obj.zone
+      compute.groups = obj.groups
+      compute.keypair = obj.keypair
+      compute.region = obj.region
       compute.synced_at = Time.now
 
       list = (obj.tags["Role"]||obj.tags["Roles"]||"").split(",")
@@ -159,10 +171,39 @@ class Compute
         role = Role.find_or_create_by(:name => r)
         compute.roles << role
       end
-
+      compute.tags = obj.tags || {}
       compute.save
       compute
     end
+
+    #def create_from_fog(obj)
+    #  compute = Compute.where(:rid => obj.id).first || Compute.create(:rid => obj.id)
+    #  name = obj.tags['Name']||""
+    #  num = nil
+    #  (name, _, _) = name.split(".") if name =~ /\./
+    #  name.match(/^([a-zA-Z]+)([0-9]+)$/) do |m|
+    #    name = m[1]
+    #    num = m[2]
+    #  end
+    #  compute.name = name
+    #  compute.num = num if num
+    #  compute.state = obj.state.to_s.downcase
+    #  compute.public_dns = obj.dns_name
+    #  compute.public_ip = obj.public_ip_address
+    #  compute.private_dns = obj.private_dns_name
+    #  compute.private_ip = obj.private_ip_address
+    #  compute.availability_zone = obj.availability_zone
+    #  compute.synced_at = Time.now
+    #
+    #  list = (obj.tags["Role"]||obj.tags["Roles"]||"").split(",")
+    #  list.each do |r|
+    #    role = Role.find_or_create_by(:name => r)
+    #    compute.roles << role
+    #  end
+    #
+    #  compute.save
+    #  compute
+    #end
 
     def new_from_template(environment, tserver_attrs, i=nil)
       tserver = tserver_attrs
