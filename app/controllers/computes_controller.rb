@@ -77,13 +77,12 @@ class ComputesController < ApplicationController
     changed = nil
     if @compute.balancer && params[:compute]["balancer_id"] == ""
       @compute.balancer.enqueue(:remove, { rid: @compute.rid })
-    elsif !@compute.balancer && params[:compute]["balancer_id"]
+    elsif !@compute.balancer && params[:compute]["balancer_id"] && !params[:compute]["balancer_id"].blank?
       changed = :add
     end
 
     respond_to do |format|
       if @compute.update_attributes(params[:compute])
-
         if changed
           @compute.balancer.enqueue(changed, { rid: @compute.rid })
         end

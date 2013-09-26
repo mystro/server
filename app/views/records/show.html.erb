@@ -3,7 +3,7 @@
     <%= link_to @record, method: :delete, data: { confirm: 'Are you sure?' }, :title => "Destroy Record", :class => "btn btn-danger" do %><i class="icon-remove-sign icon-white"></i> destroy<% end %>
 <% end %>
 
-<table class="table table-condensed table-bordered fields-horizontal">
+<table class="table table-condensed  table-striped table-hover fields-horizontal">
   <tr>
     <th>Organization</th>
     <td><%= @record.organization ? link_to(@record.organization.name, @record.organization) : "" %></td>

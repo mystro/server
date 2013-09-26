@@ -27,15 +27,18 @@ class Listener
   end
 
   class << self
-    def create_from_fog(balancer, obj)
-      #TODO: show reference to cert
-      create(
-          balancer:  balancer,
-          from:      "#{obj.protocol}:#{obj.lb_port}",
-          to:        "#{obj.instance_protocol}:#{obj.instance_port}",
-          synced_at: Time.now
-      )
+    def create_from_cloud(balancer, obj)
+      create(balancer: balancer, from: obj.from, to: obj.to, synced_at: Time.now)
     end
+    #def create_from_fog(balancer, obj)
+    #  #TODO: show reference to cert
+    #  create(
+    #      balancer:  balancer,
+    #      from:      "#{obj.protocol}:#{obj.lb_port}",
+    #      to:        "#{obj.instance_protocol}:#{obj.instance_port}",
+    #      synced_at: Time.now
+    #  )
+    #end
 
     def create_from_template(balancer, tlistener)
       from = "#{tlistener.from_proto}:#{tlistener.from_port}"

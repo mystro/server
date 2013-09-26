@@ -1,6 +1,6 @@
 class Jobs::Record::Destroy < Job
   def work
-    mystro.dns.destroy(model) if model.rid
+    mystro.dns.destroy(model.rid) if model.rid
   ensure
     model.destroy
   end
