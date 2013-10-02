@@ -78,7 +78,9 @@ class Compute
   def display
     #o = organization && organization.name || nil
     #e = environment && environment.name || nil
-    name.blank? ? '--not set--' : "#{name}#{number}"
+    return "#{name}#{number}" unless name.blank?
+    return rid if rid
+    '--not-set--'
   end
 
   def number
@@ -253,8 +255,7 @@ class Compute
     end
 
     def find_by_record(record)
-      list = [record.long, record.values].flatten
-      list.each do |val|
+      record.values.each do |val|
         if ::IPAddress.valid?(val)
           o = Compute.where(:public_ip => val).first
           return o if o

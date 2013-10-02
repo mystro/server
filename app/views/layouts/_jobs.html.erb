@@ -1,0 +1,36 @@
+<%
+   running_jobs = Job.count
+   workers = Resque.workers.count
+   has_errors = Job.errors? || (workers == 0 || Resque::Failure.count > 0)
+%>
+<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+  <span class="label <%= "label-important" if has_errors %>">Jobs (<%= running_jobs %>)</span>
+  <b class="caret"></b>
+</a>
+<ul class="dropdown-menu">
+  <li>
+    <%= link_to qujo.jobs_path, title: "manage jobs" do %>
+        <!--<span title="active jobs" class="badge">?</span> -->
+        Manage Jobs
+    <% end %>
+  </li>
+  <li>
+    <%= link_to qujo.resque_jobs_path, title: "manage resque" do %>
+        <!--<span title="resque workers" class="badge">?</span> -->
+        Manage Resque (<%= workers %>)
+    <% end %>
+  </li>
+  <% if defined?(jobs) %>
+      <li class="divider"></li>
+      <% jobs.each do |k, v| %>
+          <li class='nav-header'><%= k %></li>
+          <% v.each do |l| %>
+              <li>
+                <%= link_to "#", class: "create_job", klass: l do %>
+                    Run <%= l %>
+                <% end %>
+              </li>
+          <% end %>
+      <% end %>
+  <% end %>
+</ul>

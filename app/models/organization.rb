@@ -62,7 +62,7 @@ class Organization
   end
 
   def mystro_zone
-    mystro.dns.zone || nil rescue nil
+    mystro.record.config.zone || nil rescue nil
   end
 
   def load

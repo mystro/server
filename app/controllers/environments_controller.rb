@@ -4,7 +4,7 @@ class EnvironmentsController < ApplicationController
   # GET /environments
   # GET /environments.json
   def index
-    @environments = Environment.org(@current_org).includes(:computes, :balancers).all
+    @environments = Environment.org(session[:org]).includes(:computes, :balancers).all
   end
 
   # GET /environments/1
@@ -19,7 +19,7 @@ class EnvironmentsController < ApplicationController
   ## GET /environments/new.json
   #def new
   #  @environment = Environment.new
-  #  @templates = Template.active.org(@current_org).asc(:organization, :name).all
+  #  @templates = Template.active.org(session[:org]).asc(:organization, :name).all
   #  @organizations = Organization.all
   #
   #  respond_to do |format|
@@ -31,7 +31,7 @@ class EnvironmentsController < ApplicationController
   # GET /environments/1/edit
   def edit
     @environment = Environment.find(params[:id])
-    @templates = Template.active.org(@current_org).asc(:organization, :name).all
+    @templates = Template.active.org(session[:org]).asc(:organization, :name).all
     @organizations = Organization.all
   end
 
@@ -39,7 +39,7 @@ class EnvironmentsController < ApplicationController
   # POST /environments.json
   def create
     @environment = Environment.new(params[:environment])
-    @environment.organization = @current_org
+    @environment.organization = session[:org]
     saved = @environment.save
 
     respond_to do |format|
@@ -58,7 +58,7 @@ class EnvironmentsController < ApplicationController
   # PUT /environments/1.json
   def update
     @environment = Environment.find(params[:id])
-    @environment.organization ||= @current_org
+    @environment.organization ||= session[:org]
     #@templates = Template.active.org(@current_org).asc(:organization, :name).all
     #@organizations = Organization.all
 
@@ -97,7 +97,7 @@ class EnvironmentsController < ApplicationController
 
     raise "cannot destroy protected environment" if @environment.protected
 
-    @environment.organization ||= @current_org
+    @environment.organization ||= session[:org]
     @environment.deleting = true
     @environment.save
     @environment.enqueue(:destroy)

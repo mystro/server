@@ -5,9 +5,10 @@ class User
   field :time_zone, type: String
 
   # Include default devise modules. Others available are:
-  # :token_authenticatable, :confirmable,
+  # , :confirmable,
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
+         :token_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable
 
   ## Database authenticatable
@@ -43,7 +44,9 @@ class User
   # field :locked_at,       :type => Time
 
   ## Token authenticatable
-  # field :authentication_token, :type => String
+  field :authentication_token, :type => String
+  before_save :ensure_authentication_token
+
   # run 'rake db:mongoid:create_indexes' to create indexes
   index({ email: 1 }, { unique: true, background: true })
   field :name, :type => String

@@ -2,7 +2,7 @@ class ComputesController < ApplicationController
   # GET /computes
   # GET /computes.json
   def index
-    @computes = Compute.org(@current_org).includes(:environment, :balancer)
+    @computes = Compute.org(session[:org]).includes(:environment, :balancer)
 
     respond_to do |format|
       format.html # index.html.erb
