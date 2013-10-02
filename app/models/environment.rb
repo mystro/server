@@ -101,8 +101,7 @@ class Environment
       return nil unless name
       a = Organization.named(organization) || Organization.create(name: organization)
       e = Environment.where(name: name, organization: a).first ||
-          Environment.where(:name => name).first ||
-          Environment.create!(name: name, organization: organization, template: Template.named("empty"))
+          Environment.create!(name: name, organization: a, template: Template.named("empty"))
       unless e.organization
         e.organization = a
         e.save
