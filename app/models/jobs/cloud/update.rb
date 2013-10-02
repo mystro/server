@@ -16,8 +16,6 @@ class Jobs::Cloud::Update < Job
 
             if e && e.organization && c.organization != e.organization
               c.organization = e.organization
-            else
-              c.organization = organization
             end
             c.environment = e
 
@@ -57,7 +55,7 @@ class Jobs::Cloud::Update < Job
           o = ::Balancer.find_by_record(record) || ::Compute.find_by_record(record) || ::Record.find_by_record(record) || nil
           if o
             if o.organization && !record.organization
-              info ".. .. assigning record #{record.name} to organization: #{o.organization.name}"
+              info ".. .. assigning record #{record.name} to #{o.display} in organization: #{o.organization.name}"
               record.organization = o.organization
             end
             record.nameable = o
