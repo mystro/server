@@ -2,7 +2,7 @@ class RecordsController < ApplicationController
   # GET /records
   # GET /records.json
   def index
-    @records = filters(Record, {organization: session_org}).all
+    @records = Record.org(session[:org])
 
     respond_to do |format|
       format.html # index.html.erb

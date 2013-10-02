@@ -2,7 +2,7 @@ class BalancersController < ApplicationController
   # GET /balancers
   # GET /balancers.json
   def index
-    @balancers = Balancer.org(@current_org)
+    @balancers = Balancer.org(session[:org])
 
     respond_to do |format|
       format.html # index.html.erb

@@ -2,7 +2,7 @@ class Jobs::Cloud::Update < Job
   def work
     ::Organization.all.each do |organization|
       info ".. organization: #{organization.name}"
-      data   = ::Hashie::Mash.new(organization.data)
+      data = ::Hashie::Mash.new(organization.data)
       mystro = ::Mystro::Organization.get(organization.name)
 
       next unless mystro && data
@@ -47,29 +47,26 @@ class Jobs::Cloud::Update < Job
         end
       end
 
-      #if mystro.dns
-      #  zones = mystro.dns.zones
-      #  if zones.count > 0
-      #    zones.each do |zone|
-      #      z = ::Zone.create_from_fog(zone)
-      #      z.save
-      #
-      #      z.records.each do |record|
-      #        o = ::Balancer.find_by_record(record) || ::Compute.find_by_record(record) || ::Record.find_by_record(record) || nil
-      #        if o
-      #          if o.organization && !record.organization
-      #            info ".. .. assigning record #{record.name} to organization: #{o.organization.name}"
-      #            record.organization = o.organization
-      #          end
-      #          record.nameable = o
-      #          record.save
-      #        else
-      #          warn "RECORD SEARCH name:#{record.name} long:#{record.long} short:#{record.short}"
-      #        end
-      #      end
-      #    end
-      #  end
-      #end
+      x = mystro.record rescue nil
+      if x
+        info "records"
+        x.all.each do |r|
+          z = x.config[:zone]
+          zone = Zone.where(domain: z).first || Zone.create(domain: z)
+          record = Record.create_from_cloud(zone, r)
+          o = ::Balancer.find_by_record(record) || ::Compute.find_by_record(record) || ::Record.find_by_record(record) || nil
+          if o
+            if o.organization && !record.organization
+              info ".. .. assigning record #{record.name} to organization: #{o.organization.name}"
+              record.organization = o.organization
+            end
+            record.nameable = o
+            record.save
+          else
+            warn "RECORD SEARCH name:#{record.name} long:#{record.long} short:#{record.short}"
+          end
+        end
+      end
     end
 
     info "clean up"

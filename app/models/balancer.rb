@@ -79,11 +79,11 @@ class Balancer
 
     def create_from_cloud(obj)
       balancer = Balancer.where(:rid => obj.id).first || Balancer.create(:rid => obj.id)
-        (e, r)               = obj.id.split(/\-/)
+      (e, r) = obj.id.split(/\-/)
       balancer.environment = Environment.create_from_cloud(e)
       balancer.synced_at = Time.now
       balancer.public_dns = obj.dns
-      balancer.listeners = obj.listeners.map {|l| Listener.create_from_cloud(balancer, l)}
+      balancer.listeners = obj.listeners.map { |l| Listener.create_from_cloud(balancer, l) }
       balancer.health_check = HealthCheck.create_from_cloud(balancer, obj.health)
       balancer.save
       balancer
@@ -139,13 +139,10 @@ class Balancer
     end
 
     def find_by_record(record)
-      if ::IPAddress.valid?(record.long)
-        return
-      else
-        record.values.each do |val|
-          o = Balancer.where(:public_dns => val).first
-          return o if o
-        end
+      record.values.each do |val|
+        next if ::IPAddress.valid?(val)
+        o = Balancer.where(:public_dns => val).first
+        return o if o
       end
 
       #long = record.long

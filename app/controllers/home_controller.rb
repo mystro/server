@@ -5,7 +5,7 @@ class HomeController < ApplicationController
   before_filter :current_org
 
   def index
-    @environments = Environment.org(@current_org).includes(:computes, :balancers).all
+    @environments = Environment.org(session[:org]).includes(:computes, :balancers).all
     render 'environments/index'
   rescue => e
     logger.error "ERROR: #{e.message}"

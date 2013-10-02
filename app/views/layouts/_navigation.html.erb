@@ -94,8 +94,9 @@
   </form>
   -->
   <ul class="nav pull-right">
-    <li>
-      <%= render 'qujo/common/bootstrap', jobs: {}.merge(Settings.ui.jobs).merge(Mystro::Plugin.jobs) %>
+    <li class="dropdown">
+      <%#= render 'qujo/common/bootstrap', jobs: {}.merge(Settings.ui.jobs).merge(Mystro::Plugin.jobs) %>
+      <%= render 'layouts/jobs', jobs: {}.merge(Settings.ui.jobs).merge(Mystro::Plugin.jobs) %>
     </li>
     <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= session[:org] %> <b class="caret"></b></a>

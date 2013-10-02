@@ -6,6 +6,7 @@ class Record
 
   include Cloud
   include Deleting
+  include Org
 
   belongs_to :zone, index: true
   belongs_to :nameable, polymorphic: true
@@ -63,14 +64,25 @@ class Record
       record.values    = [*obj.value].flatten
       record.synced_at = Time.now
       record.save
+      record
+    end
+
+    def create_from_cloud(zone, obj)
+      record = remote(obj.identity) || create(:zone => zone, :rid => obj.identity, :name => obj.name)
+      record.ttl       = obj.ttl
+      record.type      = obj.type
+      record.values    = obj.values
+      record.synced_at = Time.now
+      record.save
+      record
     end
 
     def find_by_record(record)
-      r = Record.where(:name => record.long).first
-      return r.nameable if r && r.nameable
-
-      r = Record.any_in(values: record.long).first
-      return r.nameable if r && r.nameable
+      #r = Record.where(:name => record.long).first
+      #return r.nameable if r && r.nameable
+      #
+      #r = Record.any_in(values: record.long).first
+      #return r.nameable if r && r.nameable
 
       record.values.each do |val|
         r = Record.where(name: val).first
