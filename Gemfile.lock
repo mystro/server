@@ -12,6 +12,7 @@ PATH
   specs:
     mystro-common (0.2.0)
       activesupport (= 3.2.14)
+      damsel
       erubis
       fog (~> 1.15.0)
       hashie
@@ -23,7 +24,7 @@ PATH
   specs:
     fog (1.15.0)
       builder
-      excon (~> 0.25.0)
+      excon (~> 0.26.0)
       formatador (~> 0.2.0)
       mime-types
       multi_json (~> 1.0)
@@ -42,6 +43,11 @@ PATH
       mystro-common (~> 0.2.0)
       rails (~> 3.2.11)
       volley
+
+PATH
+  remote: ~/catz/damsel
+  specs:
+    damsel (0.1.0)
 
 PATH
   remote: ~/catz/qujo
@@ -171,7 +177,7 @@ GEM
       mail (~> 2.2)
     erubis (2.7.0)
     eventmachine (1.0.3)
-    excon (0.25.3)
+    excon (0.26.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
     factory_girl (4.2.0)
@@ -410,6 +416,7 @@ DEPENDENCIES
   client_side_validations-simple_form
   coffee-rails (~> 3.2.1)
   cucumber-rails (>= 1.3.0)
+  damsel!
   database_cleaner (>= 0.9.1)
   devise (>= 2.1.2)
   email_spec (>= 1.2.1)

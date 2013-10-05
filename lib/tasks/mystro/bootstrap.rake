@@ -12,7 +12,7 @@ namespace :mystro do
       end
 
       begin
-        dns = Mystro.dns
+        dns = Mystro.record
         dns.all
         puts '.. dns'
       rescue => e
@@ -27,11 +27,12 @@ namespace :mystro do
     end
 
     def defaults(aname)
+      org = Mystro::Organization.get(aname).data.compute.config
       {
-          image: (Mystro.config.compute!.image || Mystro::Organization.get(aname).compute.image rescue nil),
-          flavor: (Mystro.config.compute!.flavor || Mystro::Organization.get(aname).compute.flavor rescue nil),
-          groups: (Mystro.config.compute!.groups || Mystro::Organization.get(aname).compute.groups rescue []).join(','),
-          keypair: (Mystro.config.compute!.keypair || Mystro::Organization.get(aname).compute.keypair rescue nil),
+          image: org.image, # (Mystro.config.compute!.image ||  rescue nil),
+          flavor: org.flavor,
+          groups: org.groups.join(','),
+          keypair: org.keypair,
       }
     end
 
@@ -100,6 +101,14 @@ namespace :mystro do
     desc 'use mystro configuration to bootstrap chef server'
     task :chef => [:environment, :config] do
       compute = build_server('chef', 'chefserver')
+      puts "#{Time.now} compute created. connect to:"
+      puts "#{compute.public_dns} (#{compute.public_ip})" if compute
+    end
+
+    task :custom, [:name, :userdata] => :environment do |_, args|
+      name = args.name || 'custom'
+      userdata = args.userdata || 'default'
+      compute = build_server(name, userdata)
       puts "#{Time.now} compute created. connect to:"
       puts "#{compute.public_dns} (#{compute.public_ip})" if compute
     end
