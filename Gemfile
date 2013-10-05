@@ -27,6 +27,7 @@ if ENV['MYSTRO_DEV']
   gem 'mystro-common', :path => '../common'
   gem 'mystro-volley', path: '../mystro-volley'
   gem 'qujo', path: "~/catz/qujo"
+  gem 'damsel', path: '~/catz/damsel'
 else
   gem 'fog', '~> 1.15.0'
   gem 'mystro-client', '0.1.0'
