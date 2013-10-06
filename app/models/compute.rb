@@ -152,7 +152,7 @@ class Compute
   class << self
     def create_from_cloud(obj)
       compute = Compute.where(:rid => obj.id).first || Compute.create(:rid => obj.id)
-      name = obj.tags['Name'] || nil
+      name = obj.tags['Name'] || obj.id
       org = obj.tags['Organization'] || obj.tags['Account'] || nil
 
       compute.name = name

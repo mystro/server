@@ -29,7 +29,7 @@ class Template
   end
 
   def load
-    Mystro::DSL::Template.load(file)
+    Mystro::Dsl.load(file)
   end
 
   def server_attrs(name)
