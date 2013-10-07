@@ -3,7 +3,7 @@ class Volume
   include Mongoid::Timestamps
   include Qujo::Concerns::Model
 
-  belongs_to :compute
+  embedded_in :compute
 
   field :name, type: String
   field :device, type: String

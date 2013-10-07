@@ -11,7 +11,7 @@ class Compute
   belongs_to :balancer, index: true
   belongs_to :userdata, index: true
   has_many :records, as: :nameable
-  has_many :volumes
+  embeds_many :volumes
   has_and_belongs_to_many :roles #TODO: part of chef, shouldn't be included here
 
   field :name, type: String
@@ -168,14 +168,14 @@ class Compute
     self.tags = obj.tags if obj.tags && obj.tags.count > 0
 
     #TODO: VOLUME support
-    #if obj.volumes && obj.volumes.count > 0
+    if obj.volumes && obj.volumes.count > 0
     #  self.save
-    #  obj.volumes.each do |vol|
-    #    volume = self.volumes.where(device: vol.device, size: vol.size).first || self.volumes.create
-    #    volume.from_cloud(vol)
-    #    volume.save
-    #  end
-    #end
+      obj.volumes.each do |vol|
+        volume = self.volumes.where(device: vol.device, size: vol.size).first || self.volumes.new
+        volume.from_cloud(vol)
+        #volume.save
+      end
+    end
   end
 
   def to_cloud
