@@ -110,4 +110,37 @@ class ComputesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def dialog
+    @type = params[:type]
+    @org = Organization.named(session[:org])
+    @env = params[:environment] ? Environment.named(params[:environment]) : nil
+
+    if @type == "general"
+      @compute = Compute.new
+      @compute.set_defaults(@org)
+    else
+      num = @env.get_next_number(@type)
+      cloud = @env.template.load.compute(@type)
+      @compute = Compute.new(name: @type, num: num)
+      @compute.set_defaults(@org)
+      @compute.from_cloud(cloud)
+      @compute.num = num
+      logger.info "compute: #{@compute.display} : #{@compute.inspect}"
+    end
+
+    @compute.environment = @env if @env
+    @selectors = {
+        regions: @org.selectors.regions,
+        flavors: @org.selectors.flavors,
+        images: @org.selectors_images,
+        groups: @org.selectors.groups,
+        keypairs: @org.selectors.keypairs,
+    }
+    @environments = Environment.for_org(session[:org]).asc(:name).all
+    @balancers = Balancer.for_org(session[:org]).asc(:name).all
+    @roles = Role.external.asc(:name).all
+    @userdata = Userdata.all
+    render 'dialog', layout: false
+  end
 end

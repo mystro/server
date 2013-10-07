@@ -1,10 +1,10 @@
 <% content_for :subnav_buttons do %>
-    <a href="#" data-type="general" class="create_compute btn btn-primary" title="Add New Server to this Environment">
+    <a href="#" data-model="computes" data-options="type=general" class="mdo-dialog btn btn-primary" title="Add New Server to this Environment">
       <i class="icon-plus-sign icon-white"></i> server
     </a>
     <% if @environment.template %>
-        <% @environment.template.data["servers"].each do |server|; s = server["attrs"] %>
-            <a href="#" data-type="<%= s["name"] %>" class="create_compute btn btn-primary" title="Add New Server to this Environment">
+        <% @environment.template.data["compute"] && @environment.template.data["compute"].each do |s| %>
+            <a href="#" data-model="computes" data-options="type=<%= s["name"] %>&environment=<%= @environment.name %>" class="mdo-dialog btn btn-primary" title="Add New Server to this Environment">
               <i class="icon-plus-sign icon-white"></i> <%= s["name"] %>
             </a>
         <% end %>
@@ -47,12 +47,12 @@
 </script>
 
 
-<%= render "computes/dialog", type: "general", environment: @environment, tserver: {} %>
-<% if @environment.template %>
-    <% @environment.template.data["servers"].each do |server|; s = server["attrs"] %>
+<%#= render "computes/dialog", type: "general", environment: @environment, tserver: {} %>
+<%# if @environment.template %>
+    <%# @environment.template.data["compute"] && @environment.template.data["compute"].each do |s| %>
 
         <%# compute = Compute.new; compute.set_defaults(session[:org]); compute.environment = @environment %>
-        <%= render "computes/dialog", type: s["name"], environment: @environment, tserver: s %>
+        <%#= render "computes/dialog", type: s["name"], environment: @environment, tserver: s %>
 
-    <% end %>
-<% end %>
+    <%# end %>
+<%# end %>

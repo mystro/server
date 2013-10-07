@@ -1,0 +1,22 @@
+<% if volumes && volumes.count > 0 %>
+    <h3>Volumes</h3>
+
+    <table class="table table-condensed  table-striped table-hover tablesorter {sortlist: [[0,0]]}">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Device</th>
+        <th>Size</th>
+        <th>Dot</th>
+        <th>Snapshot</th>
+        <th>Virtual</th>
+        <th class="links {sorter: false}"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% volumes.each do |volume| %>
+          <%= render volume %>
+      <% end %>
+      </tbody>
+    </table>
+<% end %>

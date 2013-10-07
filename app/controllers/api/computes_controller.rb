@@ -20,7 +20,7 @@ class Api::ComputesController < Api::ApiController
       p = Regexp.escape(pattern)
       data = data.reject do |e|
         logger.info "PATTERN: #{e.display} !~ /#{p}/"
-        e.display !~ /#{p}/
+        e.short !~ /#{p}/
       end
     end
     out = data.map(&:to_api)

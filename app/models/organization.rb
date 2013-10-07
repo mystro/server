@@ -18,18 +18,6 @@ class Organization
 
   index({ name: 1 }, { unique: true })
 
-  class << self
-    def named(name)
-      where(name: name).first
-    end
-
-    def mystro(a)
-      if a.is_a?(Mystro::Organization)
-        where(name: a.name).first
-      end
-    end
-  end
-
   def selectors
     @selectors ||= Hashie::Mash.new(self.data["selectors"])
   end
@@ -56,6 +44,16 @@ class Organization
     }
   end
 
+  def compute_config
+    return nil unless data && data["compute"] && data["compute"]["config"]
+    data["compute"]["config"]
+  end
+
+  def record_config
+    return nil unless data && data["record"] && data["record"]["config"]
+    data["record"]["config"]
+  end
+
   def mystro
     a = Mystro::Organization.get(name)
     a.data if a
@@ -69,5 +67,17 @@ class Organization
     d = Mystro::Organization.get(name)
     #puts "organization#load d: #{d}"
     d.data.to_hash if d
+  end
+
+  class << self
+    def named(name)
+      where(name: name).first
+    end
+
+    def mystro(a)
+      if a.is_a?(Mystro::Organization)
+        where(name: a.name).first
+      end
+    end
   end
 end
