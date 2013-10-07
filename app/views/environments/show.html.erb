@@ -45,14 +45,3 @@
 
 <script type="text/javascript">
 </script>
-
-
-<%#= render "computes/dialog", type: "general", environment: @environment, tserver: {} %>
-<%# if @environment.template %>
-    <%# @environment.template.data["compute"] && @environment.template.data["compute"].each do |s| %>
-
-        <%# compute = Compute.new; compute.set_defaults(session[:org]); compute.environment = @environment %>
-        <%#= render "computes/dialog", type: s["name"], environment: @environment, tserver: s %>
-
-    <%# end %>
-<%# end %>
