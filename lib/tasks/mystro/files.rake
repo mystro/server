@@ -22,7 +22,7 @@ namespace :mystro do
         if d["record"] && d["record"]["config"] && d['record']['config']['zone']
           z = d["record"]['config']["zone"]
           puts ".. .. .. create zone: #{z}"
-          Zone.create(domain: z)
+          Zone.find_or_create_by(domain: z)
         end
       end
     end
