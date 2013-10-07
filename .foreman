@@ -1,2 +1,2 @@
 port: 6000
-concurrency: worker=3,qujo=1,mystro=1
+concurrency: worker=3,qujo=1

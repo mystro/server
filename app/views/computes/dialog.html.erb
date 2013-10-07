@@ -13,7 +13,8 @@
     <div>
       <ul class="nav nav-tabs">
         <li class="active"><a href="#tab1" data-toggle="tab">Main</a></li>
-        <li><a href="#tab2" data-toggle="tab">Advanced</a></li>
+        <li><a href="#tab2" data-toggle="tab">Volumes</a></li>
+        <li><a href="#tab3" data-toggle="tab">Advanced</a></li>
       </ul>
 
       <div class="tab-content">
@@ -30,6 +31,20 @@
           </div>
         </div>
         <div class="tab-pane fade" id="tab2">
+          <div class="form-inputs">
+            <table class="table table-condensed  table-striped table-hover">
+              <tr><th>#</th><th>device</th><th>size</th></tr>
+                <% @compute.volumes.each_with_index do |volume, i| %>
+                    <tr>
+                      <td><%= i %></td>
+                      <td><input type="text" name="compute[volumes][<%= i %>][device]" value="<%= volume.device %>"></td>
+                      <td><input type="text" name="compute[volumes][<%= i %>][size]" value="<%= volume.size %>"></td>
+                    </tr>
+                <% end %>
+            </table>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="tab3">
           <%= f.input :region, collection: regions %>
           <%= f.input :flavor, collection: flavors %>
           <% if images %>

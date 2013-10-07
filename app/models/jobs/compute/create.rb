@@ -1,7 +1,6 @@
 class Jobs::Compute::Create < Job
   def work
     compute = model
-
     remote = mystro.compute.create(compute.to_cloud)
 
     compute.rid = remote.identity
@@ -18,6 +17,8 @@ class Jobs::Compute::Create < Job
 
     remote = mystro.compute.find(remote.id)
     info ".. #{remote.inspect}"
+
+    #TODO: DNS
   end
 
   #def work

@@ -31,7 +31,8 @@ class EnvironmentsController < ApplicationController
   # GET /environments/1/edit
   def edit
     @environment = Environment.find(params[:id])
-    @templates = Template.active.org(session[:org]).asc(:organization, :name).all
+    oid = Organization.named(session[:org]).id
+    @templates = Template.active.in(organization_id: [nil, oid]).asc(:organization, :name).all
     @organizations = Organization.all
   end
 
