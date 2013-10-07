@@ -1,9 +1,10 @@
 class Jobs::Record::Create < Job
   def work
-    r = model
-    mystro.dns.create(r)
-    r.rid = model.name
-    r.synced_at = Time.now
-    r.save!
+    record = model
+    remote = mystro.record.create(record.to_cloud)
+    record.from_cloud(remote)
+    record.rid = remote.identity
+    record.synced_at = Time.now
+    record.save!
   end
 end

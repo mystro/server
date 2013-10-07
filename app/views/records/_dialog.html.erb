@@ -16,7 +16,7 @@
             <%= f.input :name, :wrapper => :append do %>
                 <%= f.input_field :name, :class => "input-small" %> <span id="domain_text" class="add-on">.<%= domain %></span>
             <% end %>
-            <%= f.input :zone, :collection => zones, selected: selected_zone %>
+            <%= f.input :zone_id, :collection => zones, selected: selected_zone %>
             <%= f.input :type, :collection => types, selected: selected_type %>
             <%= f.input :ttl %>
             <%= f.input :values, :hint => "comma-separated" %>

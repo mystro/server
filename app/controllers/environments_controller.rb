@@ -39,7 +39,7 @@ class EnvironmentsController < ApplicationController
   # POST /environments.json
   def create
     @environment = Environment.new(params[:environment])
-    @environment.organization = session[:org]
+    @environment.organization = Organization.named(session[:org])
     saved = @environment.save
 
     respond_to do |format|

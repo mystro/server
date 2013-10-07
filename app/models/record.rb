@@ -46,32 +46,42 @@ class Record
   end
 
   def fog_options
+  end
+
+  def to_cloud
     if ::IPAddress.valid?(values.first)
       #A record
-      {:name => name, :value => values.first, :type => 'A', :ttl => ttl || 86400}
+      data = {:id => rid, :name => name, :values => values, :type => 'A', :ttl => ttl || 86400}
     else
       #CNAME record
-      {:name => name, :value => values.first, :type => 'CNAME', :ttl => ttl || 300}
+      data = {:id => rid, :name => name, :values => values, :type => 'CNAME', :ttl => ttl || 300}
     end
+    Mystro::Cloud::Record.new(data)
+  end
+
+  def from_cloud(obj)
+    self.rid = obj.identity if obj.identity
+    self.ttl = obj.ttl if obj.ttl
+    self.type = obj.type if obj.type
+    self.values = obj.values if obj.values
+    self.name = obj.name if obj.name
   end
 
   class << self
-    def create_from_fog(zone, obj)
-      n                = obj.name.gsub(/\.$/, "")
-      record           = remote(n) || create(:zone => zone, :rid => n, :name => n)
-      record.ttl       = obj.ttl
-      record.type      = obj.type
-      record.values    = [*obj.value].flatten
-      record.synced_at = Time.now
-      record.save
-      record
-    end
+    #def create_from_fog(zone, obj)
+    #  n                = obj.name.gsub(/\.$/, "")
+    #  record           = remote(n) || create(:zone => zone, :rid => n, :name => n)
+    #  record.ttl       = obj.ttl
+    #  record.type      = obj.type
+    #  record.values    = [*obj.value].flatten
+    #  record.synced_at = Time.now
+    #  record.save
+    #  record
+    #end
 
     def create_from_cloud(zone, obj)
       record = remote(obj.identity) || create(:zone => zone, :rid => obj.identity, :name => obj.name)
-      record.ttl       = obj.ttl
-      record.type      = obj.type
-      record.values    = obj.values
+      record.from_cloud(obj)
       record.synced_at = Time.now
       record.save
       record

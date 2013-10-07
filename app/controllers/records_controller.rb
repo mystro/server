@@ -46,12 +46,15 @@ class RecordsController < ApplicationController
     values = data.delete(:values).split(",")
     @record = Record.new(data)
     @record.values = values
+    org = Organization.named(session[:org])
     if @record.zone
       @record.name = @record.name + ".#{@record.zone.domain}"
     else
-      @record.name = @record.name + ".#{mystro_organization.data.dns.zone}"
+      c = org.record_config
+      z = Zone.where(domain: c['zone']).first
+      @record.name = @record.name + ".#{z.domain}"
     end
-    @record.organization = mystro_organization_id
+    @record.organization = org
 
     respond_to do |format|
       if @record.save

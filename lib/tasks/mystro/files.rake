@@ -19,8 +19,8 @@ namespace :mystro do
         a.data = d
         a.save
         puts ".. .. create #{name} #{file}"
-        if d["dns"] && d["dns"]["zone"]
-          z = d["dns"]["zone"]
+        if d["record"] && d["record"]["config"] && d['record']['config']['zone']
+          z = d["record"]['config']["zone"]
           puts ".. .. .. create zone: #{z}"
           Zone.create(domain: z)
         end
@@ -85,7 +85,8 @@ namespace :mystro do
         t = Template.find_or_create_by(:name => name, :file => f)
         t.enabled = true
         t.organization = Organization.named(an) if an
-        d = JSON.parse(t.load.to_json)
+        tf = t.load
+        d = JSON.parse(tf[:template].to_json)
         t.data = d
         t.save
         puts ".. create #{name} #{file}"

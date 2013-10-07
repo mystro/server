@@ -1,3 +1,6 @@
+<% content_for :subnav_pills do %>
+    <h3><%= @compute.display %> . <%= @compute.environment ? link_to(@compute.environment.name, @compute.environment) : "" %> . <%= @compute.organization ? link_to(@compute.organization.name, @compute.organization) : "" %></h3>
+<% end %>
 <% content_for :subnav_buttons do %>
     <%= link_to edit_compute_path(@compute), :title => "Edit Compute", :class => "btn btn-primary" do %>
         <i class="icon-edit icon-white"></i> edit
@@ -8,21 +11,27 @@
 <% end %>
 
 <table class="table table-condensed table-striped table-hover fields-horizontal">
+  <!--
   <tr>
     <th>Organization</th>
-    <td><%= @compute.organization ? link_to(@compute.organization.name, @compute.organization) : "" %></td>
+    <td><%#= @compute.organization ? link_to(@compute.organization.name, @compute.organization) : "" %></td>
   </tr>
   <tr>
     <th>Environment</th>
-    <td><%= @compute.environment ? link_to(@compute.environment.name, @compute.environment) : "" %></td>
+    <td><%#= @compute.environment ? link_to(@compute.environment.name, @compute.environment) : "" %></td>
   </tr>
   <tr>
     <th>Name</th>
-    <td><%= @compute.name %><%= @compute.num > 0 ? @compute.num : "" %></td>
+    <td><%#= @compute.display %></td>
   </tr>
+  -->
   <tr>
     <th>Balancer</th>
     <td><%= @compute.balancer ? link_to(@compute.balancer.name, @compute.balancer) : "" %></td>
+  </tr>
+  <tr>
+    <th>Userdata</th>
+    <td><%= @compute.userdata ? link_to(@compute.userdata.name, @compute.userdata) : "" %></td>
   </tr>
   <tr>
     <th>Roles</th>
@@ -54,6 +63,7 @@
   <% end %>
 </table>
 
+<%= render "volumes/list", volumes: @compute.volumes %>
 <%= render "records/list", records: @compute.records.sort_by(&:name) %>
 <!-- TODO: VOLLEY -->
 <%= render("mystro_volley/versions/list", versions: @compute.versions) if defined?(Mystro::Plugin::Volley) %>

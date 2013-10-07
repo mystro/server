@@ -11,6 +11,7 @@ class Compute
   belongs_to :balancer, index: true
   belongs_to :userdata, index: true
   has_many :records, as: :nameable
+  has_many :volumes
   has_and_belongs_to_many :roles #TODO: part of chef, shouldn't be included here
 
   field :name, type: String
@@ -35,30 +36,25 @@ class Compute
   index({name: 1})
   index({name: 1, num: 1})
 
-
   # a bit hacky, but easiest way to make sure we get defaults from current account
-  def set_defaults(organization)
-    organization = organization.is_a?(String) ? Organization.named(organization) : organization
-    self.organization = organization
-    ud = Userdata.named(organization.mystro.compute.userdata) || nil rescue nil
+  def set_defaults(org)
+    org = org.is_a?(String) ? Organization.named(org) : org
+    self.organization ||= org
+    ud = Userdata.named(org.mystro.compute.userdata) || nil rescue nil
     ud ||= Userdata.named("default")
-    if organization && organization.mystro
-      self.image = organization.mystro.compute.image
-      self.flavor = organization.mystro.compute.flavor
-      self.keypair = organization.mystro.compute.keypair
-      self.groups = organization.mystro.compute.groups
-      self.region = organization.mystro.compute.region
-      self.userdata = ud
+    cfg = org.compute_config
+    if cfg
+      self.image ||= cfg['image']
+      self.flavor ||= cfg['flavor']
+      self.keypair ||= cfg['keypair']
+      self.groups ||= cfg['groups']
+      self.region ||= cfg['region']
+      self.userdata ||= ud
     end
   end
 
   def name=(value)
-    s = value =~ /\./ ? value.split(".").first : value
-    n = 0
-    s.match(/^([a-zA-Z]+)([0-9]+)$/) do |m|
-      s = m[1]
-      n = m[2]
-    end
+    (s, n) = Compute.name_and_number(value)
     super(s)
     self.num = n
   end
@@ -68,11 +64,25 @@ class Compute
   end
 
   def long
-    "#{short}.#{self.zone}"
+    if organization
+      if environment
+        "#{display}.#{environment.name}.#{self.zone}"
+      else
+        "#{display}.#{self.zone}"
+      end
+    end
   end
 
   def short
-    "#{name}#{number}.#{envname}"
+    if organization
+      if environment
+        "#{display}.#{environment.name}.#{organization.name}"
+      else
+        "#{display}.#{organization.name}"
+      end
+    else
+      display
+    end
   end
 
   def display
@@ -84,7 +94,7 @@ class Compute
   end
 
   def number
-    num > 0 ? num : ""
+    num > 0 ? "%02d" % num : ""
   end
 
   def envname
@@ -96,34 +106,104 @@ class Compute
   end
 
   def zone
-    account && account.mystro.dns && account.mystro.dns.zone ? account.mystro.dns.zone : "unknown"
+    #account && account.mystro.dns && account.mystro.dns.zone ? account.mystro.dns.zone : "unknown"
+    organization.record_config['zone'] || 'unknown' #rescue 'unknown'
   end
 
-  def fog_tags
-    {
-        'Name' => display,
-        'Environment' => envname,
-        'Roles' => roles_string,
-        'Account' => account ? account.name : ""
-    }
+  #def fog_tags
+  #  {
+  #      'Name' => display,
+  #      'Environment' => envname,
+  #      'Roles' => roles_string,
+  #      'Account' => account ? account.name : ""
+  #  }
+  #end
+  #
+  #def fog_options
+  #  u = self.userdata.name || account.mystro.compute.userdata || "default"
+  #  z = self.zone
+  #  a = account.name || "unknown"
+  #  {
+  #      image_id: image,
+  #      flavor_id: flavor,
+  #      key_name: keypair,
+  #      groups: groups,
+  #      region: region,
+  #      user_data: Mystro::Userdata.create(long, roles.map(&:name), envname,
+  #                                         nickname: display,
+  #                                         package: u,
+  #                                         zone: z,
+  #                                         account: a)
+  #  }
+  #end
+
+  def from_cloud(obj)
+    name = obj.tags['Name'] || obj.id
+    org = obj.tags['Organization'] || obj.tags['Account'] || nil
+
+    self.name = name if name
+    self.organization = Organization.named(org) if org
+
+    if self.organization
+      self.set_defaults(self.organization)
+    end
+
+    self.image = obj.image if obj.image
+    self.flavor = obj.flavor if obj.flavor
+    self.state = obj.state if obj.state
+    self.public_dns = obj.dns if obj.dns
+    self.public_ip = obj.ip if obj.ip
+    self.private_dns = obj.private_dns if obj.private_dns
+    self.private_ip = obj.private_ip if obj.private_ip
+    self.availability_zone = obj.zone if obj.zone
+    self.groups = obj.groups if obj.groups
+    self.keypair = obj.keypair if obj.keypair
+    self.region = obj.region if obj.region
+
+    list = (obj.tags["Role"]||obj.tags["Roles"]||"").split(",")
+    list.each do |r|
+      role = Role.find_or_create_by(:name => r)
+      self.roles << role
+    end
+    self.tags = obj.tags if obj.tags && obj.tags.count > 0
+
+    #TODO: VOLUME support
+    #if obj.volumes && obj.volumes.count > 0
+    #  self.save
+    #  obj.volumes.each do |vol|
+    #    volume = self.volumes.where(device: vol.device, size: vol.size).first || self.volumes.create
+    #    volume.from_cloud(vol)
+    #    volume.save
+    #  end
+    #end
   end
 
-  def fog_options
-    u = self.userdata.name || account.mystro.compute.userdata || "default"
+  def to_cloud
     z = self.zone
-    a = account.name || "unknown"
-    {
-        image_id: image,
-        flavor_id: flavor,
-        key_name: keypair,
-        groups: groups,
-        region: region,
-        user_data: Mystro::Userdata.create(long, roles.map(&:name), envname,
-                                           nickname: display,
-                                           package: u,
-                                           zone: z,
-                                           account: a)
+    e = self.envname
+    u = self.userdata.name || organization.compute_config['userdata'] || 'default'
+    o = self.organization.name || 'unknown'
+    ud = Mystro::Userdata.create(long, roles.map(&:name), e, nickname: display, package: u, zone: z, organization: o)
+    t = self.tags || {}
+    t['Name'] = short
+    data = {
+        id: self.rid,
+        image: self.image,
+        flavor: self.flavor,
+        state: self.state,
+        dns: self.public_dns,
+        ip: self.public_ip,
+        private_dns: self.private_dns,
+        private_ip: self.private_ip,
+        zone: self.availability_zone,
+        groups: self.groups,
+        keypair: self.keypair,
+        region: self.region,
+        tags: self.tags,
+        volumes: self.volumes.map {|e| e.to_cloud},
+        userdata: ud,
     }
+    Mystro::Cloud::Compute.new(data)
   end
 
   def to_api
@@ -136,7 +216,7 @@ class Compute
         private_dns: private_dns,
         private_ip: private_ip,
         environment: environment ? environment.name : nil,
-        account: account ? account.name : nil,
+        organization: organization ? organization.name : nil,
         balancer: balancer ? balancer.name : nil,
         roles: roles_string
     }
@@ -150,32 +230,31 @@ class Compute
   end
 
   class << self
+    def name_and_number(value)
+      s = value =~ /\./ ? value.split(".").first : value
+      n = 0
+      s.match(/^([a-zA-Z]+)([0-9]+)$/) do |m|
+        s = m[1]
+        n = m[2]
+      end
+      [s, n]
+    end
+
+    def find_by_cloud(obj, env=nil, org=nil)
+      name = obj.tags['Name']
+      id = obj.id
+      (name, num) = name_and_number(name) if name
+      byid = Compute.where(rid: id).first if id
+      return byid if byid
+      byneo = Compute.where(name: name, num: num, environment: env, organization: org).first if name && env && org
+      return byneo if byneo
+      Compute.where(name: name, num: num, environment: env, organization: org).first if name
+    end
+
     def create_from_cloud(obj)
       compute = Compute.where(:rid => obj.id).first || Compute.create(:rid => obj.id)
-      name = obj.tags['Name'] || obj.id
-      org = obj.tags['Organization'] || obj.tags['Account'] || nil
-
-      compute.name = name
-      compute.image = obj.image
-      compute.organization = org ? Organization.named(org) : nil
-      compute.flavor = obj.flavor
-      compute.state = obj.state
-      compute.public_dns = obj.dns
-      compute.public_ip = obj.ip
-      compute.private_dns = obj.private_dns
-      compute.private_ip = obj.private_ip
-      compute.availability_zone = obj.zone
-      compute.groups = obj.groups
-      compute.keypair = obj.keypair
-      compute.region = obj.region
+      compute.from_cloud(obj)
       compute.synced_at = Time.now
-
-      list = (obj.tags["Role"]||obj.tags["Roles"]||"").split(",")
-      list.each do |r|
-        role = Role.find_or_create_by(:name => r)
-        compute.roles << role
-      end
-      compute.tags = obj.tags || {}
       compute.save
       compute
     end
