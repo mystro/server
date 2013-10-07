@@ -9,7 +9,7 @@
    groups = @selectors[:groups]
    keypairs = @selectors[:keypairs]
 %>
-<%= simple_form_for(@compute, :html => { :class => "compute_form form-horizontal" }) do |f| %>
+<%= simple_form_for(@compute, :html => { :id => "mdo-dialog-form", :class => "compute_form form-horizontal", data:{singular: 'compute'} }) do |f| %>
     <div>
       <ul class="nav nav-tabs">
         <li class="active"><a href="#tab1" data-toggle="tab">Main</a></li>
@@ -23,8 +23,8 @@
             <% if @compute.num > 0 %>
                 <%= f.input :num, as: :integer %>
             <% end %>
-            <%= f.input :environment, :collection => @environments, selected: selected_env %>
-            <%= f.input :balancer, :collection => @balancers, selected: selected_balancer, include_blank: true %>
+            <%= f.input :environment_id, :collection => @environments, selected: selected_env %>
+            <%= f.input :balancer_id, :collection => @balancers, selected: selected_balancer, include_blank: true %>
             <%= f.association :roles, :collection => @roles, :as => :check_boxes %>
             <%#= f.input :roles, :input_html => { :value => (compute.roles||[]).join(",") } %>
           </div>

@@ -53,7 +53,7 @@ class ComputesController < ApplicationController
                          else
                            raise "don't know class type"
                        end
-    @compute.organization = mystro_organization_id
+    @compute.organization = Organization.named(session[:org])
 
     saved = @compute.save
 

@@ -19,7 +19,7 @@ class Api::ComputesController < Api::ApiController
     patterns.each do |pattern|
       p = Regexp.escape(pattern)
       data = data.reject do |e|
-        logger.info "PATTERN: #{e.display} !~ /#{p}/"
+        #logger.info "PATTERN: #{e.display} !~ /#{p}/"
         e.short !~ /#{p}/
       end
     end
