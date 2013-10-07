@@ -13,15 +13,17 @@ $(function(){
                     "Create": function () {
                         console.log("create");
                         var f = $("#mdo-dialog-form"); // because bootbox makes a clone
-                        form = f.serialize();
+                        var singular = f.data("singular");
+                        post = f.serializeJSON();
                         console.log("data");
-                        console.log(f.serializeArray());
+                        console.debug(post);
                         bootbox.modal("please wait", "creating");
                         console.log("post");
-                        $.post("/"+model+".json", form, function () {
+                        $.post("/"+model+".json", post, function () {
                             console.log("success");
                             bootbox.hideAll();
                         }).fail(function(){
+                            bootbox.hideAll();
                             bootbox.alert("model:"+model+" options:"+options+" save failed")
                         });
                     }
