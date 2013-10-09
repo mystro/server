@@ -65,10 +65,10 @@ namespace :mystro do
           #compute.save
       rescue => e
         puts "exception: #{e.message}"
-        #ensure
-        #  mystro.compute.destroy(remote.id) if remote
-        #  compute.destroy if compute
-        #  puts "done"
+      ensure
+        mystro.compute.destroy(remote.id) if remote
+        compute.destroy if compute
+        puts "done"
       end
     end
     task :fog do
