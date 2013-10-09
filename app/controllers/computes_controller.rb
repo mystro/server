@@ -124,10 +124,8 @@ class ComputesController < ApplicationController
       cloud = @env.template.load.compute(@type)
       @compute = Compute.new(name: @type, num: num)
       @compute.set_defaults(@org)
-      logger.info "CLOUD: #{cloud.to_yaml}"
       @compute.from_cloud(cloud)
       @compute.num = num
-      logger.info "compute: #{@compute.display} : #{@compute.to_yaml}"
     end
 
     @compute.environment = @env if @env
