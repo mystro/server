@@ -186,6 +186,8 @@ class Compute
     ud = Mystro::Userdata.create(long, roles.map(&:name), e, nickname: display, package: u, zone: z, organization: o)
     t = self.tags || {}
     t['Name'] = short
+    t['Environment'] = e
+    t['Organization'] = o
     data = {
         id: self.rid,
         image: self.image,

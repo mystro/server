@@ -35,10 +35,10 @@ namespace :mystro do
     end
     task :compute => :environment do
       begin
-        org = Organization.named('ops')
-        env = org.environments.named('blarg')
-        mystro = Mystro::Organization.get('ops')
-        type = :vol
+        org = Organization.named('hdp')
+        env = org.environments.named('live')
+        mystro = Mystro::Organization.get('hdp')
+        type = :data
         num = env.get_next_number(type)
         cloud = env.template.load.compute(type)
         compute = Compute.new(name: type, num: num)
@@ -57,18 +57,19 @@ namespace :mystro do
         puts "encode:"
         encode = mystro.compute.encode(cloud)
         puts encode.inspect
-          #puts "create:"
-          #remote = mystro.compute.create(cloud)
-          #puts "remote: #{remote.inspect}"
-          #compute.from_cloud(remote)
-          #compute.synced_at = Time.now
-          #compute.save
+        #puts "create:"
+        #remote = mystro.compute.create(cloud)
+        #puts "remote: #{remote.inspect}"
+        #compute.from_cloud(remote)
+        #compute.synced_at = Time.now
+        #compute.save
       rescue => e
         puts "exception: #{e.message}"
-      ensure
-        mystro.compute.destroy(remote.id) if remote
-        compute.destroy if compute
-        puts "done"
+        puts e.backtrace.join("\n")
+      #ensure
+      #  mystro.compute.destroy(remote.id) if remote
+      #  compute.destroy if compute
+      #  puts "done"
       end
     end
     task :fog do
