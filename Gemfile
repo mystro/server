@@ -19,17 +19,18 @@ gem "settingslogic"
 gem 'resque'
 gem 'resque-scheduler', :require => 'resque_scheduler'
 # and qujo
+gem 'fog', '1.15.0'
 
 # mystro
 if ENV['MYSTRO_DEV']
-  gem 'fog', path: '../fog'
+  #gem 'fog', path: '../fog'
   gem 'mystro-client', path: '../client'
   gem 'mystro-common', :path => '../common'
   gem 'mystro-volley', path: '../mystro-volley'
   gem 'qujo', path: "~/catz/qujo"
   gem 'damsel', path: '~/catz/damsel'
 else
-  gem 'fog', '~> 1.15.0'
+  #gem 'fog', '~> 1.15.0'
   gem 'mystro-client', '0.1.0'
   gem 'mystro-common', '0.2.0'
   gem 'mystro-volley', github: 'mystro/mystro-volley', branch: 'develop'
