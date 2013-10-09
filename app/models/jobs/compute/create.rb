@@ -1,24 +1,63 @@
 class Jobs::Compute::Create < Job
   def work
     compute = model
+    organization = Organization.mystro(mystro)
     remote = mystro.compute.create(compute.to_cloud)
 
     compute.rid = remote.identity
     compute.from_cloud(remote)
     compute.managed = true
     compute.synced_at = Time.now
-    compute.save
-    info ".. #{compute.inspect}"
+    compute.save!
+    #info ".. #{compute.inspect}"
 
     wait do
-      r = mystro.compute.find(remote.id)
-      r.dns.nil?
+      #info ".. waiting for dns"
+      remote = mystro.compute.find(remote.id)
+      remote.dns.nil?
     end
 
-    remote = mystro.compute.find(remote.id)
-    info ".. #{remote.inspect}"
+    #info ".. #{remote.inspect}"
 
-    #TODO: DNS
+    if mystro.record
+      cfg = organization.record_config
+      z = cfg['zone']
+      zone = Zone.where(:domain => z).first
+      raise "zone not found: #{z.inspect}" unless zone
+
+      record = compute.records.find_or_create_by(:zone => zone, :name => compute.long)
+      record.update_attributes(
+          :type => "CNAME",
+          :ttl => 300,
+          :values => [remote.dns]
+      )
+      record.organization = organization
+      record.save!
+      record.enqueue(:create)
+
+      if compute.num == 1
+        #debug "compute.num == 1"
+        e = compute.environment
+        if e.computes.select { |c| c.name == compute.name }.count == 1
+          #debug "computes.count == 1"
+          if compute.balancer == nil
+            n = "#{compute.name}.#{e.name}.#{z}"
+            #debug "compute#create queueing solo record (single compute - num == 1 - with no balancer) #{n}"
+            record2 = compute.records.find_or_create_by(zone: zone, name: n)
+            record2.update_attributes(
+                :type => "CNAME",
+                :ttl => 300,
+                :values => [r.dns_name]
+            )
+            record2.organization = organization
+            record2.save!
+            record2.enqueue(:create)
+          end
+        end
+      end
+    end
+
+    compute.save!
   end
 
   #def work

@@ -74,7 +74,7 @@ class BalancersController < ApplicationController
   # DELETE /balancers/1.json
   def destroy
     @balancer = Balancer.unscoped.find(params[:id])
-    @balancer.organization ||= mystro_organization_id
+    @balancer.organization ||= Organization.named(session[:org])
     @balancer.deleting = true
     @balancer.save
     @balancer.enqueue(:destroy)

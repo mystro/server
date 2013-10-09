@@ -101,18 +101,24 @@
     <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= session[:org] %> <b class="caret"></b></a>
       <ul class="dropdown-menu">
-        <li>
-          <%= link_to "/organizations/everything", :class => "organization_select", :data => { organization: "everything" } do %>
-              <i class="<%= "everything" == session[:org] ? "icon-ok" : "icon-ok icon-white" %>"></i> everything
-          <% end %>
-        </li>
-        <% Organization.all.each do |organization| %>
+        <% Organization.desc(:asc).all.each do |organization|; next if organization.name == 'unknown' %>
             <li>
               <%= link_to "/organization/#{organization.id}", :class => "organization_select", :data => { organization: organization.name } do %>
                   <i class="<%= organization.name == session[:org] ? "icon-ok" : "icon-ok icon-white" %>"></i> <%= organization.name %>
               <% end %>
             </li>
         <% end %>
+        <li class="divider"></li>
+        <li>
+          <%= link_to "/organizations/unknown", :class => "organization_select", :data => { organization: "unknown" } do %>
+              <i class="<%= "unknown" == session[:org] ? "icon-ok" : "icon-ok icon-white" %>"></i> unknown
+          <% end %>
+        </li>
+        <li>
+          <%= link_to "/organizations/everything", :class => "organization_select", :data => { organization: "everything" } do %>
+              <i class="<%= "everything" == session[:org] ? "icon-ok" : "icon-ok icon-white" %>"></i> everything
+          <% end %>
+        </li>
       </ul>
     </li>
     <li class="dropdown">

@@ -100,7 +100,7 @@ class ComputesController < ApplicationController
   # DELETE /computes/1.json
   def destroy
     @compute          = Compute.unscoped.find(params[:id])
-    @compute.organization  ||= mystro_organization_id
+    @compute.organization  ||= Organization.named(session[:org])
     @compute.deleting = true
     @compute.save
     @compute.enqueue(:destroy)

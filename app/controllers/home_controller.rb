@@ -21,6 +21,6 @@ class HomeController < ApplicationController
 
   def raw
     #logger.info "MYSTRO: #{mystro_selected} #{mystro_organization.data.inspect}"
-    @computes = mystro_organization.compute.all || []
+    @computes = Organization.named(session[:org]).compute.all || []
   end
 end

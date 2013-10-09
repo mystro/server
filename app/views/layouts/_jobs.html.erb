@@ -20,6 +20,9 @@
         Manage Resque (<%= workers %>)
     <% end %>
   </li>
+  <li>
+    <%= link_to 'Accept All Jobs', '#', class: "job_accept_all" %>
+  </li>
   <% if defined?(jobs) %>
       <li class="divider"></li>
       <% jobs.each do |k, v| %>

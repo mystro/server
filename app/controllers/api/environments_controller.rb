@@ -46,7 +46,7 @@ class Api::EnvironmentsController < Api::ApiController
 
     raise "cannot destroy protected environment" if @environment.protected
 
-    @environment.organization ||= mystro_organization_id
+    @environment.organization ||= Organization.named(session[:org])
     @environment.deleting = true
     @environment.save
     #@environment.enqueue(:destroy)

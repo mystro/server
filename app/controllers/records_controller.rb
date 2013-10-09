@@ -26,7 +26,7 @@ class RecordsController < ApplicationController
   # GET /records/new.json
   def new
     @record = Record.new
-    @record.organization = mystro_organization_id
+    @record.organization = Organization.named(session[:org])
 
     respond_to do |format|
       format.html # new.html.erb
@@ -89,7 +89,7 @@ class RecordsController < ApplicationController
   # DELETE /records/1.json
   def destroy
     @record = Record.unscoped.find(params[:id])
-    @record.organization ||= mystro_organization_id
+    @record.organization ||= Organization.named(session[:org])
     @record.deleting = true
     @record.save
     @record.enqueue(:destroy)
