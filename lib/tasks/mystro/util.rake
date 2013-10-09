@@ -39,7 +39,7 @@ namespace :mystro do
         env = org.environments.named('blarg')
         mystro = Mystro::Organization.get('ops')
         type = :vol
-        num = env.get_next_number(@type)
+        num = env.get_next_number(type)
         cloud = env.template.load.compute(type)
         compute = Compute.new(name: type, num: num)
         compute.set_defaults(org)
@@ -54,21 +54,86 @@ namespace :mystro do
         cloud = compute.to_cloud
         #puts "cloud:"
         #puts "#{cloud.inspect}"
-        #puts "encode:"
-        #encode = mystro.compute.encode(cloud)
-        #puts encode.inspect
-        puts "create:"
-        remote = mystro.compute.create(cloud)
-        puts "remote: #{remote.inspect}"
-        compute.from_cloud(remote)
-        compute.synced_at = Time.now
-        compute.save
+        puts "encode:"
+        encode = mystro.compute.encode(cloud)
+        puts encode.inspect
+          #puts "create:"
+          #remote = mystro.compute.create(cloud)
+          #puts "remote: #{remote.inspect}"
+          #compute.from_cloud(remote)
+          #compute.synced_at = Time.now
+          #compute.save
       rescue => e
         puts "exception: #{e.message}"
         #ensure
         #  mystro.compute.destroy(remote.id) if remote
         #  compute.destroy if compute
         #  puts "done"
+      end
+    end
+    task :fog do
+      require 'fog'
+      key = ENV['AWS_ACCESS_KEY_ID']
+      secret = ENV['AWS_SECRET_ACCESS_KEY']
+      aws = Fog::Compute.new(provider: 'AWS', aws_access_key_id: key, aws_secret_access_key: secret)
+      count = aws.servers.all.count
+      puts "verify that the connection is working: #{count}"
+      withvol = {
+          :image_id => 'ami-0145d268',
+          :flavor_id => 'm1.large',
+          :key_name => 'mystro',
+          :groups => ['default'],
+          :region => 'us-east-1',
+          :tags => {
+              'Name' => 'fog-test-with',
+          },
+          :block_device_mapping => [
+              {
+                  'DeviceName' => '/dev/sda1',
+                  'Ebs.SnapshotId' => 'snap-945db7d4',
+                  'Ebs.VolumeSize' => '16',
+                  'Ebs.DeleteOnTermination' => 'true'
+              },
+              {
+                  'DeviceName' => '/dev/sdb',
+                  'VirtualName' => 'ephemeral0'
+              }
+          ],
+      }
+
+      withoutvol = {
+          :image_id => 'ami-0145d268',
+          :flavor_id => 'm1.large',
+          :key_name => 'mystro',
+          :groups => ['default'],
+          :region => 'us-east-1',
+          :tags => {
+              'Name' => 'fog-test-without',
+          }
+      }
+
+      begin
+        puts 'attempt to create without volume information:'
+        puts "options: #{withoutvol.inspect}"
+        without = aws.servers.create(withoutvol)
+        puts "success: #{without.id}"
+      rescue => e
+        puts "exception: #{e.message}"
+          #puts e.backtrace.join("\n")
+      ensure
+        without.destroy if without
+      end
+
+      begin
+        puts 'attempt to create with volume information:'
+        puts "options: #{withvol.inspect}"
+        with = aws.servers.create(withvol)
+        puts "success: #{with.id}"
+      rescue => e
+        puts "exception: #{e.message}"
+          #puts e.backtrace.join("\n")
+      ensure
+        with.destroy if with
       end
     end
   end
