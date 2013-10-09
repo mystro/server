@@ -17,7 +17,6 @@ PATH
       fog (~> 1.15.0)
       hashie
       ipaddress
-      simple_uuid
       yell (~> 1.2.0)
 
 PATH
@@ -338,7 +337,6 @@ GEM
     simple_form (2.1.0)
       actionpack (~> 3.0)
       activemodel (~> 3.0)
-    simple_uuid (0.3.0)
     sinatra (1.4.3)
       rack (~> 1.4)
       rack-protection (~> 1.4)
