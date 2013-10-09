@@ -48,7 +48,7 @@ namespace :mystro do
         compute.environment = env
         compute.save
 
-        puts "compute:"
+        #puts "compute:"
         #puts "#{compute.inspect}"
         #puts "#{compute.volumes.inspect}"
         cloud = compute.to_cloud
@@ -57,12 +57,12 @@ namespace :mystro do
         puts "encode:"
         encode = mystro.compute.encode(cloud)
         puts encode.inspect
-        #puts "create:"
-        #remote = mystro.compute.create(cloud)
-        #puts "remote: #{remote.inspect}"
-        #compute.from_cloud(remote)
-        #compute.synced_at = Time.now
-        #compute.save
+        puts "create:"
+        remote = mystro.compute.create(cloud)
+        puts "remote: #{remote.inspect}"
+        compute.from_cloud(remote)
+        compute.synced_at = Time.now
+        compute.save
       rescue => e
         puts "exception: #{e.message}"
         puts e.backtrace.join("\n")
