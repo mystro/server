@@ -167,13 +167,10 @@ class Compute
     end
     self.tags = obj.tags if obj.tags && obj.tags.count > 0
 
-    #TODO: VOLUME support
     if obj.volumes && obj.volumes.count > 0
-    #  self.save
       obj.volumes.each do |vol|
         volume = self.volumes.where(device: vol.device, size: vol.size).first || self.volumes.new
         volume.from_cloud(vol)
-        #volume.save
       end
     end
   end

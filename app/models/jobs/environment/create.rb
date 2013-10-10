@@ -2,40 +2,116 @@ class Jobs::Environment::Create < Job
   def work
     env = model
     raise "model not set" unless env
-    org = env.organization
 
     template = env.template
     raise "template not set" unless template
     raise "template has no data" unless template.data
 
-    data = template.data
     tf = template.load
+    computes = []
+    balancers = {}
 
-    info "actions"
-    tf.actions.each do |action|
-      model = action.model
-      cloud = action_to_cloud(action)
-      options = action.options
-      info "action:#{model}"
-      info ".. #{cloud.inspect}"
-      k = model.constantize
-      object = k.find_by_cloud(cloud, env, org) || k.new
-      object.environment = env
-      object.organization = org
-      object.from_cloud(cloud)
-      object.save
-      info ".. #{object.inspect}"
-      unless object.synced_at
-        info ".. enqueue: #{action.action}"
-        object.enqueue(action.action)
-      end
-      info ""
+    actions = tf.actions
+    puts "ACTIONS:"
+    actions.each do |a|
+      puts "a: #{a.model.inspect}"
+      puts "   #{action_to_cloud(a).inspect}"
     end
+    bactions = actions.select {|action| action.model == 'Balancer'}
+    cactions = actions.select {|action| action.model == 'Compute'}
+
+    bactions.each do |action|
+      (balancer, options) = do_action(action)
+      balancer.save!
+      balancers[balancer.name] = [action.action, balancer]
+    end
+
+    cactions.each do |action|
+      (compute, options) = do_action(action)
+      if options[:balancer]
+        compute.balancer = balancers[options[:balancer]]
+      end
+      compute.save!
+      computes << [action.action, compute]
+    end
+
+    computes.each do |a, c|
+      unless c.synced_at
+        info ".. enqueue: #{c}"
+        c.enqueue(a)
+      end
+    end
+
+    balancers.each do |n, l|
+      (a, b) = l
+      unless b.synced_at
+        info ".. enqueue: #{a} #{b}"
+        b.enqueue(a)
+      end
+    end
+
+    #info "actions"
+    #tf.actions.each do |action|
+    #  model = action.model
+    #  cloud = action_to_cloud(action)
+    #  options = action.options
+    #  info "action:#{model}"
+    #  info ".. #{cloud.inspect}"
+    #  k = model.constantize
+    #  object = k.find_by_cloud(cloud, env, org) || k.new
+    #  object.environment = env
+    #  object.organization = org
+    #  object.from_cloud(cloud)
+    #  object.save
+    #
+    #  if model == Compute
+    #    computes << [action.action, object]
+    #  elsif model == Balancer
+    #    balancers << [action.action, object]
+    #  end
+    #
+    #  #if options[:balancer]
+    #  #  computes[object.rid] = options[:balancer]
+    #  #end
+    #  #
+    #  #if model == Balancer
+    #  #  balancers[object.name] = object
+    #  #end
+    #end
+    #
+    #computes.each do |b|
+    #  c = Compute.remote(id)
+    #  raise "balancer #{b} does not exist" unless balancers[b]
+    #  c.balancer = balancers[b]
+    #  c.save
+    #end
   end
 
   def action_to_cloud(action)
     klass = action.class
     klass.constantize.new(action.data)
+  end
+
+  def do_action(action)
+    env = model
+    org = env.organization
+    model = action.model
+    cloud = action_to_cloud(action)
+    options = action.options
+
+    info "action:#{model}"
+    info ".. #{cloud.inspect}"
+
+    k = model.constantize
+
+    object = k.find_by_cloud(cloud, env, org) || k.new
+    object.environment = env
+    object.organization = org
+    object.from_cloud(cloud)
+
+    info ".. #{object.inspect}"
+
+    [object, options]
   end
 
   #def work
