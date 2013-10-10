@@ -89,6 +89,7 @@ class Balancer
   def to_cloud
     data = {
         id: "#{name}-#{envname}-#{orgname}",
+        computes: computes.map(&:rid),
         listeners: self.listeners.map {|l| l.to_cloud},
         zones: self.zones,
         health: self.health_check.to_cloud
