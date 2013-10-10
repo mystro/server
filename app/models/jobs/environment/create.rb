@@ -12,32 +12,33 @@ class Jobs::Environment::Create < Job
     balancers = {}
 
     actions = tf.actions
-    puts "ACTIONS:"
-    actions.each do |a|
-      puts "a: #{a.model.inspect}"
-      puts "   #{action_to_cloud(a).inspect}"
-    end
     bactions = actions.select {|action| action.model == 'Balancer'}
     cactions = actions.select {|action| action.model == 'Compute'}
 
     bactions.each do |action|
+      #info "create balancer:"
       (balancer, options) = do_action(action)
+      #info ".. save!"
       balancer.save!
       balancers[balancer.name] = [action.action, balancer]
     end
 
     cactions.each do |action|
+      #info "create compute:"
       (compute, options) = do_action(action)
       if options[:balancer]
-        compute.balancer = balancers[options[:balancer]]
+        b = options[:balancer].to_s
+        #info ".. add balancer: #{b.inspect} = #{balancers[b]}"
+        compute.balancer = balancers[b].last
       end
+      #info ".. save!"
       compute.save!
       computes << [action.action, compute]
     end
 
     computes.each do |a, c|
       unless c.synced_at
-        info ".. enqueue: #{c}"
+        info ".. enqueue: #{a} #{c}"
         c.enqueue(a)
       end
     end
@@ -99,17 +100,20 @@ class Jobs::Environment::Create < Job
     cloud = action_to_cloud(action)
     options = action.options
 
-    info "action:#{model}"
-    info ".. #{cloud.inspect}"
+    #info "action:#{model}"
+    #info ".. #{cloud.inspect}"
 
     k = model.constantize
 
+    #info "find_by_cloud: #{cloud.inspect}"
+    #info "               #{env.inspect}"
+    #info "               #{org.inspect}"
     object = k.find_by_cloud(cloud, env, org) || k.new
     object.environment = env
     object.organization = org
     object.from_cloud(cloud)
 
-    info ".. #{object.inspect}"
+    #info ".. #{object.inspect}"
 
     [object, options]
   end

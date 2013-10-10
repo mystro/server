@@ -1,7 +1,46 @@
 class Jobs::Balancer::Create < Job
   def work
-    balancer = model
     wait_for(model.computes)
+
+    env = model.environment
+    o = Organization.mystro(mystro)
+    z = o.record_config['zone']
+    zone = Zone.where(domain: z).first
+    raise "could not find zone '#{z}' could not create dns record" unless zone
+
+    balancer = mystro.balancer.create(model.to_cloud)
+
+    if model.sticky
+      info "  setting sticky"
+      mystro.balancer.sticky(model.name, model.sticky_type, model.sticky_arg, 443, "AWSConsolePolicy-1")
+    end
+
+    name = model.name
+    record = model.records.find_or_create_by(zone: zone, name: "#{name}.#{env.name}.#{zone.domain}")
+    record.update_attributes(
+        type: "CNAME",
+        ttl: 30,
+        values: [balancer.dns]
+    )
+    record.organization = model.organization
+    record.save!
+    record.enqueue(:create)
+
+    if model.primary
+      primary = model.records.find_or_create_by(zone: zone, name: "#{env.name}.#{zone.domain}")
+      primary.update_attributes(
+          type: "CNAME",
+          ttl: 30,
+          values: [balancer.dns]
+      )
+      primary.organization = model.organization
+      primary.save!
+      primary.enqueue(:create)
+    end
+
+    model.rid = balancer.id
+    model.synced_at = Time.now
+    model.save!
   end
 
   #def work

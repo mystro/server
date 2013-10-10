@@ -27,21 +27,21 @@ class Balancer
 
   scope :for_org, ->(org) { where(:organization.in => [nil, Organization.named(org)]) }
 
-  def name
-    rid
-  end
+  #def name
+  #  rid
+  #end
 
   def short
     rid
   end
 
   def display
-    rid
+    name
   end
 
-  def bname
-    environment ? rid.gsub(/^#{environment.name}-/, "") : rid
-  end
+  #def bname
+  #  environment ? rid.gsub(/^#{environment.name}-/, "") : rid
+  #end
 
   def add_compute(rid)
     computes << Compute.remote(rid)
@@ -79,7 +79,8 @@ class Balancer
     (n, e, o) = obj.id.split(/\-/) if obj.id
     self.rid = obj.id
     self.environment = Environment.create_from_cloud({'Environment'=>e, 'Organization'=>o}) if e
-    self.name = n
+    self.name = obj.name || n
+    self.primary = obj.primary
     self.public_dns = obj.dns
     self.listeners = obj.listeners.map { |l| Listener.create_from_cloud(self, l) }
     self.health_check = HealthCheck.create_from_cloud(self, obj.health)
@@ -111,7 +112,7 @@ class Balancer
 
     def find_by_cloud(obj, env, org)
       id = obj.id
-      byneo = Balancer.where(rid: id, environment: env, oraganization: org).first if id && env && org
+      byneo = Balancer.where(name: obj.name.to_s, environment: env, organization: org).first if obj.name && env && org
       return byneo if byneo
       byid = Balancer.where(rid: id).first if id
       return byid if byid
