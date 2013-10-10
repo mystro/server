@@ -1,6 +1,7 @@
 class Jobs::Record::Destroy < Job
   def work
-    mystro.record.destroy(model.to_cloud) if model.rid
+    info "record destroy: #{model.rid} #{model.name}"
+    mystro.record.destroy(model.to_cloud)
   ensure
     model.destroy
   end
