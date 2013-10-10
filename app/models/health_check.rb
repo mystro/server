@@ -10,27 +10,41 @@ class HealthCheck
   field :interval, type: Integer, default: 30
   field :timeout, type: Integer, default: 5
 
-  def fog_options
+  #def fog_options
+  #  {
+  #      'HealthyThreshold'   => healthy,
+  #      'UnhealthyThreshold' => unhealthy,
+  #      'Interval'           => interval,
+  #      'Target'             => targeturl,
+  #      'Timeout'            => timeout,
+  #  }
+  #end
+
+  def to_cloud
     {
-        'HealthyThreshold'   => healthy,
-        'UnhealthyThreshold' => unhealthy,
-        'Interval'           => interval,
-        'Target'             => targeturl,
-        'Timeout'            => timeout,
+        target: targeturl,
+        healthy: healthy,
+        unhealthy: unhealthy,
+        interval: interval,
+        time: timeout,
     }
+  end
+
+  def from_cloud(obj)
+    self.targeturl = obj[:target]
+    self.healthy = obj[:healthy]
+    self.unhealthy = obj[:unhealthy]
+    self.interval = obj[:interval]
+    self.timeout = obj[:time]
   end
 
   class << self
     def create_from_cloud(balancer, obj)
-      create!(
-          balancer: balancer,
-          targeturl: obj[:target],
-          healthy: obj[:healthy],
-          unhealthy: obj[:unhealthy],
-          interval: obj[:interval],
-          timeout: obj[:time],
-      ) if obj
+      h = create!(balancer: balancer)
+      h.from_cloud(obj)
+      h
     end
+
     #def create_from_fog(balancer, obj)
     #  #TODO: show reference to cert
     #  #obj={"Interval"=>30, "Target"=>"HTTP:8080/INQReaderServer/rest/AjaxConfig/config", "HealthyThreshold"=>10, "Timeout"=>5, "UnhealthyThreshold"=>2},

@@ -33,6 +33,31 @@ namespace :mystro do
         end
       end
     end
+    namespace :env do
+      task :create => :environment do
+        org = Organization.named('ops')
+        temp = Template.named('duo')
+        env = org.environments.create(name: 'blarg', template: temp, protected: false)
+        puts "ENV: #{env.inspect}"
+        puts "TEMP: #{temp.inspect}"
+        if env
+          job = Jobs::Environment::Create.create(data: {'model' => {'id' => env.id.to_s, 'class' => env.class.name}})
+          puts "running job: #{job.id}: #{job.inspect}"
+          job.run
+          job.accept
+        end
+      end
+      task :destroy => :environment do
+        env = Environment.where(name: 'blarg').first
+        puts "ENV: #{env.inspect}"
+        if env
+          job = Jobs::Environment::Destroy.create(data: {'model' => {'id' => env.id.to_s, 'class' => env.class.name}})
+          puts "running job: #{job.id}: #{job.inspect}"
+          job.run
+          job.accept
+        end
+      end
+    end
     task :compute => :environment do
       begin
         org = Organization.named('hdp')
@@ -66,10 +91,10 @@ namespace :mystro do
       rescue => e
         puts "exception: #{e.message}"
         puts e.backtrace.join("\n")
-      #ensure
-      #  mystro.compute.destroy(remote.id) if remote
-      #  compute.destroy if compute
-      #  puts "done"
+        #ensure
+        #  mystro.compute.destroy(remote.id) if remote
+        #  compute.destroy if compute
+        #  puts "done"
       end
     end
     task :fog do

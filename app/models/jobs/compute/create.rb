@@ -7,7 +7,6 @@ class Jobs::Compute::Create < Job
     compute.rid = remote.identity
     compute.from_cloud(remote)
     compute.managed = true
-    compute.synced_at = Time.now
     compute.save!
     #info ".. #{compute.inspect}"
 
@@ -18,6 +17,10 @@ class Jobs::Compute::Create < Job
     end
 
     #info ".. #{remote.inspect}"
+
+    compute.from_cloud(remote)
+    compute.synced_at = Time.now
+    compute.save!
 
     if mystro.record
       cfg = organization.record_config
@@ -56,8 +59,6 @@ class Jobs::Compute::Create < Job
         end
       end
     end
-
-    compute.save!
   end
 
   #def work
