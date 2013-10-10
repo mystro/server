@@ -28,7 +28,7 @@ class Listener
 
   class << self
     def create_from_cloud(balancer, obj)
-      create(balancer: balancer, from: obj.from, to: obj.to, synced_at: Time.now)
+      create(balancer: balancer, from: obj[:from], to: obj[:to], cert: obj[:cert]) if obj
     end
     #def create_from_fog(balancer, obj)
     #  #TODO: show reference to cert

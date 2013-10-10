@@ -99,9 +99,9 @@ class Environment
         organization = tags['Organization'] || tags['Account'] || 'unknown'
       end
       return nil unless name
-      a = Organization.named(organization) || Organization.create(name: organization)
+      a = Organization.named(organization)
       e = Environment.where(name: name, organization: a).first ||
-          Environment.create!(name: name, organization: a, template: Template.named("empty"))
+          Environment.create!(name: name, organization: a, template: Template.named('empty'))
       unless e.organization
         e.organization = a
         e.save

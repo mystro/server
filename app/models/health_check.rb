@@ -24,12 +24,12 @@ class HealthCheck
     def create_from_cloud(balancer, obj)
       create!(
           balancer: balancer,
-          targeturl: obj["Target"],
-          healthy: obj["HealthyThreshold"],
-          unhealthy: obj["UnhealthyThreshold"],
-          interval: obj["Interval"],
-          timeout: obj["Timeout"],
-      )
+          targeturl: obj[:target],
+          healthy: obj[:healthy],
+          unhealthy: obj[:unhealthy],
+          interval: obj[:interval],
+          timeout: obj[:time],
+      ) if obj
     end
     #def create_from_fog(balancer, obj)
     #  #TODO: show reference to cert
