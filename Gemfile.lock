@@ -1,16 +1,16 @@
 PATH
   remote: ../client
   specs:
-    mystro-client (0.2.0)
+    mystro-client (0.3.1)
       clamp
       httparty
-      mystro-common (~> 0.2.0)
+      mystro-common (~> 0.3.0)
       terminal-table
 
 PATH
   remote: ../common
   specs:
-    mystro-common (0.2.0)
+    mystro-common (0.3.0)
       activesupport (= 3.2.14)
       damsel (~> 0.1.0)
       erubis
@@ -25,7 +25,7 @@ PATH
     mystro-volley (0.1.0)
       mcollective-client
       mongoid
-      mystro-common (~> 0.2.0)
+      mystro-common (~> 0.3.0)
       rails (~> 3.2.11)
       volley
 

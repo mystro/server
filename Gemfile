@@ -28,8 +28,8 @@ if ENV['MYSTRO_DEV']
   gem 'qujo', path: "~/catz/qujo"
   gem 'damsel', path: '~/catz/damsel'
 else
-  gem 'mystro-client', '0.2.0'
-  gem 'mystro-common', '0.2.0'
+  gem 'mystro-client', '0.3.1'
+  gem 'mystro-common', '0.3.0'
   gem 'mystro-volley', github: 'mystro/mystro-volley', branch: 'develop'
   gem 'qujo', '~> 0.1.4'
   gem 'damsel', '~> 0.1.0'
