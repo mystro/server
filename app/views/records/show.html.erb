@@ -3,12 +3,12 @@
     <%= link_to @record, method: :delete, data: { confirm: 'Are you sure?' }, :title => "Destroy Record", :class => "btn btn-danger" do %><i class="icon-remove-sign icon-white"></i> destroy<% end %>
 <% end %>
 
-<table class="table table-condensed table-bordered fields-horizontal">
+<table class="table table-condensed  table-striped table-hover fields-horizontal">
   <tr>
-    <th>Account</th>
-    <td><%= @record.account ? link_to(@record.account.name, @record.account) : "" %></td>
+    <th>Organization</th>
+    <td><%= @record.organization ? link_to(@record.organization.name, @record.organization) : "" %></td>
   </tr>
-  <tr> <th>Name</th> <td><%= @record.name %></td> </tr>
+  <tr> <th>Name</th> <td><%= @record.name %> (<%= @record.rid %>)</td> </tr>
   <tr> <th>Type</th> <td><%= @record.type %></td> </tr>
   <tr> <th>TTL</th> <td><%= @record.ttl %></td> </tr>
   <tr> <th>Values</th> <td><%= (@record.values||[]).join(",") %></td> </tr>

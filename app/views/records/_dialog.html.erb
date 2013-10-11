@@ -1,5 +1,5 @@
 <%
-   account = current_account_load
+   organization = session[:org]
    zone = record.zone
    zones = Zone.all
    selected_zone = zone ? zone.id : nil
@@ -8,32 +8,27 @@
    domain = zone ? zone.domain : nil
 %>
 <script id="new_record_dialog" type="text/template">
-  <% if account %>
+  <% if organization %>
       <%= simple_form_for(record, :validate => true, :html => { :class => "form-horizontal record_form" }) do |f| %>
           <%= f.error_notification %>
 
           <div class="form-inputs">
             <%= f.input :name, :wrapper => :append do %>
-                <%= f.input_field :name, :class => "input-small" %><span id="domain_text" class="add-on">.<%= domain %></span>
+                <%= f.input_field :name, :class => "input-small" %> <span id="domain_text" class="add-on">.<%= domain %></span>
             <% end %>
-            <%= f.input :zone, :collection => zones, selected: selected_zone %>
+            <%= f.input :zone_id, :collection => zones, selected: selected_zone %>
             <%= f.input :type, :collection => types, selected: selected_type %>
             <%= f.input :ttl %>
             <%= f.input :values, :hint => "comma-separated" %>
           </div>
       <% end %>
   <% else %>
-      must select an account and/or zone
+      must select an organization and/or zone
   <% end %>
 </script>
 
 <script type="text/javascript">
     $(function () {
-        $("#record_zone").live("change", function(){
-            var s = $("#record_zone option:selected").text();
-            console.log("record_zone change:"+s);
-            $("#domain_text").text("."+s);
-        });
 
         $("#create_record").on("click", function () {
             bootbox.dialog($("#new_record_dialog").html(), [

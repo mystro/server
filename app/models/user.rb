@@ -2,15 +2,14 @@ class User
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  has_many :providers
-
   field :time_zone, type: String
 
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
+  # , :confirmable,
+  # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable,
-         :token_authenticatable
+         :token_authenticatable,
+         :recoverable, :rememberable, :trackable, :validatable
 
   ## Database authenticatable
   field :email,              :type => String, :default => ""
@@ -48,12 +47,8 @@ class User
   field :authentication_token, :type => String
   before_save :ensure_authentication_token
 
-  field :account, :type => String
-
   # run 'rake db:mongoid:create_indexes' to create indexes
   index({ email: 1 }, { unique: true, background: true })
   field :name, :type => String
   validates_presence_of :name
-  attr_accessible :name, :email, :password, :password_confirmation,
-                  :remember_me, :created_at, :updated_at, :account_id, :time_zone
 end

@@ -1,3 +1,6 @@
+<% content_for :subnav_pills do %>
+    <h3><%= @balancer.display %> . <%= @balancer.environment ? link_to(@balancer.environment.name, @balancer.environment) : "" %> . <%= @balancer.organization ? link_to(@balancer.organization.name, @balancer.organization) : "" %></h3>
+<% end %>
 <% content_for :subnav_buttons do %>
     <%= link_to edit_balancer_path(@balancer), :title => "Edit Balancer", :class => "btn btn-primary" do %>
         <i class="icon-edit icon-white"></i> edit
@@ -7,7 +10,7 @@
     <% end %>
 <% end %>
 
-<table class="table table-condensed table-bordered fields-horizontal">
+<table class="table table-condensed  table-striped table-hover fields-horizontal">
   <tr>
     <th>Name</th>
     <td><%= @balancer.name %></td>
@@ -20,35 +23,7 @@
   <tr> <th>Synced At</th> <td><%= @balancer.synced_at %></td> </tr>
 </table>
 
-<table class="table table-condensed table-bordered fields-vertical">
-  <tr>
-    <th>From</th>
-    <th>To</th>
-    <th>Cert</th>
-  </tr>
-  <% @balancer.listeners.each do |listener| %>
-      <tr>
-        <td><%= listener.from %></td>
-        <td><%= listener.to %></td>
-        <td><a href="#" title="<%= listener.cert %>"><i class="icon-question-sign"></i></a></td>
-      </tr>
-  <% end %>
-</table>
-
-<table class="table table-condensed table-bordered fields-vertical">
-  <th>Computes</th>
-  <% @balancer.computes.sort_by(&:short).each do |compute| %>
-      <tr>
-        <td><%= link_to compute.display, compute %></td>
-      </tr>
-  <% end %>
-</table>
-
-<table class="table table-condensed table-bordered fields-vertical">
-  <th>Records</th>
-  <% @balancer.records.sort_by(&:name).each do |record| %>
-      <tr>
-        <td><%= link_to record.name, record %></td>
-      </tr>
-  <% end %>
-</table>
+<%= render "health_checks/health_check", health_check: @balancer.health_check if @balancer.health_check %>
+<%= render "listeners/list", listeners: @balancer.listeners %>
+<%= render "computes/list", computes: @balancer.computes.sort_by(&:short) %>
+<%= render "records/list", records: @balancer.records.sort_by(&:name) %>

@@ -1,0 +1,16 @@
+<% if balancers && balancers.count > 0 %>
+    <h3>Balancers</h3>
+
+    <table class="table table-condensed  table-striped table-hover tablesorter {sortlist: [[0,0]]}">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Environment</th>
+        <th class="links {sorter: false}"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <%= render balancers %>
+      </tbody>
+    </table>
+<% end %>

@@ -1,12 +1,16 @@
 class Zone
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Qujo::Concerns::Model
 
-  include CommonRemote
+  include Cloud
+  include Deleting
 
   has_many :records
 
-  field :domain, type: String
+  cloud do
+    provides :domain, String
+  end
 
   def name
     domain

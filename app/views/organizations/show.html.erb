@@ -1,0 +1,18 @@
+
+<table class="table table-condensed  table-striped table-hover fields-horizontal">
+  <tr>
+    <th>Name</th>
+    <td><%= @organization.name %></td>
+  </tr>
+  <tr>
+    <th>File</th>
+    <td><%= @organization.file %></td>
+  </tr>
+  <tr>
+    <th>Enabled</th>
+    <td><%= @organization.enabled %></td>
+  </tr>
+
+</table>
+
+<pre><%= @organization.data.to_yaml %></pre>

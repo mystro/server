@@ -1,0 +1,50 @@
+<%
+   c = "#{"mw-warning" if warning} #{"mw-error" if error}"
+%>
+<div class="mw mw-simple <%= c %>">
+  <div class="mw-title <%= c %>">
+    <%= link_to title, view %>
+  </div>
+
+  <div class="mw-buttons">
+    <div class="mw-button">
+      <%= link_to star do %><i class="icon-star icon-white"></i><% end if star %>
+      <%= link_to edit do %><i class="icon-edit icon-white"></i><% end if edit %>
+      <%= link_to destroy, confirm: "Are you sure you want to destroy #{title}?" do %><i class="icon-remove-sign icon-white"></i><% end if destroy %>
+    </div>
+  </div>
+
+  <div class="mw-timer">
+    <%= timer %> <i class="icon-time icon-white"></i>
+  </div>
+
+  <% rows.each do |r| %>
+      <div class="mw-row mw-row-<%= r[:color] %>">
+        <div class="mw-key">
+          <%= r[:key] %>
+        </div>
+        <div class="mw-value">
+          <% if r[:link] %>
+              <%= link_to r[:value], r[:link] %>
+          <% else %>
+              <%= r[:value] %>
+          <% end %>
+        </div>
+      </div>
+  <% end %>
+
+  <% if blocks.count > 0 %>
+      <div class="mw-blocks">
+        <% blocks.each do |b| %>
+            <div class="mw-block mw-block-<%= b[:color] %>">
+              <div class="mw-key">
+                <%= b[:key] %>
+              </div>
+              <div class="mw-value">
+                <%= b[:value] %>
+              </div>
+            </div>
+        <% end %>
+      </div>
+  <% end %>
+</div>

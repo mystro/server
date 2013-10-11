@@ -1,12 +1,12 @@
 class Api::ComputesController < Api::ApiController
-  # GET /api/accounts/:account_id/computes
+  # GET /api/organizations/:organization_id/computes
   def index
-    list = filters(Compute, { account_id: @account.id }).includes(:environment, :balancer).all
+    list = filters(Compute, { organization_id: @organization.id }).includes(:environment, :balancer).all
     out  = list.map(&:to_api)
     respond_with(out)
   end
 
-  # GET /api/accounts/:account_id/computes/:id
+  # GET /api/organizations/:organization_id/computes/:id
   def show
     @compute = Compute.find(params[:id])
     respond_with(@compute)
@@ -14,13 +14,13 @@ class Api::ComputesController < Api::ApiController
 
   def search
     patterns = (params[:pattern]||"").split(",")
-    data = Compute.asc(:account_id, :environment_id).all
+    data = Compute.asc(:organization_id, :environment_id).all
     #data = list.map {|e| {id: e.id, name: e.display}}
     patterns.each do |pattern|
       p = Regexp.escape(pattern)
       data = data.reject do |e|
-        logger.info "PATTERN: #{e.display} !~ /#{p}/"
-        e.display !~ /#{p}/
+        #logger.info "PATTERN: #{e.display} !~ /#{p}/"
+        e.short !~ /#{p}/
       end
     end
     out = data.map(&:to_api)

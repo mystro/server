@@ -1,0 +1,24 @@
+
+<table class="table table-condensed table-striped tablesorter {sortlist: [[0,0]]}">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>File</th>
+    <th>Enabled</th>
+    <th class="links {sorter: false}"></th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @organizations.each do |organization| %>
+      <tr>
+        <td><%= link_to organization.name, organization_path(organization) %></td>
+        <td><%= organization.file %></td>
+        <td><%= organization.enabled %></td>
+        <td class="links">
+          <%= render "common/links", :obj => organization, :edit => edit_organization_path(organization) %>
+        </td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+

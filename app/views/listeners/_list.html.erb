@@ -1,0 +1,19 @@
+<% if listeners && listeners.count > 0 %>
+    <h3>Listeners</h3>
+
+    <table class="table table-condensed  table-striped table-hover tablesorter {sortlist: [[2,0]]}">
+      <thead>
+      <tr>
+        <th>From</th>
+        <th>To</th>
+        <th>Cert</th>
+        <th class="links {sorter: false}"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% listeners.each do |listener| %>
+        <%= render listener %>
+      <% end %>
+      </tbody>
+    </table>
+<% end %>

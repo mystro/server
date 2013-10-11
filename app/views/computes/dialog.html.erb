@@ -1,0 +1,70 @@
+<%
+   selected_env = @env ? @env.id : nil
+   selected_balancer = nil
+   selected_img = @compute.image
+   selected_ud = @compute.userdata ? @compute.userdata.id : Userdata.named("default").id
+   regions = @selectors[:regions]
+   flavors = @selectors[:flavors]
+   images = @selectors[:images]
+   groups = @selectors[:groups]
+   keypairs = @selectors[:keypairs]
+%>
+<%= simple_form_for(@compute, :html => { :id => "mdo-dialog-form", :class => "compute_form form-horizontal", data:{singular: 'compute'} }) do |f| %>
+    <div>
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab1" data-toggle="tab">Main</a></li>
+        <li><a href="#tab2" data-toggle="tab">Volumes</a></li>
+        <li><a href="#tab3" data-toggle="tab">Advanced</a></li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane fade in active" id="tab1">
+          <div class="form-inputs">
+            <%= f.input :name %>
+            <% if @compute.num > 0 %>
+                <%= f.input :num, as: :integer %>
+            <% end %>
+            <%= f.input :environment_id, :collection => @environments, selected: selected_env %>
+            <%= f.input :balancer_id, :collection => @balancers, selected: selected_balancer, include_blank: true %>
+            <%= f.association :roles, :collection => @roles, :as => :check_boxes %>
+            <%#= f.input :roles, :input_html => { :value => (compute.roles||[]).join(",") } %>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="tab2">
+          <div class="form-inputs">
+            <table class="table table-condensed  table-striped table-hover">
+              <tr><th>#</th><th>device</th><th>size</th></tr>
+                <% @compute.volumes.each_with_index do |volume, i| %>
+                    <tr>
+                      <td><%= i %></td>
+                      <td><input type="text" name="compute[volumes][<%= i %>][device]" value="<%= volume.device %>"></td>
+                      <td><input type="text" name="compute[volumes][<%= i %>][size]" value="<%= volume.size %>"></td>
+                    </tr>
+                <% end %>
+            </table>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="tab3">
+          <%= f.input :region, collection: regions %>
+          <%= f.input :flavor, collection: flavors %>
+          <% if images %>
+              <%= f.input :image do %>
+                  <% f.select :image, grouped_options_for_select(images, selected_img) %>
+              <% end %>
+          <% else %>
+              <%= f.input :image %>
+          <% end %>
+          <% if groups %>
+              <%= f.input :groups, collection: groups, multiple: true, as: :check_boxes %>
+          <% else %>
+              <%= f.input :groups do %>
+                  <%= f.input_field :groups, value: (@compute.groups||[]).join(",") %>
+              <% end %>
+          <% end %>
+          <%= f.input :keypair, collection: keypairs %>
+          <%= f.input :userdata, collection: @userdata, include_blank: false, selected: selected_ud %>
+        </div>
+      </div>
+    </div>
+
+<% end %>

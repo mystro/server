@@ -1,14 +1,9 @@
 MystroServer::Application.routes.draw do
-
-  resources :userdata
-
-  mount Resque::Server.new, :at => "/admin/resque"
-  resource :resque
-
   namespace :api do
     scope :defaults => { :format => 'json' } do
-      resources :accounts do
-        resources :accounts
+      resource :status
+      resources :organizations do
+        resources :organizations
         resources :environments
         resources :computes do
           collection do
@@ -21,23 +16,27 @@ MystroServer::Application.routes.draw do
     end
   end
 
-  resources :accounts do
-    post "select", :on => :member
-  end
-
   resources :balancers
   resources :listeners
 
-  resources :computes
-  resources :roles
+  resources :computes do
+    get 'dialog', on: :collection
+  end
 
-  resources :environments
-  resources :templates
+  resources :environments do
+    post "refresh", on: :member
+  end
 
   resources :zones
   resources :records
 
-  #resources :providers
+  resources :roles
+  resources :templates
+  resources :userdata
+  resources :providers
+  resources :organizations do
+    post "select", :on => :member
+  end
 
   # DO NOT UNCOMMENT THIS FOR NOW
   # creates a redirect loop
@@ -51,5 +50,9 @@ MystroServer::Application.routes.draw do
     root :to => 'home#index'
   end
 
+  match "/home/widget/:environment" => "home#widget"
+  match "/home/raw" => "home#raw"
   root :to => "home#index"
+
+  mount Qujo::Engine => "/"
 end

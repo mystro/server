@@ -11,13 +11,11 @@ class Authentication
   end
 end
 
-log_path = File.join Rails.root, 'log'
-config = {
-    folder:     log_path,                 # destination folder
-    class_name: Yell,                     # logger class name
-    class_args: [],              # logger additional parameters
-}
-Resque.logger = config
+Resque.logger = Yell.new do |l|
+  #:datefile, File.join(Rails.root, "log", "workers.log"), level: [:info, :warn, :error, :fatal]
+  l.level = [:info, :warn, :error, :fatal]
+  l.adapter :datefile, File.join(Rails.root, "log", "workers.log"), level: [:info, :warn, :error, :fatal]
+end
 
 # reload worker code
 # https://github.com/defunkt/resque/issues/447
@@ -30,3 +28,5 @@ end
 
 Resque::Server.use Authentication
 Resque.redis.namespace = "resque:Mystro"
+
+

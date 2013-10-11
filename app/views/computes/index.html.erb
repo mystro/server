@@ -1,30 +1,5 @@
 <% content_for :subnav_buttons do %>
-    <a id="create_compute" class="btn btn-primary" title="Create New Compute">create</a>
+    <a data-model="computes" data-options="type=general" class="mdo-dialog btn btn-primary" title="Create New Compute">create</a>
 <% end %>
 
-<table class="table table-condensed table-striped tablesorter {sortlist: [[1,0],[0,0]]}">
-  <thead>
-  <tr>
-    <th>Name</th>
-    <th>Environment</th>
-    <th>Balancer</th>
-    <th class="links {sorter: false}"></th>
-  </tr>
-  </thead>
-  <tbody>
-
-  <% @computes.each do |compute| %>
-      <tr class="<%= "deleting" if compute.deleting %> <%= "warning" if compute.old? %>">
-        <td><%= link_to compute.display, compute_path(compute) %></td>
-        <td><%= compute.environment ? link_to(compute.environment.name, environment_path(compute.environment)) : "" %></td>
-        <td><%= compute.balancer ? link_to(compute.balancer.name, balancer_path(compute.balancer)) : "" %></td>
-        <td class="links">
-          <%= render "common/links", :obj => compute, :edit => edit_compute_path(compute) %>
-        </td>
-      </tr>
-  <% end %>
-  </tbody>
-</table>
-
-<% @compute = Compute.new; @compute.set_defaults(current_user) %>
-<%= render "computes/dialog", compute: @compute  %>
+<%= render "computes/list", computes: @computes %>

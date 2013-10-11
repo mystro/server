@@ -1,12 +1,12 @@
 class Api::ApiController < ApplicationController
   respond_to :json, :xml
 
-  before_filter :api_account
+  before_filter :api_org
 
-  def api_account
-    id = params[:account_id] || params[:id]
-    @account = Account.named(id).first rescue nil
-    respond_with({error: "must set account. '#{id}' not found or invalid"}) unless @account
+  def api_org
+    id = params[:organization_id] || params[:id]
+    @organization = Organization.named(id) rescue nil
+    respond_with({error: "must set org. '#{id}' not found or invalid"}) unless @organization
   end
 
 end

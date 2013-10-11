@@ -2,7 +2,7 @@
   <%= f.error_notification %>
 
   <div class="form-inputs">
-    <%= f.association :account, :collection => Account.all %>
+    <%= f.association :organization, :collection => Organization.all %>
     <%= f.input :type, :collection => Record.get_type_values %>
     <%= f.input :ttl %>
     <%= f.input :name %>

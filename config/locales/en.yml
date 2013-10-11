@@ -12,3 +12,12 @@ en:
         type:
           CNAME: (CNAME) Canonical Name
           A: (A) Address Record
+      job:
+        status:
+          #[:new, :working, :error, :complete, :cancelled, :waiting]
+          new: New
+          working: In Progress
+          error: Error
+          complete: Complete
+          cancelled: Cancelled
+          waiting: On Hold

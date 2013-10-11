@@ -1,0 +1,11 @@
+<% c ||= "error" unless record.nameable && record.organization %>
+<% c ||= "warning" if record.old? %>
+<tr class="<%= c %> <%= "deleting" if record.deleting %> ">
+  <td><%= record.type %></td>
+  <td><%= record.ttl %></td>
+  <td><%= link_to record.name, record %></td>
+  <td><%= record.values && record.values.count ? record.values.join(",") : "" %></td>
+  <td class="links">
+    <%= render "common/links", :obj => record, :edit => edit_record_path(record) %>
+  </td>
+</tr>

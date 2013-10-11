@@ -1,0 +1,21 @@
+<% if computes && computes.count > 0 %>
+    <h3>Computes</h3>
+
+    <table class="table table-condensed  table-striped table-hover tablesorter {sortlist: [[1,0],[0,0]]}">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Environment</th>
+        <th>Organization</th>
+        <th>Balancer</th>
+        <th class="links {sorter: false}"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <%= render computes %>
+      <%# @computes.each do |compute| %>
+
+      <%# end %>
+      </tbody>
+    </table>
+<% end %>

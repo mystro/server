@@ -3,7 +3,7 @@
     <%= link_to @role, method: :delete, data: { confirm: 'Are you sure?' }, :title => "Destroy Role", :class => "btn btn-danger" do %><i class="icon-remove-sign icon-white"></i> destroy<% end %>
 <% end %>
 
-<table class="table table-condensed table-bordered fields-horizontal">
+<table class="table table-condensed  table-striped table-hover fields-horizontal">
   <tr>
     <th>Name</th>
     <td><%= @role.name %></td>
@@ -14,7 +14,7 @@
   </tr>
 </table>
 
-<table class="table table-condensed table-bordered">
+<table class="table table-condensed  table-striped table-hover">
   <tr>
     <th>Computes</th>
   </tr>

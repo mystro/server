@@ -1,0 +1,20 @@
+<% if records && records.count > 0 %>
+    <h3>Records</h3>
+
+    <table class="table table-condensed  table-striped table-hover tablesorter {sortlist: [[2,0]]}">
+  <thead>
+  <tr>
+    <th>Type</th>
+    <th>Ttl</th>
+    <th>Name</th>
+    <th>Values</th>
+    <th class="links {sorter: false}"></th>
+  </tr>
+  </thead>
+  <tbody>
+  <% records.each do |record| %>
+    <%= render record %>
+  <% end %>
+  </tbody>
+</table>
+<% end %>

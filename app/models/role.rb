@@ -7,15 +7,18 @@ class Role
   field :name, type: String
   field :description, type: String
   field :internal, type: Boolean, default: true
+  field :deployable, type: Boolean, default: false
 
   index({ name: 1 }, { unique: true, background: true })
 
   scope :external, where(internal: false)
   scope :internal, where(internal: true)
+  scope :deployable, where(deployable: true)
 
   class << self
     def create_from_fog(roles)
       out   = []
+      return out unless roles
       rlist =
           case roles.class.name
             when "String"

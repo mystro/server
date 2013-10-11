@@ -7,7 +7,6 @@
       <div class="form-inputs span-4">
         <%= f.input :name, :disabled => true %>
         <%= f.input :email %>
-        <%= f.input :account %>
         <%= f.input :current_password %>
         <%= f.input :password, :hint => "only if you want to change it" %>
         <%= f.input :password_confirmation %>
@@ -38,5 +37,3 @@
 
 <b>config</b>
 <pre><%= Mystro.config.to_hash.to_yaml %></pre>
-<b>account</b>
-<pre><%= m = Account.named(@user.account).first.mystro; m ? m.to_hash.to_yaml : "" %></pre>

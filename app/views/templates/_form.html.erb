@@ -3,7 +3,7 @@
 
   <div class="form-inputs">
     <%= f.input :name %>
-    <%= f.association :account, collection: Account.all %>
+    <%= f.association :organization, collection: Organization.all %>
     <%= f.input :file %>
     <%= f.input :enabled, as: :boolean %>
   </div>

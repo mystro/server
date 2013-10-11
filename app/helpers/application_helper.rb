@@ -3,11 +3,15 @@ module ApplicationHelper
     @server_version ||= File.read("#{Rails.root}/VERSION").lines.first.chomp
   end
 
-  def current_account
-    @current_account ||= current_user.account
-  end
-
-  def current_account_load
-    @current_account_load ||= Account.named(current_account).first
+  def display_base_errors resource
+    return '' if (resource.errors.empty?) or (resource.errors[:base].empty?)
+    messages = resource.errors[:base].map { |msg| content_tag(:p, msg) }.join
+    html = <<-HTML
+    <div class="alert alert-error alert-block">
+      <button type="button" class="close" data-dismiss="alert">&#215;</button>
+      #{messages}
+    </div>
+    HTML
+    html.html_safe
   end
 end

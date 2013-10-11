@@ -1,21 +1,24 @@
+<% content_for :subnav_pills do %>
+    <h3><%= @environment.display %> .  <%= @environment.organization ? link_to(@environment.organization.name, @environment.organization) : "" %></h3>
+<% end %>
 <% content_for :subnav_buttons do %>
-    <a href="#" id="create_compute" class="btn btn-primary" title="Add New Server to this Environment"><i class="icon-plus-sign icon-white"></i>
-      server</a>
+    <a href="#" data-model="computes" data-options="type=general" class="mdo-dialog btn btn-primary" title="Add New Server to this Environment">
+      <i class="icon-plus-sign icon-white"></i> server
+    </a>
+    <% if @environment.template %>
+        <% @environment.template.data["compute"] && @environment.template.data["compute"].each do |s| %>
+            <a href="#" data-model="computes" data-options="type=<%= s["name"] %>&environment=<%= @environment.name %>" class="mdo-dialog btn btn-primary" title="Add New Server to this Environment">
+              <i class="icon-plus-sign icon-white"></i> <%= s["name"] %>
+            </a>
+        <% end %>
+    <% end %>
     <%= link_to edit_environment_path(@environment), :title => "Edi Environment", :class => "btn btn-primary" do %><i class="icon-edit icon-white"></i> edit
     <% end %>
     <%= link_to @environment, method: :delete, data: { confirm: 'Are you sure?' }, :title => "Destroy Environment", :class => "btn btn-danger" do %><i class="icon-remove-sign icon-white"></i> destroy
     <% end %>
 <% end %>
 
-<table class="table table-condensed table-bordered fields-horizontal">
-  <tr>
-    <th>Name</th>
-    <td><%= @environment.name %></td>
-  </tr>
-  <tr>
-    <th>Account</th>
-    <td><%= @environment.account ? link_to(@environment.account.name, @environment.account) : "" %></td>
-  </tr>
+<table class="table table-condensed  table-striped table-hover fields-horizontal">
   <tr>
     <th>Template</th>
     <td><%= link_to @environment.template.name, @environment.template if @environment.template %></td>
@@ -29,31 +32,11 @@
     <td><%= @environment.created_at %></td>
   </tr>
 </table>
-
-<table class="table table-condensed table-bordered">
-  <tr>
-    <th>Computes</th>
-  </tr>
-  <% @environment.computes.sort_by(&:short).each do |compute| %>
-      <tr>
-        <td><%= link_to compute.display, compute %></td>
-      </tr>
-  <% end %>
-</table>
-
-<table class="table table-condensed table-bordered">
-  <tr>
-    <th>Balancers</th>
-  </tr>
-  <% @environment.balancers.each do |balancer| %>
-      <tr>
-        <td><%= link_to balancer.name, balancer %></td>
-      </tr>
-  <% end %>
-</table>
+<!-- TODO: VOLLEY -->
+<%= render "mystro_volley/versions/list", versions: @environment.versions if defined?(Mystro::Plugin::Volley) %>
+<%= render "computes/list", computes: @environment.computes.sort_by(&:short) %>
+<%= render "balancers/list", balancers: @environment.balancers %>
+<%= render "records/list", records: @environment.records %>
 
 <script type="text/javascript">
 </script>
-
-<% compute = Compute.new; compute.set_defaults(current_user); compute.environment = @environment %>
-<%= render "computes/dialog", compute: compute %>

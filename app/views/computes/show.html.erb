@@ -1,3 +1,6 @@
+<% content_for :subnav_pills do %>
+    <h3><%= @compute.display %> . <%= @compute.environment ? link_to(@compute.environment.name, @compute.environment) : "" %> . <%= @compute.organization ? link_to(@compute.organization.name, @compute.organization) : "" %></h3>
+<% end %>
 <% content_for :subnav_buttons do %>
     <%= link_to edit_compute_path(@compute), :title => "Edit Compute", :class => "btn btn-primary" do %>
         <i class="icon-edit icon-white"></i> edit
@@ -7,10 +10,28 @@
     <% end %>
 <% end %>
 
-<table class="table table-condensed table-bordered fields-horizontal">
+<table class="table table-condensed table-striped table-hover fields-horizontal">
+  <!--
+  <tr>
+    <th>Organization</th>
+    <td><%#= @compute.organization ? link_to(@compute.organization.name, @compute.organization) : "" %></td>
+  </tr>
+  <tr>
+    <th>Environment</th>
+    <td><%#= @compute.environment ? link_to(@compute.environment.name, @compute.environment) : "" %></td>
+  </tr>
   <tr>
     <th>Name</th>
-    <td><%= @compute.name %><%= @compute.num > 0 ? @compute.num : "" %></td>
+    <td><%#= @compute.display %></td>
+  </tr>
+  -->
+  <tr>
+    <th>Balancer</th>
+    <td><%= @compute.balancer ? link_to(@compute.balancer.name, @compute.balancer) : "" %></td>
+  </tr>
+  <tr>
+    <th>Userdata</th>
+    <td><%= @compute.userdata ? link_to(@compute.userdata.name, @compute.userdata) : "" %></td>
   </tr>
   <tr>
     <th>Roles</th>
@@ -18,34 +39,31 @@
       <%= @compute.roles.map {|role| link_to role.name, role}.join(", ").html_safe %>
     </td>
   </tr>
-  <tr>
-    <th>Environment</th>
-    <td><%= @compute.environment ? link_to(@compute.environment.name, @compute.environment) : "" %></td>
-  </tr>
-  <tr>
-    <th>Account</th>
-    <td><%= @compute.account ? link_to(@compute.account.name, @compute.account) : "" %></td>
-  </tr>
-  <tr>
-    <th>Balancer</th>
-    <td><%= @compute.balancer ? link_to(@compute.balancer.name, @compute.balancer) : "" %></td>
-  </tr>
   <tr> <th>Synced At</th> <td><%= @compute.synced_at %></td> </tr>
 </table>
-<table class="table table-condensed table-bordered fields-horizontal">
+<h3>cloud</h3>
+<table class="table table-condensed table-striped table-hover fields-horizontal">
   <tr> <th>Remote ID</th> <td><%= @compute.rid %></td> </tr>
   <tr> <th>State</th> <td><%= @compute.state %></td> </tr>
   <tr> <th>Public DNS</th> <td><%= @compute.public_dns %></td> </tr>
   <tr> <th>Public IP</th> <td><%= @compute.public_ip %></td> </tr>
   <tr> <th>Private DNS</th> <td><%= @compute.private_dns %></td> </tr>
   <tr> <th>Private IP</th> <td><%= @compute.private_ip %></td> </tr>
+  <tr> <th>Availability Zone</th> <td><%= @compute.availability_zone %></td> </tr>
+  <tr> <th>Region</th> <td> <%= @compute.region %> </td> </tr>
+  <tr> <th>Image</th> <td> <%= @compute.image %> </td> </tr>
+  <tr> <th>Flavor</th> <td> <%= @compute.flavor %> </td> </tr>
+  <tr> <th>Keypair</th> <td> <%= @compute.keypair %> </td> </tr>
+  <tr> <th>Groups</th> <td> <%= @compute.groups.join(",") %> </td> </tr>
 </table>
-
-<table class="table table-condensed table-bordered">
-  <th>Records</th>
-  <% @compute.records.sort_by(&:name).each do |record| %>
-      <tr>
-        <td><%= link_to record.name, record %></td>
-      </tr>
+<h3>tags</h3>
+<table class="table table-condensed table-striped table-hover fields-horizontal">
+  <% @compute.tags.each do |k, v| %>
+      <tr><th><%= k %></th><td><%= v %></td></tr>
   <% end %>
 </table>
+
+<%= render "volumes/list", volumes: @compute.volumes %>
+<%= render "records/list", records: @compute.records.sort_by(&:name) %>
+<!-- TODO: VOLLEY -->
+<%= render("mystro_volley/versions/list", versions: @compute.versions) if defined?(Mystro::Plugin::Volley) %>

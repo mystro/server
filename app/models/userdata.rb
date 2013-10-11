@@ -2,6 +2,8 @@ class Userdata
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  include Named
+
   field :name, type: String
   field :data, type: Hash
   field :script, type: String
@@ -10,5 +12,4 @@ class Userdata
 
   index({ name: 1 }, { unique: true})
   scope :active, ->{ where(enabled: true) }
-  scope :named, ->(name){ where(name: name) }
 end

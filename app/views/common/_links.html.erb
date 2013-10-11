@@ -1,9 +1,18 @@
-<%= link_to edit, :title => "Edit", :class => "btn btn-mini" do %><i class="icon-edit"></i><% end %>
-<%= link_to obj,
-            data: {
-              type: obj.class.name.pluralize.downcase||"unknown",
-              id: obj.id.to_s||"nil"
-            },
-            :title => "Destroy",
-            :class => "btn btn-mini btn-danger delete_me" do %>
-    <i class="icon-remove-sign"></i><% end %>
+<%= link_to edit, :title => "Edit", :class => "btn btn-mini" do %>
+    <i class="icon-edit"></i>
+<% end %>
+<% if obj.respond_to?(:protected) && obj.protected %>
+    <%= link_to "#", class: "btn btn-mini btn-danger protected" do %>
+        <i class="icon-remove-sign"></i>
+    <% end %>
+<% else %>
+    <%= link_to obj,
+                data:  {
+                        type: obj.class.model_name.pluralize.downcase||"unknown",
+                        id:   obj.id.to_s||"nil"
+                },
+                :title => "Destroy",
+                :class => "btn btn-mini btn-danger delete_me" do %>
+        <i class="icon-remove-sign"></i>
+    <% end %>
+<% end %>

@@ -1,15 +1,14 @@
 namespace :mystro do
-  def cloud_pull
-    MystroWorker.perform
-  rescue => e
-    puts "error: #{e.message} at #{e.backtrace.first}"
-  end
-
   namespace :cloud do
-    desc "updates resources from cloud into the database"
-    task :update => :environment do
-      puts ".. loading cloud resources"
-      cloud_pull
+    desc "updates resources from cloud into the database, set arg true to run immediately"
+    task :update, [:now] => :environment do |_, args|
+      now = args.now == "true"
+      Qujo.configure {|config| config.console = true}
+      if now
+        Jobs::Cloud::Update.create!.run
+      else
+        Jobs::Cloud::Update.create!.enqueue
+      end
     end
   end
 end

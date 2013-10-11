@@ -3,7 +3,8 @@
 
   <div class="form-inputs">
     <%= f.input :name %>
-    <%= f.association :environment, :collection => Environment.all %>
+    <%= f.association :organization, :collection => Organization.all %>
+    <%= f.association :environment, :collection => Environment.for_org(session[:org]).all %>
     <%= f.input :primary, :as => :boolean %>
   </div>
 

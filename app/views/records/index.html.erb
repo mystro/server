@@ -1,47 +1,17 @@
 <% content_for :subnav_pills do %>
-      <li class="nav dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">zone <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-          <% Zone.all.collect { |z| z.domain }.each do |domain| %>
-              <li><%= link_to domain, "#" %></li>
-          <% end %>
-        </ul>
-      </li>
+    <% if session[:org] %>
+    <li><%= (o = Organization.named(session[:org])) ? link_to(o.mystro_zone, "#") : nil %></li>
+    <% end %>
 <% end %>
 <% content_for :subnav_buttons do %>
-      <a id="create_record" href="#" class="btn btn-primary" title="Create New DNS Record">create</a>
+    <a id="create_record" href="#" class="btn btn-primary" title="Create New DNS Record">create</a>
 <% end %>
 
-<table class="table table-condensed table-striped tablesorter {sortlist: [[2,0]]}">
-  <thead>
-  <tr>
-    <th>Type</th>
-    <th>Ttl</th>
-    <th>Name</th>
-    <th>Values</th>
-    <th class="links {sorter: false}"></th>
-  </tr>
-  </thead>
-  <tbody>
-  <% @records.each do |record| %>
-      <% c ||= "error" unless record.nameable && record.account %>
-      <% c ||= "warning" if record.old? %>
-      <tr class="<%= c %> <%= "deleting" if record.deleting %> ">
-        <td><%= record.type %></td>
-        <td><%= record.ttl %></td>
-        <td><%= link_to record.name, record %></td>
-        <td><%= record.values && record.values.count ? record.values.join(",") : "" %></td>
-        <td class="links">
-          <%= render "common/links", :obj => record, :edit => edit_record_path(record) %>
-        </td>
-      </tr>
-  <% end %>
-  </tbody>
-</table>
+<%= render "records/list", records: @records %>
 
 <%
-   a = current_account_load
-   record = Record.new(account: a)
+   a = Organization.named(session[:org])
+   record = Record.new(organization: a)
    record.zone = Zone.named(a.mystro_zone) if a
 %>
 <%= render "records/dialog", record: record %>

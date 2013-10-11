@@ -1,0 +1,15 @@
+<h3>Health Check</h3>
+<table class="table table-condensed  table-striped table-hover fields-horizontal">
+  <tr>
+    <th>Target</th>
+    <td><%= health_check.targeturl %></td>
+  </tr>
+  <tr>
+    <th>Thresholds</th>
+    <td>Healthy: <%= health_check.healthy %> / Unhealthy: <%= health_check.unhealthy %></td>
+  </tr>
+  <tr>
+    <th>Timing</th>
+    <td>Interval: <%= health_check.interval %> / Timeout: <%= health_check.timeout %></td>
+  </tr>
+</table>

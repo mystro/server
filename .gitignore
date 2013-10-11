@@ -17,6 +17,8 @@ config/chef
 config/mcollective
 config/volley
 config/webserver
+config/deploy
+logs/
 
 # bundler state
 /.bundle

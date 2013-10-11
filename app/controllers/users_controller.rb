@@ -51,7 +51,6 @@ class UsersController < ApplicationController
   # DELETE /users/1.json
   def destroy
     @user = Compute.unscoped.find(params[:id])
-    @user.account ||= mystro_account_id
     @user.deleting = true
     @user.save
     @user.enqueue(:destroy)

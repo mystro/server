@@ -2,22 +2,41 @@ namespace :mystro do
   namespace :files do
     desc "load mystro configuration files to database"
     task :load => :environment do
-      Rake::Task["mystro:files:accounts"].invoke
+      Rake::Task["mystro:files:providers"].invoke
+      Rake::Task["mystro:files:organizations"].invoke
       Rake::Task["mystro:files:userdata"].invoke
       Rake::Task["mystro:files:templates"].invoke
     end
-    task :accounts => :environment do
-      puts ".. loading accounts ..."
-      Account.update_all(enabled: false)
-      files = Dir["config/mystro/accounts/*"]
+    task :organizations => :environment do
+      puts ".. loading organizations ..."
+      Organization.update_all(enabled: false)
+      files = Dir["config/mystro/organizations/*"]
       files.each do |file|
         name = File.basename(file).gsub(/\.yml/, "")
-        a = Account.find_or_create_by(:name => name, :file => file)
+        a = Organization.find_or_create_by(:name => name, :file => file)
         a.enabled = true
         d = a.load
         a.data = d
         a.save
-        puts ".. create #{name} #{file}"
+        puts ".. .. create #{name} #{file}"
+        if d["record"] && d["record"]["config"] && d['record']['config']['zone']
+          z = d["record"]['config']["zone"]
+          puts ".. .. .. create zone: #{z}"
+          Zone.find_or_create_by(domain: z)
+        end
+      end
+    end
+    task :providers => :environment do
+      puts ".. loading providers ..."
+      #Provider.update_all(enabled: false)
+      files = Dir["config/mystro/providers/*"]
+      files.each do |file|
+        name = File.basename(file).gsub(/\.yml/, "")
+        p = Provider.find_or_create_by(:name => name, :file => file)
+        d = p.load
+        p.data = d
+        p.save
+        puts ".. .. create #{name} #{file}"
       end
     end
     task :userdata => :environment do
@@ -52,7 +71,6 @@ namespace :mystro do
 
         userdata.enabled = true
         userdata.save!
-        puts "USERDATA: #{userdata.inspect}"
       end
     end
     task :templates => :environment do
@@ -66,8 +84,9 @@ namespace :mystro do
         an = file =~ /\// ? file.split("/").first : nil
         t = Template.find_or_create_by(:name => name, :file => f)
         t.enabled = true
-        t.account = Account.named(an).first if an
-        d = JSON.parse(t.load.to_json)
+        t.organization = Organization.named(an) if an
+        tf = t.load
+        d = JSON.parse(tf[:template].to_json)
         t.data = d
         t.save
         puts ".. create #{name} #{file}"

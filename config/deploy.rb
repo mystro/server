@@ -1,8 +1,10 @@
+set :application, "mystro"
+load 'config/deploy/variables.rb'
+
+set :stages, %w(production) #defaults stage doesn't do anything
 set :default_stage, "production"
-set :stages, %w(production staging)
-set :application, "mystroserver"
-set :user, "ubuntu"
-set :ssh_options, { :forward_agent => true }
+set :stage_dir, 'config/deploy/stages'
+require 'capistrano/ext/multistage'
 
 set :scm, :git
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
@@ -11,14 +13,13 @@ set :repository,  "git@github.com:mystro/server.git"
 set :deploy_to, "/srv/apps/#{application}"
 set :deploy_via, :remote_cache
 
-require 'capistrano/ext/multistage'
 require 'bundler/capistrano'
 set :bundle_flags,    "--quiet"
 
 set :whenever_command, "bundle exec whenever"
 require 'whenever/capistrano'
 
-require 'webserver/apache'
+require 'capistrano/webserver/apache'
 set :webserver_dir, "/srv/sites"
 
 ## RVM specific
@@ -34,8 +35,11 @@ set :keep_releases, 3
 after "deploy:restart", "deploy:cleanup"
 after "deploy:restart", "foreman:restart"
 
+before "deploy:setup", "mystro:directories"
 after "deploy:update_code", "mystro:config:update"
 after "deploy:update_code", "mystro:chef:update"
+after "deploy:update_code", "mystro:volley:update"
+after "deploy:update_code", "mystro:mcollective:update"
 after "deploy:restart", "mystro:files"
 after "deploy:setup", "mystro:setup"
 
@@ -49,10 +53,26 @@ Cape do |cape|
   # Create Capistrano recipes for all Rake tasks.
   tasks = %w{mystro:reset mystro:setup mystro:cloud:update mystro:chef:roles}
   tasks.each do |task|
-    cape.mirror_rake_tasks task, :roles => :app do |env|
-      env['RAILS_ENV'] = rails_env
+    cape.mirror_rake_tasks task do |recipes|
+      recipes.options[:roles] = :app
+      recipes.env["RAILS_ENV"] = "production"
     end
   end
+end
+
+def config_push(name)
+  require "rails"
+  dir = "config/#{name}"
+  file = "#{name}-config-#{$$}-#{Time.now.to_i}.tgz"
+  remote = "#{shared_path}/config/#{file}"
+  system("cd #{dir} && tar cfz /tmp/#{file} *")
+  upload("/tmp/#{file}", "#{shared_path}/config/#{file}")
+  run("rm -rf #{shared_path}/#{dir}; mkdir -p #{shared_path}/#{dir}")
+  run("cd #{shared_path}/#{dir} && tar xfz #{remote} && rm #{remote}")
+end
+def config_symlink(name)
+  dir = "config/#{name}"
+  run("if [ -e '#{release_path}' ]; then rm -f #{release_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{release_path}/#{dir}; else rm -f #{current_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{current_path}/#{dir}; fi;")
 end
 
 namespace :mystro do
@@ -62,65 +82,102 @@ namespace :mystro do
     run "cd #{current_path} && #{rake} #{task} RAILS_ENV=#{rails_env}"
   end
 
-  task :setup do
-    run("mkdir -p #{shared_path}/config")
+  task :bootstrap do
+    # cap mystro:directories # ensure proper directories are created
+    # cap deploy:setup       # setup deploy directories
+    # cap deploy:cold        # do a first time deploy
+    # cap foreman:export     # create upstart scripts
+    # cap foreman:restart    # start mystro services
+    # cap mystro:reset       # configure database
+    mystro.directories
+    deploy.setup
+    deploy.cold
+    webserver.configuration
+    foreman.export
+    foreman.restart
+    mystro.reset
   end
 
-  desc "update mystro and chef configuration and reload accounts and templates"
+  task :directories do
+    run("#{sudo} chown -R #{user} /srv")
+  end
+
+  task :setup do
+    run("mkdir -p #{shared_path}/config")
+    run("mkdir -p #{fetch(:webserver_dir)}")
+  end
+
+  desc "update mystro configuration and reload organizations and templates"
   task :push do
     mystro.config.update
     mystro.chef.update
+    mystro.volley.update
+    mystro.mcollective.update
     foreman.restart
     mystro.files
   end
 
   namespace :chef do
+    desc "update mystro configuration"
     task :update do
       mystro.chef.push
       mystro.chef.symlink
     end
 
-    desc "push mystro configuration"
     task :push do
-      require "rails"
-      dir = "config/chef"
-      file = "chef-config-#{$$}-#{Time.now.to_i}.tgz"
-      remote = "#{shared_path}/config/#{file}"
-      system("cd #{dir} && tar cfz /tmp/#{file} *")
-      upload("/tmp/#{file}", "#{shared_path}/config/#{file}")
-      run("rm -rf #{shared_path}/#{dir}; mkdir -p #{shared_path}/#{dir}")
-      run("cd #{shared_path}/#{dir} && tar xfz #{remote} && rm #{remote}")
+      config_push("chef")
     end
 
-    desc "symlink mystro configuration"
     task :symlink do
-      dir = "config/chef"
-      run("if [ -e '#{release_path}' ]; then rm #{release_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{release_path}/#{dir}; else rm #{current_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{current_path}/#{dir}; fi;")
+      config_symlink("chef")
     end
   end
 
   namespace :config do
+    desc "update mystro configuration"
     task :update do
       mystro.config.push
       mystro.config.symlink
     end
 
-    desc "push mystro configuration"
     task :push do
-      require "rails"
-      dir = "config/mystro"
-      file = "mystro-config-#{$$}-#{Time.now.to_i}.tgz"
-      remote = "#{shared_path}/config/#{file}"
-      system("cd #{dir} && tar cfz /tmp/#{file} *")
-      upload("/tmp/#{file}", remote)
-      run("rm -rf #{shared_path}/#{dir}; mkdir -p #{shared_path}/#{dir}")
-      run("cd #{shared_path}/#{dir} && tar xfz #{remote} && rm #{remote}")
+      config_push("mystro")
     end
 
-    desc "symlink mystro configuration"
     task :symlink do
-      dir = "config/mystro"
-      run("if [ -e '#{release_path}' ]; then rm #{release_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{release_path}/#{dir}; else rm #{current_path}/#{dir}; ln -sf #{shared_path}/#{dir} #{current_path}/#{dir}; fi;")
+      config_symlink("mystro")
+    end
+  end
+
+  namespace :volley do
+    desc "update volley configuration"
+    task :update do
+      mystro.volley.push
+      mystro.volley.symlink
+    end
+
+    task :push do
+      config_push("volley")
+    end
+
+    task :symlink do
+      config_symlink("volley")
+    end
+  end
+
+  namespace :mcollective do
+    desc "update mcollective configuration"
+    task :update do
+      mystro.mcollective.push
+      mystro.mcollective.symlink
+    end
+
+    task :push do
+      config_push("mcollective")
+    end
+
+    task :symlink do
+      config_symlink("mcollective")
     end
   end
 end
@@ -148,7 +205,7 @@ namespace :foreman do
 
   desc "Export the Procfile to upstart scripts"
   task :export, :roles => :app do
-    webs       = 2
+    webs       = 1
     workers    = 3
     schedulers = 1
 

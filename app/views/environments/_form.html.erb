@@ -3,7 +3,7 @@
 
   <div class="form-inputs">
     <%= f.input :name %>
-    <%= f.association :account, :collection => @accounts %>
+    <%= f.association :organization, :collection => @organization %>
     <%= f.association :template, :collection => @templates, :label_method => :to_str %>
     <%= f.input :protected, :as => :boolean %>
   </div>

@@ -1,55 +1,46 @@
 class EnvironmentsController < ApplicationController
+  respond_to :json
+
   # GET /environments
   # GET /environments.json
   def index
-    @environments = filters(Environment, {account: current_user.account}).includes(:computes, :balancers).all
-    @templates =
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @environments }
-    end
+    @environments = Environment.org(session[:org]).includes(:computes, :balancers).all
   end
 
   # GET /environments/1
   # GET /environments/1.json
   def show
-    # use where(:id => ?) instead of find, because it throws an exception
     @environment = Environment.where(:id => params[:id]).first ||
         Environment.where(:name => params[:id]).first ||
         raise_404
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @environment }
-    end
   end
 
-  # GET /environments/new
-  # GET /environments/new.json
-  def new
-    @environment = Environment.new
-    @templates = Template.active.for_account(current_user.account).asc(:account, :name).all
-    @accounts = Account.all
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @environment }
-    end
-  end
+  ## GET /environments/new
+  ## GET /environments/new.json
+  #def new
+  #  @environment = Environment.new
+  #  @templates = Template.active.org(session[:org]).asc(:organization, :name).all
+  #  @organizations = Organization.all
+  #
+  #  respond_to do |format|
+  #    format.html # new.html.erb
+  #    format.json { render json: @environment }
+  #  end
+  #end
 
   # GET /environments/1/edit
   def edit
     @environment = Environment.find(params[:id])
-    @templates = Template.active.for_account(current_user.account).asc(:account, :name).all
-    @accounts = Account.all
+    oid = Organization.named(session[:org]).id
+    @templates = Template.active.in(organization_id: [nil, oid]).asc(:organization, :name).all
+    @organizations = Organization.all
   end
 
   # POST /environments
   # POST /environments.json
   def create
     @environment = Environment.new(params[:environment])
-    @environment.account = mystro_account_id
+    @environment.organization = Organization.named(session[:org])
     saved = @environment.save
 
     respond_to do |format|
@@ -68,9 +59,9 @@ class EnvironmentsController < ApplicationController
   # PUT /environments/1.json
   def update
     @environment = Environment.find(params[:id])
-    @environment.account_id ||= mystro_account_id
-    @templates = Template.active.for_account(current_user.account).asc(:account, :name).all
-    @accounts = Account.all
+    @environment.organization ||= session[:org]
+    #@templates = Template.active.org(@current_org).asc(:organization, :name).all
+    #@organizations = Organization.all
 
     respond_to do |format|
       if @environment.update_attributes(params[:environment])
@@ -84,6 +75,20 @@ class EnvironmentsController < ApplicationController
     end
   end
 
+  def refresh
+    @environment = Environment.find(params[:id])
+    @environment.enqueue(:create)
+    render json: {queued: true}
+  rescue => e
+    render status: :unprocessable_entity, json: {queued: false, error: e.message}
+  end
+
+  def dialog
+    @environment = Environment.new
+    @templates = Template.active.org(session_org).asc(:organization, :name).all
+    render 'environments/dialog', layout: false
+  end
+
   # DELETE /environments/1
   # DELETE /environments/1.json
   def destroy
@@ -93,7 +98,7 @@ class EnvironmentsController < ApplicationController
 
     raise "cannot destroy protected environment" if @environment.protected
 
-    @environment.account ||= mystro_account_id
+    @environment.organization ||= session[:org]
     @environment.deleting = true
     @environment.save
     @environment.enqueue(:destroy)
