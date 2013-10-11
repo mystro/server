@@ -1,10 +1,10 @@
 PATH
   remote: ../client
   specs:
-    mystro-client (0.1.0)
+    mystro-client (0.2.0)
       clamp
       httparty
-      mystro-common
+      mystro-common (~> 0.2.0)
       terminal-table
 
 PATH
@@ -12,7 +12,7 @@ PATH
   specs:
     mystro-common (0.2.0)
       activesupport (= 3.2.14)
-      damsel
+      damsel (~> 0.1.0)
       erubis
       fog (~> 1.15.0)
       hashie
@@ -415,7 +415,6 @@ DEPENDENCIES
   devise (>= 2.1.2)
   email_spec (>= 1.2.1)
   factory_girl_rails (>= 4.1.0)
-  fog (= 1.15.0)
   foreman
   highline
   ipaddress
