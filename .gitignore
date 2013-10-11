@@ -14,10 +14,10 @@
 .mystro
 config/mystro
 config/chef
-config/volley
 config/mcollective
-config/deploy
+config/volley
 config/webserver
+config/deploy
 logs/
 
 # bundler state
