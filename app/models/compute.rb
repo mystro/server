@@ -287,52 +287,52 @@ class Compute
     #  compute
     #end
 
-    def new_from_template(environment, tserver_attrs, i=nil)
-      tserver = tserver_attrs
-      userdata = Userdata.named(tserver.userdata)
-      raise "userdata #{tserver.userdata} not found, need to `rake mystro:push`?" unless userdata
-
-      o = {
-          roles: Role.create_from_fog(tserver.roles),
-          groups: tserver.groups,
-          image: tserver.image,
-          flavor: tserver.flavor,
-          keypair: tserver.keypair,
-          managed: true,
-          userdata: userdata,
-      }.delete_if { |k, v| v.nil? }
-
-      name = tserver.name
-      i = environment.get_next_number(tserver.name) unless i
-      o.merge!({name: name, num: i})
-      compute = environment.computes.new(o)
-      #compute.set_defaults(environment.account) unless compute.synced_at
-
-      compute
-    end
-
-    def create_from_template(environment, tserver_attrs, i=1)
-      tserver = tserver_attrs
-      userdata = Userdata.named(tserver.userdata)
-      raise "userdata #{tserver.userdata} not found, need to `rake mystro:push`?" unless userdata
-
-      o = {
-          roles: Role.create_from_fog(tserver.roles),
-          groups: tserver.groups,
-          image: tserver.image,
-          flavor: tserver.flavor,
-          keypair: tserver.keypair,
-          managed: true,
-          userdata: userdata,
-      }.delete_if { |k, v| v.nil? }
-      name = tserver.name
-      compute = environment.computes.find_or_create_by(name: name, num: i)
-      compute.set_defaults(environment.account) unless compute.synced_at
-      compute.update_attributes(o)
-      compute.save!
-
-      compute
-    end
+    #def new_from_template(environment, tserver_attrs, i=nil)
+    #  tserver = tserver_attrs
+    #  userdata = Userdata.named(tserver.userdata)
+    #  raise "userdata #{tserver.userdata} not found, need to `rake mystro:push`?" unless userdata
+    #
+    #  o = {
+    #      roles: Role.create_from_fog(tserver.roles),
+    #      groups: tserver.groups,
+    #      image: tserver.image,
+    #      flavor: tserver.flavor,
+    #      keypair: tserver.keypair,
+    #      managed: true,
+    #      userdata: userdata,
+    #  }.delete_if { |k, v| v.nil? }
+    #
+    #  name = tserver.name
+    #  i = environment.get_next_number(tserver.name) unless i
+    #  o.merge!({name: name, num: i})
+    #  compute = environment.computes.new(o)
+    #  #compute.set_defaults(environment.account) unless compute.synced_at
+    #
+    #  compute
+    #end
+    #
+    #def create_from_template(environment, tserver_attrs, i=1)
+    #  tserver = tserver_attrs
+    #  userdata = Userdata.named(tserver.userdata)
+    #  raise "userdata #{tserver.userdata} not found, need to `rake mystro:push`?" unless userdata
+    #
+    #  o = {
+    #      roles: Role.create_from_fog(tserver.roles),
+    #      groups: tserver.groups,
+    #      image: tserver.image,
+    #      flavor: tserver.flavor,
+    #      keypair: tserver.keypair,
+    #      managed: true,
+    #      userdata: userdata,
+    #  }.delete_if { |k, v| v.nil? }
+    #  name = tserver.name
+    #  compute = environment.computes.find_or_create_by(name: name, num: i)
+    #  compute.set_defaults(environment.account) unless compute.synced_at
+    #  compute.update_attributes(o)
+    #  compute.save!
+    #
+    #  compute
+    #end
 
     def find_by_record(record)
       record.values.each do |val|
