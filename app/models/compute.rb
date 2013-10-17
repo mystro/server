@@ -160,6 +160,10 @@ class Compute
     self.keypair = obj.keypair if obj.keypair
     self.region = obj.region if obj.region
 
+    if obj.userdata
+      self.userdata = Userdata.named(obj.userdata) || Userdata.named('default')
+    end
+
     list = (obj.tags["Role"]||obj.tags["Roles"]||"").split(",")
     list.each do |r|
       role = Role.find_or_create_by(:name => r)

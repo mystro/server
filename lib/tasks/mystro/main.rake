@@ -111,16 +111,30 @@ namespace :mystro do
       puts 'queueing destroy action'
       c.enqueue(:destroy)
     end
-    task :userdata => :environment do
-      a = Account.where(name: 'ops').first
-      m = a.mystro
-      e = Environment.where(name: 'dev').first || Environment.create(name: "dev")
-      r = Role.where(name: "test").first || Role.create(name: "test")
-      c = Compute.new(name:    'test', num: 1, environment: e, role_ids: r.id)
-      c.set_defaults(a)
-      o = c.fog_options
-      u = o[:user_data]
-      puts u
+    #task :userdata => :environment do
+    #  a = Organization.named('ops')
+    #  m = a.mystro
+    #  e = Environment.named('dev') || Environment.create(name: "dev")
+    #  r = Role.where(name: "test").first || Role.create(name: "test")
+    #  c = Compute.new(name:    'test', num: 1, environment: e, role_ids: r.id)
+    #  c.set_defaults(a)
+    #  o = c.fog_options
+    #  u = o[:user_data]
+    #  puts u
+    #end
+    task :userdata, [:template, :role] => :environment do |_, args|
+      template = args.template
+      role = args.role
+      dir = "config/mystro/templates"
+      path = "#{dir}/#{template}.rb"
+      raise "template file '#{path}' not found" unless File.exists?(path)
+      tf = Mystro::Dsl.load(path)
+      c = tf.compute(role)
+      compute = Compute.new(name: role)
+      compute.set_defaults(Organization.named('ops'))
+      compute.from_cloud(c)
+      cloud = compute.to_cloud
+      puts cloud.userdata
     end
   end
 end
