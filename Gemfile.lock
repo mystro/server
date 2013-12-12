@@ -10,13 +10,14 @@ PATH
 PATH
   remote: ../common
   specs:
-    mystro-common (0.3.0)
+    mystro-common (0.3.2)
       activesupport (= 3.2.14)
       damsel (~> 0.1.0)
       erubis
-      fog (~> 1.15.0)
+      fog (~> 1.18.0)
       hashie
       ipaddress
+      unf
       yell (~> 1.2.0)
 
 PATH
@@ -162,7 +163,7 @@ GEM
       mail (~> 2.2)
     erubis (2.7.0)
     eventmachine (1.0.3)
-    excon (0.25.3)
+    excon (0.28.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
     factory_girl (4.2.0)
@@ -170,9 +171,9 @@ GEM
     factory_girl_rails (4.2.1)
       factory_girl (~> 4.2.0)
       railties (>= 3.0.0)
-    fog (1.15.0)
+    fog (1.18.0)
       builder
-      excon (~> 0.25.0)
+      excon (~> 0.28.0)
       formatador (~> 0.2.0)
       mime-types
       multi_json (~> 1.0)
@@ -211,7 +212,7 @@ GEM
       stomp
       systemu
     mime-types (1.25)
-    mini_portile (0.5.1)
+    mini_portile (0.5.2)
     mixlib-authentication (1.3.0)
       mixlib-log
     mixlib-cli (1.3.0)
@@ -366,6 +367,9 @@ GEM
     uglifier (2.1.1)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
+    unf (0.1.3)
+      unf_ext
+    unf_ext (0.0.6)
     unicorn (4.6.3)
       kgio (~> 2.6)
       rack
