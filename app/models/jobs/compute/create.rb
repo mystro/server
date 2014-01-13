@@ -50,7 +50,7 @@ class Jobs::Compute::Create < Job
             record2.update_attributes(
                 :type => "CNAME",
                 :ttl => 300,
-                :values => [r.dns_name]
+                :values => [remote.dns]
             )
             record2.organization = organization
             record2.save!
