@@ -24,13 +24,11 @@ gem 'resque-scheduler', :require => 'resque_scheduler'
 if ENV['MYSTRO_DEV']
   gem 'mystro-client', path: '../client'
   gem 'mystro-common', :path => '../common'
-  gem 'mystro-volley', path: '../mystro-volley'
   gem 'qujo', path: "~/catz/qujo"
   gem 'damsel', path: '~/catz/damsel'
 else
   gem 'mystro-client', '0.3.1'
   gem 'mystro-common', '0.3.0'
-  gem 'mystro-volley', github: 'mystro/mystro-volley', branch: 'develop'
   gem 'qujo', '~> 0.1.4'
   gem 'damsel', '~> 0.1.0'
 end
@@ -46,7 +44,6 @@ gem 'symbolize', :require => 'symbolize/mongoid'
 gem 'highline'
 gem 'yell'
 
-gem 'chef', '~> 10.26.0'
 gem 'scout_api'
 gem 'mongo'
 
@@ -91,3 +88,7 @@ group :development do
 end
 gem 'whenever'
 gem 'awesome_print'
+
+if File.exists?('config/mystro/Gemfile') then
+  eval File.read('config/mystro/Gemfile'), nil, 'Gemfile.devel'
+end
