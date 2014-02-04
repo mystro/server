@@ -28,7 +28,7 @@ if ENV['MYSTRO_DEV']
   gem 'damsel', path: '~/catz/damsel'
 else
   gem 'mystro-client', '0.3.1'
-  gem 'mystro-common', '0.3.0'
+  gem 'mystro-common', '0.3.3'
   gem 'qujo', '~> 0.1.4'
   gem 'damsel', '~> 0.1.0'
 end
