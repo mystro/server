@@ -226,11 +226,11 @@ class Compute
   end
 
   #TODO: VOLLEY
-  has_many :installs, class_name: "MystroVolley::Install"
+  #has_many :installs, class_name: "MystroVolley::Install"
 
-  def versions
-    installs.map(&:version).uniq
-  end
+  #def versions
+  #  installs.map(&:version).uniq
+  #end
 
   class << self
     def name_and_number(value)
