@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # server
-gem 'rake', '10.1.0'
+gem 'rake', '10.1.1'
 gem 'rails', '3.2.14'
 gem 'unicorn', '>= 4.3.1', :group => :production
 gem 'thin', '>= 1.5.0'
