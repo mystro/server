@@ -1,5 +1,7 @@
-PATH
-  remote: ../client
+GIT
+  remote: git://github.com/mystro/client.git
+  revision: ce48b1985fcb7f83e2752dc4c89421870280e6c9
+  branch: develop
   specs:
     mystro-client (0.3.1)
       clamp
@@ -7,8 +9,10 @@ PATH
       mystro-common (~> 0.3.0)
       terminal-table
 
-PATH
-  remote: ../common
+GIT
+  remote: git://github.com/mystro/common.git
+  revision: 25c5af27ece99e4170a50aa5f4b2e317238a20b6
+  branch: develop
   specs:
     mystro-common (0.3.3)
       activesupport (= 3.2.14)
@@ -20,20 +24,26 @@ PATH
       unf
       yell (~> 1.2.0)
 
-PATH
-  remote: ../mystro-chef
+GIT
+  remote: git://github.com/mystro/mystro-chef.git
+  revision: 93d9da73e9909a3711b5e5b2067be6a18d5005db
+  branch: develop
   specs:
     mystro-chef (0.1.0)
       chef (= 11.8.2)
       rails (~> 3.2.14)
 
-PATH
-  remote: ~/catz/damsel
+GIT
+  remote: git://github.com/shawncatz/damsel.git
+  revision: 0357a58503d128271a364f6872f64efd1b7b5212
+  branch: develop
   specs:
     damsel (0.1.0)
 
-PATH
-  remote: ~/catz/qujo
+GIT
+  remote: git://github.com/shawncatz/qujo.git
+  revision: 3b195d1d4397aaa76bd3a69a7065363e14f50bd7
+  branch: develop
   specs:
     qujo (0.1.4)
       activesupport
@@ -126,7 +136,7 @@ GEM
       moneta (< 0.7.0)
       rack
     chronic (0.9.1)
-    clamp (0.6.1)
+    clamp (0.6.3)
     client_side_validations (3.2.5)
     client_side_validations-simple_form (2.1.0)
       client_side_validations (~> 3.2.5)
@@ -245,7 +255,7 @@ GEM
     net-ssh-multi (1.1)
       net-ssh (>= 2.1.4)
       net-ssh-gateway (>= 0.99.0)
-    nokogiri (1.6.0)
+    nokogiri (1.6.1)
       mini_portile (~> 0.5.0)
     ohai (6.20.0)
       ipaddress

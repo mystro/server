@@ -20,18 +20,10 @@ gem 'resque'
 gem 'resque-scheduler', :require => 'resque_scheduler'
 # and qujo
 
-# mystro
-if ENV['MYSTRO_DEV']
-  gem 'mystro-client', path: '../client'
-  gem 'mystro-common', :path => '../common'
-  gem 'qujo', path: "~/catz/qujo"
-  gem 'damsel', path: '~/catz/damsel'
-else
-  gem 'mystro-client', '0.3.1'
-  gem 'mystro-common', '0.3.3'
-  gem 'qujo', '~> 0.1.4'
-  gem 'damsel', '~> 0.1.0'
-end
+gem 'mystro-client', github: 'mystro/client', branch: 'develop'
+gem 'mystro-common', github: 'mystro/common', branch: 'develop'
+gem 'qujo', github: 'shawncatz/qujo', branch: 'develop'
+gem 'damsel', github: 'shawncatz/damsel', branch: 'develop'
 
 # data
 gem 'mongoid', '>= 3.0.9'
