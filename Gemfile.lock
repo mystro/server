@@ -26,7 +26,7 @@ GIT
 
 GIT
   remote: git://github.com/mystro/mystro-chef.git
-  revision: 155d561e3c1f5fd878bd608d33a5fd7324ad6cd4
+  revision: 9b398fc4c1d8852ea3237c39dee314489facd707
   branch: develop
   specs:
     mystro-chef (0.1.0)
