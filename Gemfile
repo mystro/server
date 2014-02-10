@@ -25,6 +25,8 @@ gem 'mystro-common', github: 'mystro/common', branch: 'develop'
 gem 'qujo', github: 'shawncatz/qujo', branch: 'develop'
 gem 'damsel', github: 'shawncatz/damsel', branch: 'develop'
 
+gem 'chef', '11.8.2'
+
 # data
 gem 'mongoid', '>= 3.0.9'
 gem 'bson'
