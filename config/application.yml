@@ -1,6 +1,6 @@
 defaults: &default_settings
   ui:
-    jobs: #%w{Jobs::Series::UpdateAll Jobs::Image::UpdateAll}
+    jobs:
       cloud:
         - Jobs::Cloud::Update
   deploy:

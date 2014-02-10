@@ -13,7 +13,7 @@ gem 'devise', '>= 2.1.2'
 gem 'foreman'
 gem 'json', '~> 1.7.7'
 gem 'ipaddress'
-gem "settingslogic"
+gem 'settingslogic'
 
 # jobs
 gem 'resque'

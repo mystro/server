@@ -12,7 +12,6 @@ class Compute
   belongs_to :userdata, index: true
   has_many :records, as: :nameable
   embeds_many :volumes
-  has_and_belongs_to_many :roles #TODO: part of chef, shouldn't be included here
 
   field :name, type: String
   field :num, type: Integer, default: 0
