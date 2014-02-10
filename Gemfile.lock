@@ -11,7 +11,7 @@ GIT
 
 GIT
   remote: git://github.com/mystro/common.git
-  revision: 25c5af27ece99e4170a50aa5f4b2e317238a20b6
+  revision: eff542aea4ee574ffa01e59f83918fd914f7dd07
   branch: develop
   specs:
     mystro-common (0.3.3)
@@ -26,7 +26,7 @@ GIT
 
 GIT
   remote: git://github.com/mystro/mystro-chef.git
-  revision: 93d9da73e9909a3711b5e5b2067be6a18d5005db
+  revision: 155d561e3c1f5fd878bd608d33a5fd7324ad6cd4
   branch: develop
   specs:
     mystro-chef (0.1.0)
@@ -42,7 +42,7 @@ GIT
 
 GIT
   remote: git://github.com/shawncatz/qujo.git
-  revision: 3b195d1d4397aaa76bd3a69a7065363e14f50bd7
+  revision: 099cb6c23bf82d146373e078d629734c80cc6b40
   branch: develop
   specs:
     qujo (0.1.4)
@@ -244,7 +244,7 @@ GEM
     moped (1.5.0)
     multi_json (1.7.9)
     multi_test (0.0.1)
-    multi_xml (0.5.4)
+    multi_xml (0.5.5)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
     net-sftp (2.1.2)
@@ -279,7 +279,7 @@ GEM
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
-    rack-protection (1.5.0)
+    rack-protection (1.5.2)
       rack
     rack-ssl (1.3.3)
       rack
@@ -304,9 +304,9 @@ GEM
     rake (10.1.1)
     rdoc (3.12.2)
       json (~> 1.4)
-    redis (3.0.4)
-    redis-namespace (1.3.0)
-      redis (~> 3.0.0)
+    redis (3.0.7)
+    redis-namespace (1.4.1)
+      redis (~> 3.0.4)
     ref (1.0.5)
     resque (1.24.1)
       mono_logger (~> 1.0)
@@ -353,7 +353,7 @@ GEM
     simple_form (2.1.0)
       actionpack (~> 3.0)
       activemodel (~> 3.0)
-    sinatra (1.4.3)
+    sinatra (1.4.4)
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
