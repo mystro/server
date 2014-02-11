@@ -11,7 +11,7 @@ GIT
 
 GIT
   remote: git://github.com/mystro/common.git
-  revision: eff542aea4ee574ffa01e59f83918fd914f7dd07
+  revision: abb7df1a908ef933d69d1bfe9aff966b59fb103c
   branch: develop
   specs:
     mystro-common (0.3.3)
