@@ -18,6 +18,18 @@ namespace :mystro do
         d = a.load
         a.data = d
         a.save
+        d["selectors"] && d["selectors"]["images"] && d["selectors"]["images"].each do |iregion, images|
+          images.each do |image|
+            irid = image['id']
+            iname = image['name']
+            iuser = image['user']
+            puts ".. .. .. create image: #{irid} #{iname}"
+            i = Image.find_or_create_by(region: iregion, rid: irid)
+            i.name = iname
+            i.user = iuser
+            i.save!
+          end
+        end
         puts ".. .. create #{name} #{file}"
         if d["record"] && d["record"]["config"] && d['record']['config']['zone']
           z = d["record"]['config']["zone"]

@@ -37,7 +37,7 @@ class RolesController < ApplicationController
     @role = Role.find(params[:id])
   end
 
-  # POST /roles                                                  ``
+  # POST /roles
   # POST /roles.json
   def create
     @role = Role.new(params[:role])

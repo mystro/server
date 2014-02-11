@@ -221,8 +221,19 @@ class Compute
         environment: environment ? environment.name : nil,
         organization: organization ? organization.name : nil,
         balancer: balancer ? balancer.name : nil,
-        roles: roles_string
+        roles: roles_string,
+        user: to_api_image_user
     }
+  end
+
+  def to_api_image_user
+    if image
+      i = Image.remote(image)
+      if i
+        return i.user
+      end
+    end
+    nil
   end
 
   #TODO: VOLLEY

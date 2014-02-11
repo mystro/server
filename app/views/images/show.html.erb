@@ -1,0 +1,19 @@
+<% content_for :subnav_buttons do %>
+    <%= link_to edit_image_path(@image), :title => "Edit Image", :class => "btn btn-primary" do %><i class="icon-edit icon-white"></i> edit<% end %>
+    <%= link_to @image, method: :delete, data: { confirm: 'Are you sure?' }, :title => "Destroy Image", :class => "btn btn-danger" do %><i class="icon-remove-sign icon-white"></i> destroy<% end %>
+<% end %>
+
+<table class="table table-condensed  table-striped table-hover fields-horizontal">
+  <tr>
+    <th>Remote</th>
+    <td><%= @image.rid %></td>
+  </tr>
+  <tr>
+    <th>Name</th>
+    <td><%= @image.name %></td>
+  </tr>
+  <tr>
+    <th>Created</th>
+    <td><%= @image.created_at %></td>
+  </tr>
+</table>

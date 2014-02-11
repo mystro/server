@@ -33,6 +33,7 @@ MystroServer::Application.routes.draw do
   resources :roles
   resources :templates
   resources :userdata
+  resources :images
   resources :providers
   resources :organizations do
     post "select", :on => :member

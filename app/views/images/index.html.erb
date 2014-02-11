@@ -1,0 +1,18 @@
+<table class="table table-condensed  table-striped table-hover  tablesorter {sortlist: [[0,0]]}">
+  <thead>
+  <tr>
+    <th>Remote</th>
+    <th>Name</th>
+    <th class="links {sorter: false}"></th>
+  </tr>
+  </thead>
+  <tbody>
+<% @images.each do |image| %>
+  <tr>
+    <td><%= link_to image.rid, image_path(image) %></td>
+    <td><%= image.name %></td>
+    <td class="links"><%= render "common/links", :obj => image, :edit => edit_image_path(image) %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
