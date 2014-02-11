@@ -33,7 +33,7 @@ class Environment
 
   def old?
     a = age
-    a < 0 || a > 60.minutes
+    a < 0 || a > 8.hours # TODO: make this (and schedule) configurable.
   end
 
   def age

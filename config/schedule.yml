@@ -1,4 +1,4 @@
-#MystroWorker:
-#  cron: "*/10 * * * *"
+MystroWorker:
+  cron: "* */4 * * *"
 ChefWorker:
   cron: "*/15 * * * *"

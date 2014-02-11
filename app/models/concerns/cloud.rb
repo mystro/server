@@ -10,7 +10,7 @@ module Cloud
     index({rid: 1})
 
     def old?
-      (Time.now.to_i - synced_at.to_i) > 60.minutes
+      (Time.now.to_i - synced_at.to_i) > 8.hours # TODO: make this (and schedule) configurable
     end
   end
 
