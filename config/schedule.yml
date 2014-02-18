@@ -1,4 +1,4 @@
 MystroWorker:
-  cron: "* */4 * * *"
+  cron: "0 */4 * * *"
 ChefWorker:
   cron: "*/15 * * * *"
