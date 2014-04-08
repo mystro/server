@@ -54,26 +54,26 @@ group :assets do
   gem 'therubyracer', '>= 0.10.2', :platform => :ruby
 end
 
-group :test do
+group :test, :development do
   gem 'rspec-rails', '>= 2.11.0'
+  gem 'factory_girl_rails', '>= 4.1.0'
+  gem 'awesome_print'
+end
+
+group :test do
   gem 'capybara', '>= 1.1.2'
   gem 'database_cleaner', '>= 0.9.1'
   gem 'mongoid-rspec', '>= 1.4.6'
   gem 'email_spec', '>= 1.2.1'
   gem 'cucumber-rails', '>= 1.3.0', :require => false
   gem 'launchy', '>= 2.1.2'
-  gem 'factory_girl_rails', '>= 4.1.0'
-
 end
 
 group :development do
-  gem 'rspec-rails', '>= 2.11.0'
-  gem 'factory_girl_rails', '>= 4.1.0'
   gem 'quiet_assets', '>= 1.0.1'
   gem 'capistrano'
   gem 'capistrano-webserver'
   #gem 'capistrano-unicorn'
-  gem 'awesome_print'
   gem 'cape'
   gem 'sextant'
 
@@ -81,7 +81,6 @@ group :development do
   gem 'binding_of_caller'
 end
 gem 'whenever'
-gem 'awesome_print'
 
 if File.exists?('config/mystro/Gemfile') then
   eval File.read('config/mystro/Gemfile'), nil, 'Gemfile.devel'
