@@ -182,7 +182,7 @@ class Compute
   def to_cloud
     z = self.zone
     e = self.envname
-    u = self.userdata.name || organization.compute_config['userdata'] || 'default'
+    u = self.userdata && self.userdata.name || organization.compute_config['userdata'] || 'default'
     o = self.organization.name || 'unknown'
     ud = Mystro::Userdata.create(long, roles.map(&:name), e, nickname: display, package: u, zone: z, organization: o)
     t = self.tags || {}
@@ -204,7 +204,7 @@ class Compute
         region: self.region,
         tags: self.tags,
         volumes: self.volumes.map {|e| e.to_cloud},
-        userdata: ud,
+        userdata: ud
     }
     Mystro::Cloud::Compute.new(data)
   end
