@@ -88,7 +88,7 @@ class Jobs::Environment::Create < Job
     #  c.save
     #end
 
-    Mystro::Plugin.run "environment:create", environment
+    Mystro::Plugin.run "environment:create", env
   end
 
   def action_to_cloud(action)
