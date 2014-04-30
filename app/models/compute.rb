@@ -184,7 +184,7 @@ class Compute
     e = self.envname
     u = self.userdata && self.userdata.name || organization.compute_config['userdata'] || 'default'
     o = self.organization.name || 'unknown'
-    ud = Mystro::Userdata.create(long, roles.map(&:name), e, nickname: display, package: u, zone: z, organization: o)
+    ud = Mystro::Userdata.create(long, roles.map(&:name), e, nickname: display, package: u, zone: z, organization: o, chef_environment: e)
     t = self.tags || {}
     t['Name'] = short
     t['Environment'] = e
