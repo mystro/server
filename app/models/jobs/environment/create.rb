@@ -49,6 +49,8 @@ class Jobs::Environment::Create < Job
         info ".. enqueue: #{a} #{b}"
         b.enqueue(a)
       end
+
+      Mystro::Plugin.run "environment:create", environment
     end
 
     #info "actions"
