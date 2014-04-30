@@ -50,7 +50,6 @@ class Jobs::Environment::Create < Job
         b.enqueue(a)
       end
 
-      Mystro::Plugin.run "environment:create", environment
     end
 
     #info "actions"
@@ -88,6 +87,8 @@ class Jobs::Environment::Create < Job
     #  c.balancer = balancers[b]
     #  c.save
     #end
+
+    Mystro::Plugin.run "environment:create", environment
   end
 
   def action_to_cloud(action)
